@@ -3,660 +3,768 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>格斗机器人报价单模板</title>
+<title>MECHA ARENA - 格斗机器人竞技平台</title>
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:"微软雅黑","Microsoft YaHei",sans-serif; background:#f0f2f5; padding:20px; }
-
-.page { background:#fff; width:980px; margin:0 auto; padding:30px 36px 36px; box-shadow:0 2px 16px rgba(0,0,0,.12); }
-
-/* 顶部 */
-.header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; }
-.header-left h1 { font-size:22px; font-weight:700; letter-spacing:4px; color:#222; }
-.header-left p  { font-size:12px; color:#888; letter-spacing:2px; margin-top:4px; }
-.header-right   { font-size:12px; color:#555; line-height:2; text-align:right; }
-.header-right .val { color:#d32f2f; font-weight:600; }
-.divider { border:none; border-top:2px solid #1a237e; margin-bottom:12px; }
-
-/* 通用可编辑样式 */
-[contenteditable] {
-  outline:none; cursor:text;
-  border-radius:2px; transition:background .15s;
+/* ============================
+   RESET & BASE
+   ============================ */
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:"Microsoft YaHei","微软雅黑","Orbitron",sans-serif;
+  background:#0a0a0f; color:#e0e0e0;
+  overflow-x:hidden;
 }
-[contenteditable]:hover  { background:rgba(26,35,126,.06); }
-[contenteditable]:focus  { background:rgba(26,35,126,.10); box-shadow:0 0 0 1px #1a237e44; }
+a{text-decoration:none;color:inherit;}
 
-/* 客户栏 */
-.client-bar { border-left:4px solid #1a237e; padding:8px 14px; background:#f5f7ff; display:flex; gap:32px; align-items:center; margin-bottom:16px; font-size:13px; flex-wrap:wrap; }
-.client-bar label { color:#555; white-space:nowrap; }
-.client-val { border-bottom:1px solid #aaa; min-width:120px; display:inline-block; padding:1px 4px; font-size:13px; }
-
-/* 表格 */
-table { width:100%; border-collapse:collapse; font-size:13px; }
-thead tr { background:#1a237e; color:#fff; }
-thead th { padding:10px 8px; text-align:center; font-weight:600; }
-thead th.th-sub { background:#283593; }
-thead th[contenteditable]:hover { background:rgba(255,255,255,.15); }
-thead th[contenteditable]:focus { background:rgba(255,255,255,.22); box-shadow:none; }
-
-tbody tr { border-bottom:1px solid #e0e0e0; }
-tbody tr:nth-child(even) { background:#f9f9ff; }
-tbody td { padding:8px 6px; text-align:center; vertical-align:middle; }
-tbody td.td-name { text-align:left; padding-left:10px; }
-tbody td input, tbody td textarea {
-  width:100%; border:none; border-bottom:1px dashed #bbb;
-  outline:none; background:transparent; font-size:13px;
-  font-family:inherit; text-align:center; resize:none;
-}
-tbody td textarea { text-align:left; line-height:1.5; min-height:40px; }
-
-/* 图片单元格 - 增大触发区域 */
-.img-cell { width:100px; min-width:100px; position:relative; padding:6px; }
-.img-wrap {
-  width:84px; height:68px; margin:0 auto;
-  position:relative; overflow:visible;
-  border:2px dashed #bbb; border-radius:6px;
-  cursor:pointer; background:#fafafa;
-  display:flex; align-items:center; justify-content:center;
-  transition: border-color .2s, background .2s;
-}
-.img-wrap:hover {
-  border-color:#1a237e; background:#eef0ff;
-}
-.img-wrap.drag-over {
-  border-color:#1a237e; background:#e8eaf6;
-}
-.img-wrap .img-inner {
-  width:100%; height:100%;
-  position:relative; overflow:hidden;
-  border-radius:4px;
-}
-.img-wrap img {
-  position:absolute;
-  transform-origin:center center;
-  user-select:none;
-  -webkit-user-drag:none;
-}
-.img-wrap .placeholder { font-size:11px; color:#aaa; text-align:center; line-height:1.4; pointer-events:none; }
-.img-wrap .drag-hint { font-size:9px; color:#1a237e; font-weight:600; text-align:center; line-height:1.4; pointer-events:none; display:none; }
-.img-wrap.drag-over .placeholder { display:none; }
-.img-wrap.drag-over .drag-hint   { display:block; }
-.img-wrap.drag-over img            { opacity:.4; }
-.img-file-input { display:none; }
-
-/* 图片工具栏 - 贴在图片正下方，超出 overflow:visible */
-.img-toolbar {
-  display:none;
-  position:absolute;
-  left:-2px; right:-2px; top:100%;
-  margin-top:3px;
-  background:rgba(26,35,126,.94);
-  border-radius:5px;
-  padding:4px 4px;
-  z-index:10;
-  justify-content:center;
-  gap:2px;
-  box-shadow:0 2px 10px rgba(0,0,0,.25);
-}
-.img-toolbar button {
-  background:none; border:none; color:#fff; cursor:pointer;
-  font-size:14px; padding:3px 7px; border-radius:3px; transition:.15s;
-  line-height:1;
-}
-.img-toolbar button:hover { background:rgba(255,255,255,.25); }
-/* 使用 class 控制显示，而非纯 CSS hover */
-.img-cell.tb-show .img-toolbar { display:flex; align-items:center; }
-.img-toolbar button::after {
-  content:attr(data-tip);
-  display:none;
-  position:absolute;
-  bottom:calc(100% + 6px); left:50%;
-  transform:translateX(-50%);
-  background:#333; color:#fff; font-size:10px;
-  padding:2px 6px; border-radius:3px; white-space:nowrap;
-}
-.img-toolbar button:hover::after { display:block; }
-
-/* 操作按钮 */
-.btn-area { margin-top:14px; display:flex; gap:10px; flex-wrap:wrap; }
-.btn { padding:9px 22px; border:none; border-radius:4px; cursor:pointer; font-size:13px; font-family:inherit; font-weight:600; transition:.2s; }
-.btn-add   { background:#1a237e; color:#fff; }
-.btn-add:hover   { background:#283593; }
-.btn-del   { background:#e53935; color:#fff; }
-.btn-del:hover   { background:#c62828; }
-.btn-print { background:#2e7d32; color:#fff; }
-.btn-print:hover { background:#1b5e20; }
-.btn-save  { background:#f57c00; color:#fff; }
-.btn-save:hover  { background:#e65100; }
-
-/* 序号 */
-td.num-cell { color:#1a237e; font-weight:700; font-size:14px; width:42px; }
-
-/* 报价说明 */
-.notes { margin-top:20px; border:1px solid #e0e0e0; border-radius:6px; padding:14px 18px; }
-.notes-title { font-weight:700; color:#1a237e; margin-bottom:10px; display:flex; align-items:center; gap:6px; font-size:14px; }
-.notes-title-icon { font-size:16px; }
-.notes-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; font-size:12px; color:#444; line-height:1.9; }
-.notes-grid .highlight { color:#d32f2f; }
-
-/* 编辑提示条 */
-.edit-hint {
-  text-align:center; font-size:11px; color:#999; margin-bottom:10px;
-  padding:4px; background:#fffde7; border-radius:3px; letter-spacing:.5px;
+/* ============================
+   ANIMATED BACKGROUND GRID
+   ============================ */
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    linear-gradient(rgba(0,240,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,240,255,.03) 1px, transparent 1px);
+  background-size:60px 60px;
 }
 
-/* ---- 图片编辑模态框 ---- */
-.modal-overlay {
-  display:none; position:fixed; inset:0;
-  background:rgba(0,0,0,.65); z-index:9999;
-  align-items:center; justify-content:center;
+/* ============================
+   NAVIGATION
+   ============================ */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  background:rgba(10,10,15,.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(0,240,255,.15);
+  transition:background .3s;
 }
-.modal-overlay.active { display:flex; }
-.modal-box {
-  background:#fff; border-radius:10px;
-  width:580px; max-width:95vw;
-  box-shadow:0 8px 40px rgba(0,0,0,.4);
+.nav-inner{
+  max-width:1200px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 24px;
+}
+.nav-logo{
+  font-size:22px;font-weight:900;letter-spacing:3px;
+  background:linear-gradient(135deg,#00f0ff,#ff0044,#00f0ff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  text-shadow:0 0 20px rgba(0,240,255,.4);
+  animation:glitch 3s infinite;
+}
+@keyframes glitch{
+  0%,90%,100%{transform:translate(0);}
+  92%{transform:translate(-2px,1px);}
+  94%{transform:translate(2px,-1px);}
+  96%{transform:translate(-1px,2px);}
+}
+.nav-links{display:flex;gap:6px;flex-wrap:wrap;}
+.nav-links a{
+  padding:8px 18px;border-radius:4px;font-size:13px;font-weight:600;
+  color:#aaa;transition:all .3s;letter-spacing:1px;
+  border:1px solid transparent;
+}
+.nav-links a:hover,.nav-links a.active{
+  color:#00f0ff;border-color:rgba(0,240,255,.3);
+  background:rgba(0,240,255,.08);
+  text-shadow:0 0 8px rgba(0,240,255,.5);
+}
+.nav-hamburger{
+  display:none;flex-direction:column;gap:5px;cursor:pointer;
+  padding:8px;
+}
+.nav-hamburger span{
+  width:24px;height:2px;background:#00f0ff;
+  transition:all .3s;border-radius:2px;
+}
+.nav-hamburger.open span:nth-child(1){transform:rotate(45deg) translateY(5px) translateX(5px);}
+.nav-hamburger.open span:nth-child(2){opacity:0;}
+.nav-hamburger.open span:nth-child(3){transform:rotate(-45deg) translateY(-5px) translateX(5px);}
+
+/* ============================
+   HERO SECTION
+   ============================ */
+.hero{
+  position:relative;min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  text-align:center;overflow:hidden;
+  padding:120px 20px 80px;
+}
+.hero-bg{
+  position:absolute;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(255,0,68,.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 50%, rgba(0,240,255,.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 100%, rgba(128,0,255,.1) 0%, transparent 40%);
+}
+/* Animated particles */
+.hero-particles{
+  position:absolute;inset:0;z-index:1;overflow:hidden;
+}
+.particle{
+  position:absolute;border-radius:50%;
+  animation:float linear infinite;
+  opacity:0;
+}
+@keyframes float{
+  0%{opacity:0;transform:translateY(100vh) scale(0);}
+  10%{opacity:1;}
+  90%{opacity:1;}
+  100%{opacity:0;transform:translateY(-10vh) scale(1);}
+}
+.hero-content{position:relative;z-index:2;max-width:800px;}
+.hero-badge{
+  display:inline-block;padding:6px 20px;
+  border:1px solid rgba(255,0,68,.5);border-radius:20px;
+  font-size:12px;color:#ff0044;letter-spacing:3px;
+  text-transform:uppercase;margin-bottom:20px;
+  animation:badge-pulse 2s infinite;
+}
+@keyframes badge-pulse{
+  0%,100%{box-shadow:0 0 5px rgba(255,0,68,.3);}
+  50%{box-shadow:0 0 20px rgba(255,0,68,.6);}
+}
+.hero h1{
+  font-size:clamp(36px,7vw,72px);font-weight:900;line-height:1.1;
+  letter-spacing:4px;margin-bottom:20px;
+  background:linear-gradient(180deg,#fff 0%,#00f0ff 50%,#ff0044 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero p{
+  font-size:clamp(14px,2vw,18px);color:#888;line-height:1.8;
+  max-width:600px;margin:0 auto 40px;
+}
+.hero-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+.btn-neon{
+  padding:14px 36px;border-radius:6px;font-size:14px;font-weight:700;
+  letter-spacing:2px;cursor:pointer;transition:all .3s;
+  text-transform:uppercase;position:relative;overflow:hidden;
+}
+.btn-neon-red{
+  background:linear-gradient(135deg,#ff0044,#cc0033);
+  color:#fff;border:1px solid #ff0044;
+  box-shadow:0 0 15px rgba(255,0,68,.4);
+}
+.btn-neon-red:hover{
+  box-shadow:0 0 30px rgba(255,0,68,.7),0 0 60px rgba(255,0,68,.3);
+  transform:translateY(-2px);
+}
+.btn-neon-blue{
+  background:transparent;
+  color:#00f0ff;border:1px solid #00f0ff;
+  box-shadow:0 0 10px rgba(0,240,255,.2);
+}
+.btn-neon-blue:hover{
+  background:rgba(0,240,255,.1);
+  box-shadow:0 0 25px rgba(0,240,255,.5);
+  transform:translateY(-2px);
+}
+
+/* Scroll indicator */
+.scroll-hint{
+  position:absolute;bottom:40px;left:50%;transform:translateX(-50%);
+  z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;
+  color:#555;font-size:11px;letter-spacing:2px;
+  animation:bounce 2s infinite;
+}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(8px);}}
+.scroll-hint .arrow{width:20px;height:20px;border-right:2px solid #555;border-bottom:2px solid #555;transform:rotate(45deg);}
+
+/* ============================
+   SECTION COMMON
+   ============================ */
+.section{
+  position:relative;z-index:2;
+  padding:80px 24px;max-width:1200px;margin:0 auto;
+}
+.section-header{
+  text-align:center;margin-bottom:50px;
+}
+.section-tag{
+  display:inline-block;padding:4px 14px;
+  border:1px solid rgba(0,240,255,.3);border-radius:12px;
+  font-size:11px;color:#00f0ff;letter-spacing:3px;
+  text-transform:uppercase;margin-bottom:12px;
+}
+.section-title{
+  font-size:clamp(24px,4vw,40px);font-weight:900;
+  letter-spacing:2px;margin-bottom:12px;
+  background:linear-gradient(90deg,#fff,#00f0ff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.section-desc{color:#666;font-size:14px;max-width:500px;margin:0 auto;line-height:1.8;}
+
+/* Divider */
+.neon-divider{
+  width:80px;height:3px;margin:0 auto 40px;
+  background:linear-gradient(90deg,#00f0ff,#ff0044);
+  border-radius:2px;box-shadow:0 0 10px rgba(0,240,255,.5);
+}
+
+/* ============================
+   EVENTS / 赛事
+   ============================ */
+.events-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:24px;
+}
+.event-card{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:10px;overflow:hidden;
+  transition:all .4s;cursor:pointer;
+  position:relative;
+}
+.event-card::before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(0,240,255,.05),rgba(255,0,68,.05));
+  opacity:0;transition:opacity .4s;z-index:0;
+}
+.event-card:hover{
+  transform:translateY(-6px);
+  border-color:rgba(0,240,255,.2);
+  box-shadow:0 10px 40px rgba(0,240,255,.1);
+}
+.event-card:hover::before{opacity:1;}
+.event-card *{position:relative;z-index:1;}
+.event-img{
+  width:100%;height:180px;object-fit:cover;
+  background:linear-gradient(135deg,#1a1a2e,#16213e);
+  display:flex;align-items:center;justify-content:center;
+  font-size:48px;color:#333;
+}
+.event-img img{width:100%;height:100%;object-fit:cover;}
+.event-body{padding:20px;}
+.event-status{
+  display:inline-block;padding:3px 10px;border-radius:10px;
+  font-size:10px;font-weight:700;letter-spacing:1px;margin-bottom:10px;
+}
+.status-upcoming{background:rgba(0,240,255,.15);color:#00f0ff;border:1px solid rgba(0,240,255,.3);}
+.status-live{background:rgba(255,0,68,.15);color:#ff0044;border:1px solid rgba(255,0,68,.3);animation:badge-pulse 2s infinite;}
+.status-ended{background:rgba(100,100,100,.15);color:#888;border:1px solid rgba(100,100,100,.3);}
+.event-title{font-size:18px;font-weight:700;color:#eee;margin-bottom:8px;}
+.event-meta{font-size:12px;color:#666;line-height:1.8;}
+.event-meta span{margin-right:16px;}
+.event-meta .icon{margin-right:4px;}
+
+/* ============================
+   RULES / 规则解读
+   ============================ */
+.rules-container{
+  display:grid;grid-template-columns:280px 1fr;gap:32px;
+}
+.rules-nav{
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
+  border-radius:10px;padding:8px;position:sticky;top:80px;
+  align-self:start;
+}
+.rules-nav-item{
+  display:block;padding:12px 16px;border-radius:6px;
+  font-size:13px;color:#888;cursor:pointer;
+  transition:all .3s;margin-bottom:4px;
+  border:1px solid transparent;
+}
+.rules-nav-item:hover,.rules-nav-item.active{
+  background:rgba(0,240,255,.08);color:#00f0ff;
+  border-color:rgba(0,240,255,.15);
+}
+.rules-content{
+  background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);
+  border-radius:10px;padding:32px;
+}
+.rules-content h3{font-size:20px;color:#eee;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.rules-content h3 .rule-icon{color:#00f0ff;}
+.rules-content p{color:#999;font-size:14px;line-height:2;margin-bottom:16px;}
+.rules-content .rule-box{
+  background:rgba(0,240,255,.05);border-left:3px solid #00f0ff;
+  padding:16px 20px;border-radius:0 8px 8px 0;margin-bottom:20px;
+}
+.rules-content .rule-box.warn{
+  background:rgba(255,0,68,.05);border-left-color:#ff0044;
+}
+.rules-content .rule-box h4{color:#eee;font-size:14px;margin-bottom:6px;}
+.rules-content .rule-box p{margin:0;font-size:13px;}
+.rule-tag{
+  display:inline-block;padding:2px 8px;border-radius:4px;
+  font-size:10px;background:rgba(128,0,255,.2);color:#b366ff;
+  margin-right:6px;margin-bottom:6px;
+}
+
+/* ============================
+   EQUIPMENT / 比赛器材
+   ============================ */
+.equip-banner{
+  background:linear-gradient(135deg,rgba(255,0,68,.1),rgba(0,240,255,.1));
+  border:1px solid rgba(0,240,255,.15);border-radius:12px;
+  padding:40px;text-align:center;margin-bottom:40px;
+  position:relative;overflow:hidden;
+}
+.equip-banner::before{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 20% 50%, rgba(255,0,68,.2) 0%, transparent 50%),
+    radial-gradient(circle at 80% 50%, rgba(0,240,255,.2) 0%, transparent 50%);
+}
+.equip-banner *{position:relative;z-index:1;}
+.equip-banner h3{font-size:clamp(20px,3vw,28px);font-weight:900;color:#fff;margin-bottom:10px;}
+.equip-banner p{color:#888;font-size:14px;margin-bottom:20px;}
+.equip-banner .btn-neon-red{display:inline-block;}
+.equip-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:20px;
+}
+.equip-card{
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
+  border-radius:10px;overflow:hidden;transition:all .4s;
+  text-align:center;
+}
+.equip-card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(255,0,68,.3);
+  box-shadow:0 8px 30px rgba(255,0,68,.1);
+}
+.equip-card-img{
+  height:160px;background:linear-gradient(135deg,#111,#1a1a2e);
+  display:flex;align-items:center;justify-content:center;
+  font-size:48px;
+}
+.equip-card-img img{width:100%;height:100%;object-fit:cover;}
+.equip-card-body{padding:18px;}
+.equip-card-name{font-size:15px;font-weight:700;color:#eee;margin-bottom:6px;}
+.equip-card-desc{font-size:12px;color:#666;line-height:1.6;}
+.equip-card-price{
+  display:inline-block;margin-top:10px;padding:4px 14px;
+  border-radius:12px;font-size:13px;font-weight:700;
+  background:linear-gradient(135deg,rgba(255,0,68,.15),rgba(0,240,255,.15));
+  color:#ff6688;border:1px solid rgba(255,0,68,.2);
+}
+
+/* ============================
+   VIDEOS / 精彩视频
+   ============================ */
+.video-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:24px;
+}
+.video-card{
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
+  border-radius:10px;overflow:hidden;transition:all .4s;cursor:pointer;
+}
+.video-card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(255,0,68,.3);
+  box-shadow:0 8px 30px rgba(255,0,68,.15);
+}
+.video-thumb{
+  position:relative;height:200px;
+  background:linear-gradient(135deg,#1a1a2e,#16213e);
+  display:flex;align-items:center;justify-content:center;
   overflow:hidden;
 }
-.modal-header {
-  background:#1a237e; color:#fff; padding:12px 18px;
-  display:flex; justify-content:space-between; align-items:center;
-  font-weight:700; font-size:15px;
+.video-thumb img{width:100%;height:100%;object-fit:cover;}
+.video-play{
+  position:absolute;width:56px;height:56px;
+  background:rgba(255,0,68,.9);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .3s;box-shadow:0 0 20px rgba(255,0,68,.5);
 }
-.modal-header button { background:none; border:none; color:#fff; font-size:20px; cursor:pointer; line-height:1; }
-.modal-body { padding:16px; }
+.video-play::after{
+  content:"";width:0;height:0;
+  border-top:10px solid transparent;border-bottom:10px solid transparent;
+  border-left:16px solid #fff;margin-left:4px;
+}
+.video-card:hover .video-play{
+  transform:scale(1.15);
+  box-shadow:0 0 40px rgba(255,0,68,.7);
+}
+.video-body{padding:16px;}
+.video-title{font-size:15px;font-weight:700;color:#eee;margin-bottom:6px;}
+.video-meta{font-size:11px;color:#666;}
+.video-meta span{margin-right:12px;}
 
-.crop-area {
-  position:relative; width:100%; height:340px;
-  background:#111; overflow:hidden; border-radius:6px;
-  cursor:crosshair;
+/* ============================
+   FOOTER
+   ============================ */
+.footer{
+  position:relative;z-index:2;
+  border-top:1px solid rgba(255,255,255,.06);
+  padding:40px 24px;margin-top:60px;
+  text-align:center;
 }
-.crop-area canvas { display:block; }
-.crop-rect {
-  position:absolute; border:2px dashed #fff;
-  box-shadow:0 0 0 9999px rgba(0,0,0,.45);
-  pointer-events:none;
+.footer-inner{max-width:1200px;margin:0 auto;}
+.footer-logo{
+  font-size:18px;font-weight:900;letter-spacing:3px;
+  background:linear-gradient(135deg,#00f0ff,#ff0044);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:12px;
+}
+.footer-links{display:flex;gap:20px;justify-content:center;margin-bottom:16px;flex-wrap:wrap;}
+.footer-links a{font-size:12px;color:#555;transition:color .3s;}
+.footer-links a:hover{color:#00f0ff;}
+.footer-copy{font-size:11px;color:#333;}
+
+/* ============================
+   RESPONSIVE
+   ============================ */
+@media(max-width:768px){
+  .nav-links{
+    display:none;position:absolute;top:100%;left:0;right:0;
+    background:rgba(10,10,15,.98);
+    border-bottom:1px solid rgba(0,240,255,.15);
+    flex-direction:column;padding:16px;
+    gap:4px;
+  }
+  .nav-links.open{display:flex;}
+  .nav-links a{padding:12px 20px;width:100%;text-align:left;}
+  .nav-hamburger{display:flex;}
+  .rules-container{grid-template-columns:1fr;}
+  .rules-nav{position:static;display:flex;flex-wrap:wrap;gap:0;padding:4px;}
+  .rules-nav-item{margin-bottom:0;padding:8px 12px;font-size:12px;}
+  .section{padding:50px 16px;}
+  .hero{padding:100px 16px 60px;min-height:auto;}
+  .hero-btns{flex-direction:column;align-items:center;}
+  .video-grid{grid-template-columns:1fr;}
+}
+@media(max-width:480px){
+  .events-grid{grid-template-columns:1fr;}
+  .equip-grid{grid-template-columns:1fr 1fr;}
 }
 
-.modal-tools { display:flex; gap:8px; flex-wrap:wrap; padding:12px 0 6px; }
-.modal-tools button {
-  padding:7px 14px; border-radius:5px; border:none; cursor:pointer;
-  font-size:13px; font-family:inherit; font-weight:600; transition:.15s;
+/* ============================
+   SCROLL ANIMATIONS
+   ============================ */
+.fade-in{
+  opacity:0;transform:translateY(30px);
+  transition:opacity .6s ease, transform .6s ease;
 }
-.mt-zoomin  { background:#1565c0; color:#fff; }
-.mt-zoomin:hover  { background:#0d47a1; }
-.mt-zoomout { background:#283593; color:#fff; }
-.mt-zoomout:hover { background:#1a237e; }
-.mt-mirror  { background:#6a1b9a; color:#fff; }
-.mt-mirror:hover  { background:#4a148c; }
-.mt-mirrorv { background:#7b1fa2; color:#fff; }
-.mt-mirrorv:hover { background:#6a1b9a; }
-.mt-rotate  { background:#00838f; color:#fff; }
-.mt-rotate:hover  { background:#006064; }
-.mt-crop    { background:#e65100; color:#fff; }
-.mt-crop:hover    { background:#bf360c; }
-.mt-rmbg    { background:#2e7d32; color:#fff; }
-.mt-rmbg:hover    { background:#1b5e20; }
-.mt-reset   { background:#757575; color:#fff; }
-.mt-reset:hover   { background:#424242; }
-
-.modal-footer { display:flex; justify-content:flex-end; gap:10px; padding:10px 0 4px; }
-.modal-footer button { padding:8px 22px; border-radius:5px; border:none; font-size:13px; font-family:inherit; font-weight:600; cursor:pointer; }
-.btn-cancel  { background:#e0e0e0; color:#333; }
-.btn-cancel:hover  { background:#bdbdbd; }
-.btn-confirm { background:#1a237e; color:#fff; }
-.btn-confirm:hover { background:#283593; }
-.status-bar { font-size:11px; color:#888; margin-top:6px; min-height:16px; }
-
-/* 打印隐藏 */
-@media print {
-  body { background:#fff; padding:0; }
-  .page { box-shadow:none; width:100%; padding:10mm 12mm; }
-  .btn-area,.img-toolbar,.edit-hint { display:none!important; }
-  .img-wrap { border:1px solid #eee; }
-  [contenteditable] { background:transparent!important; box-shadow:none!important; }
-}
+.fade-in.visible{opacity:1;transform:translateY(0);}
 </style>
 </head>
 <body>
 
-<div class="page" id="mainPage">
-
-  <!-- 编辑提示 -->
-  <div class="edit-hint">✏️ 所有文字均可直接点击编辑 · 图片可直接拖入或点击上传 · 悬停图片显示编辑工具栏</div>
-
-  <!-- 顶部标题 -->
-  <div class="header">
-    <div class="header-left">
-      <h1 contenteditable="true" spellcheck="false">2 0 2 6 格 斗 机 器 人 价 格 表</h1>
-      <p  contenteditable="true" spellcheck="false">MECHA PRODUCT QUOTATION</p>
+<!-- ======== NAVIGATION ======== -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-logo">MECHA ARENA</div>
+    <div class="nav-links" id="navLinks">
+      <a href="#events" class="active">赛事</a>
+      <a href="#rules">规则解读</a>
+      <a href="#equipment">比赛器材</a>
+      <a href="#videos">精彩视频</a>
     </div>
-    <div class="header-right">
-      报价编号：<span class="val" contenteditable="true" spellcheck="false">QT-2026-032D</span><br>
-      报价日期：<span class="val" contenteditable="true" spellcheck="false">2026年03月25日</span><br>
-      有效期至：<span class="val" contenteditable="true" spellcheck="false">2026年08月25日</span>
+    <div class="nav-hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
     </div>
   </div>
-  <hr class="divider">
+</nav>
 
-  <!-- 客户信息 -->
-  <div class="client-bar">
-    <div><label>客户名称：</label><span class="client-val" contenteditable="true" spellcheck="false" data-placeholder="请输入客户名称"></span></div>
-    <div><label>联 系 人：</label><span class="client-val" contenteditable="true" spellcheck="false">李宁</span></div>
-    <div><label>联系电话：</label><span class="client-val" contenteditable="true" spellcheck="false">15970070712</span></div>
-  </div>
-
-  <!-- 产品表格 -->
-  <table id="priceTable">
-    <thead>
-      <tr>
-        <th rowspan="2" style="width:42px"  contenteditable="true" spellcheck="false">序号</th>
-        <th rowspan="2" style="width:90px"  contenteditable="true" spellcheck="false">图片</th>
-        <th rowspan="2" style="width:130px" contenteditable="true" spellcheck="false">产品名称</th>
-        <th rowspan="2" style="width:100px" contenteditable="true" spellcheck="false">机甲价格</th>
-        <th colspan="2" style="background:#283593" contenteditable="true" spellcheck="false">易损配件价格</th>
-        <th rowspan="2" style="width:180px" contenteditable="true" spellcheck="false">备注</th>
-      </tr>
-      <tr>
-        <th class="th-sub" style="width:90px" contenteditable="true" spellcheck="false">主体价格</th>
-        <th class="th-sub" style="width:90px" contenteditable="true" spellcheck="false">武器价格</th>
-      </tr>
-    </thead>
-    <tbody id="tableBody"></tbody>
-  </table>
-
-  <!-- 操作按钮 -->
-  <div class="btn-area">
-    <button class="btn btn-add"   onclick="addRow()">＋ 增加一行</button>
-    <button class="btn btn-del"   onclick="delLastRow()">－ 删除末行</button>
-    <button class="btn btn-print" onclick="window.print()">🖨️ 打印 / 导出PDF</button>
-    <button class="btn btn-save"  onclick="saveHTML()">💾 保存当前文件</button>
-  </div>
-
-  <!-- 报价说明 -->
-  <div class="notes">
-    <div class="notes-title">
-      <span class="notes-title-icon">🔧</span>
-      <span contenteditable="true" spellcheck="false">报价说明</span>
-    </div>
-    <div class="notes-grid" id="notesGrid">
-      <div contenteditable="true" spellcheck="false">1.本报价单有效期为 150天，逾期需重新确认价格。</div>
-      <div contenteditable="true" spellcheck="false" class="highlight">1.采购金额满3000元，赠送全套基础课程。</div>
-      <div contenteditable="true" spellcheck="false">2.机甲价格为整套含标准配件的完整价格；主体 / 武器价格为单独配件价格。</div>
-      <div contenteditable="true" spellcheck="false" class="highlight">2.价格包含在线视频课程。</div>
-      <div contenteditable="true" spellcheck="false">3.报价包含官方电调 电池 遥控 接收机 充电器</div>
-      <div contenteditable="true" spellcheck="false">3.报价不包含官方电调 电池 遥控 接收机 充电器</div>
-      <div contenteditable="true" spellcheck="false">4.所有配件10套以上包邮 默认顺丰快递</div>
-      <div contenteditable="true" spellcheck="false">4.所有配件10套以上包邮 默认顺丰快递</div>
+<!-- ======== HERO ======== -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-particles" id="particles"></div>
+  <div class="hero-content">
+    <div class="hero-badge" contenteditable="true">⚡ 2026 SEASON</div>
+    <h1 contenteditable="true">钢铁碰撞<br>智能对决</h1>
+    <p contenteditable="true">格斗机器人竞技平台 — 汇集赛事资讯、器材报价、规则解读与精彩视频，为你打造一站式的格斗机器人竞技体验</p>
+    <div class="hero-btns">
+      <a href="#events" class="btn-neon btn-neon-red">探索赛事</a>
+      <a href="#equipment" class="btn-neon btn-neon-blue">器材报价</a>
     </div>
   </div>
+  <div class="scroll-hint">
+    <span>SCROLL</span>
+    <div class="arrow"></div>
+  </div>
+</section>
 
-</div>
+<!-- ======== EVENTS / 赛事 ======== -->
+<section class="section" id="events">
+  <div class="section-header fade-in">
+    <div class="section-tag">EVENTS</div>
+    <h2 class="section-title">赛事动态</h2>
+    <div class="neon-divider"></div>
+    <p class="section-desc" contenteditable="true">获取最新格斗机器人赛事信息，了解赛程安排与报名方式</p>
+  </div>
+  <div class="events-grid">
 
-<!-- ===== 图片编辑模态框 ===== -->
-<div class="modal-overlay" id="imgModal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <span>图片编辑</span>
-      <button onclick="closeModal()">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="crop-area" id="cropArea">
-        <canvas id="editCanvas"></canvas>
-        <div class="crop-rect" id="cropRect" style="display:none"></div>
-      </div>
-      <div class="status-bar" id="statusBar">拖动图片可平移 · 滚轮缩放</div>
-      <div class="modal-tools">
-        <button class="mt-zoomin"  onclick="editorZoom(0.15)">🔍 放大</button>
-        <button class="mt-zoomout" onclick="editorZoom(-0.15)">🔎 缩小</button>
-        <button class="mt-mirror"  onclick="editorMirrorH()">↔ 水平镜像</button>
-        <button class="mt-mirrorv" onclick="editorMirrorV()">↕ 垂直镜像</button>
-        <button class="mt-rotate"  onclick="editorRotate(90)">↻ 旋转90°</button>
-        <button class="mt-crop"    onclick="toggleCropMode()" id="cropBtn">✂️ 框选裁剪</button>
-        <button class="mt-rmbg"    onclick="editorRemoveBg()">🪄 抠图去背景</button>
-        <button class="mt-reset"   onclick="editorReset()">↺ 重置</button>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-cancel"  onclick="closeModal()">取消</button>
-        <button class="btn-confirm" onclick="confirmEdit()">✔ 应用</button>
+    <div class="event-card fade-in">
+      <div class="event-img">🤖</div>
+      <div class="event-body">
+        <span class="event-status status-live">🔥 进行中</span>
+        <h3 class="event-title" contenteditable="true">2026 全国格斗机器人锦标赛</h3>
+        <div class="event-meta">
+          <span>📅 2026.05.15 - 05.18</span>
+          <span>📍 北京·国家会议中心</span>
+        </div>
       </div>
     </div>
+
+    <div class="event-card fade-in">
+      <div class="event-img">⚔️</div>
+      <div class="event-body">
+        <span class="event-status status-upcoming">即将开始</span>
+        <h3 class="event-title" contenteditable="true">青少年格斗机器人联赛·夏季赛</h3>
+        <div class="event-meta">
+          <span>📅 2026.07.20 - 07.22</span>
+          <span>📍 上海·世博展览馆</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event-card fade-in">
+      <div class="event-img">🏆</div>
+      <div class="event-body">
+        <span class="event-status status-upcoming">报名中</span>
+        <h3 class="event-title" contenteditable="true">城际对抗赛·华南赛区</h3>
+        <div class="event-meta">
+          <span>📅 2026.08.10 - 08.12</span>
+          <span>📍 深圳·会展中心</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event-card fade-in">
+      <div class="event-img">🎓</div>
+      <div class="event-body">
+        <span class="event-status status-ended">已结束</span>
+        <h3 class="event-title" contenteditable="true">校园机器人格斗联赛·春季赛</h3>
+        <div class="event-meta">
+          <span>📅 2026.03.08 - 03.10</span>
+          <span>📍 广州·华南理工</span>
+        </div>
+      </div>
+    </div>
+
   </div>
-</div>
+</section>
+
+<!-- ======== RULES / 规则解读 ======== -->
+<section class="section" id="rules">
+  <div class="section-header fade-in">
+    <div class="section-tag">RULES</div>
+    <h2 class="section-title">规则解读</h2>
+    <div class="neon-divider"></div>
+    <p class="section-desc" contenteditable="true">深入了解格斗机器人竞赛规则，掌握取胜之道</p>
+  </div>
+  <div class="rules-container fade-in">
+    <div class="rules-nav">
+      <a class="rules-nav-item active" onclick="showRule(this,'weight')">重量分级</a>
+      <a class="rules-nav-item" onclick="showRule(this,'weapon')">武器类型</a>
+      <a class="rules-nav-item" onclick="showRule(this,'scoring')">计分规则</a>
+      <a class="rules-nav-item" onclick="showRule(this,'safety')">安全规范</a>
+      <a class="rules-nav-item" onclick="showRule(this,'forbidden')">禁止事项</a>
+    </div>
+    <div class="rules-content" id="rulesContent">
+      <h3><span class="rule-icon">⚖️</span> <span contenteditable="true">重量分级</span></h3>
+      <p contenteditable="true">格斗机器人按重量分为不同级别，每个级别有严格的重量限制。参赛机器人必须通过赛前称重，超重将无法参赛。</p>
+      <div class="rule-box">
+        <h4 contenteditable="true">常见重量级别</h4>
+        <p contenteditable="true">• 蚂蚁级（Antweight）：1.5kg 以下<br>• 甲壳虫级（Beetleweight）：1.5kg - 3kg<br>• 蜜蜂级（Mantisweight）：3kg - 6kg<br>• 轻量级（Lightweight）：6kg - 15kg<br>• 中量级（Middleweight）：30kg - 60kg<br>• 重量级（Heavyweight）：60kg - 110kg</p>
+      </div>
+      <div class="rule-box warn">
+        <h4 contenteditable="true">⚠️ 注意事项</h4>
+        <p contenteditable="true">称重时需包含电池和所有可更换配件。气动/液压系统气体不计入重量，但气瓶/液压罐本身必须计入。</p>
+      </div>
+      <p contenteditable="true">所有文字均可直接编辑 — 点击即可修改内容。此为占位示例内容，请替换为实际规则。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======== EQUIPMENT / 比赛器材 ======== -->
+<section class="section" id="equipment">
+  <div class="section-header fade-in">
+    <div class="section-tag">EQUIPMENT</div>
+    <h2 class="section-title">比赛器材</h2>
+    <div class="neon-divider"></div>
+    <p class="section-desc" contenteditable="true">专业格斗机器人器材报价，一站式采购所需装备</p>
+  </div>
+
+  <div class="equip-banner fade-in">
+    <h3 contenteditable="true">📋 2026 格斗机器人完整报价单</h3>
+    <p contenteditable="true">包含全套机甲、易损配件、电机、控制器等完整价格信息</p>
+    <a href="格斗机器人报价单模板.html" class="btn-neon btn-neon-red">查看完整报价单 →</a>
+  </div>
+
+  <div class="equip-grid">
+    <div class="equip-card fade-in">
+      <div class="equip-card-img">🤖</div>
+      <div class="equip-card-body">
+        <div class="equip-card-name" contenteditable="true">竖转格斗机甲</div>
+        <div class="equip-card-desc" contenteditable="true">全套3D打印机甲，含易损件、螺丝配件、电控</div>
+        <div class="equip-card-price" contenteditable="true">¥ 1,400/套</div>
+      </div>
+    </div>
+    <div class="equip-card fade-in">
+      <div class="equip-card-img">🥁</div>
+      <div class="equip-card-body">
+        <div class="equip-card-name" contenteditable="true">转鼓格斗机甲</div>
+        <div class="equip-card-desc" contenteditable="true">全套3D打印机甲，竖转类高性能方案</div>
+        <div class="equip-card-price" contenteditable="true">¥ 1,400/套</div>
+      </div>
+    </div>
+    <div class="equip-card fade-in">
+      <div class="equip-card-img">⚡</div>
+      <div class="equip-card-body">
+        <div class="equip-card-name" contenteditable="true">武器电机</div>
+        <div class="equip-card-desc" contenteditable="true">定制高性能电机，专为格斗场景优化</div>
+        <div class="equip-card-price" contenteditable="true">¥ 25/件</div>
+      </div>
+    </div>
+    <div class="equip-card fade-in">
+      <div class="equip-card-img">⚙️</div>
+      <div class="equip-card-body">
+        <div class="equip-card-name" contenteditable="true">高速舵机</div>
+        <div class="equip-card-desc" contenteditable="true">高压高速舵机，弹射类机甲必备</div>
+        <div class="equip-card-price" contenteditable="true">¥ 120/件</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== VIDEOS / 精彩视频 ======== -->
+<section class="section" id="videos">
+  <div class="section-header fade-in">
+    <div class="section-tag">HIGHLIGHTS</div>
+    <h2 class="section-title">精彩视频</h2>
+    <div class="neon-divider"></div>
+    <p class="section-desc" contenteditable="true">回顾赛场上的经典对决，感受钢铁碰撞的震撼</p>
+  </div>
+  <div class="video-grid">
+
+    <div class="video-card fade-in">
+      <div class="video-thumb">🎬</div>
+      <div class="video-body">
+        <h3 class="video-title" contenteditable="true">2026春季赛总决赛 竖转 vs 横传</h3>
+        <div class="video-meta">
+          <span>🔥 12.8万次观看</span>
+          <span>03:42</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="video-card fade-in">
+      <div class="video-thumb">🎥</div>
+      <div class="video-body">
+        <h3 class="video-title" contenteditable="true">弹射机器人的完美一击 KO集锦</h3>
+        <div class="video-meta">
+          <span>🔥 8.6万次观看</span>
+          <span>05:15</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="video-card fade-in">
+      <div class="video-thumb">📹</div>
+      <div class="video-body">
+        <h3 class="video-title" contenteditable="true">新手入门：如何组装你的第一台格斗机器人</h3>
+        <div class="video-meta">
+          <span>🔥 6.2万次观看</span>
+          <span>12:30</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ======== FOOTER ======== -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">MECHA ARENA</div>
+    <div class="footer-links">
+      <a href="#events">赛事</a>
+      <a href="#rules">规则</a>
+      <a href="#equipment">器材</a>
+      <a href="#videos">视频</a>
+    </div>
+    <div class="footer-copy" contenteditable="true">© 2026 MECHA ARENA · 格斗机器人竞技平台 · All Rights Reserved</div>
+  </div>
+</footer>
 
 <script>
-/* ============================================================
-   默认数据
-============================================================ */
-const defaultRows = [
-  { name:"竖转格斗机甲\n竖转类",   price:"1400元/套", mainPart:"¥ 80元/件", weapon:"¥ 25元/件", note:"全套3D打印机甲 易损件 螺丝配件 电控\n简易安装工具 武器电机 行驶电机" },
-  { name:"转鼓格斗机甲\n竖转类",   price:"1400元/套", mainPart:"¥ 80元/件", weapon:"¥ 25元/件", note:"全套3D打印机甲 易损件 螺丝配件 电控\n简易安装工具 武器电机 行驶电机" },
-  { name:"横传格斗机甲\n横传类",   price:"1400元/套", mainPart:"¥ 80元/件", weapon:"¥ 25元/件", note:"全套3D打印机甲 易损件 螺丝配件 电控\n简易安装工具 武器电机 行驶电机" },
-  { name:"弹射格斗机甲\n弹射类",   price:"1450元/套", mainPart:"¥ 80元/件", weapon:"¥ 25元/件", note:"全套3D打印机甲 易损件 螺丝配件 电控\n简易安装工具 舵机 行驶电机" },
-  { name:"武器电机\n定制电机",     price:"25元/套",   mainPart:"25元/件",   weapon:"25元/件",   note:"备注" },
-  { name:"行驶电机\n减速电机",     price:"30元/套",   mainPart:"30元/件",   weapon:"30元/件",   note:"备注" },
-  { name:"高速舵机\n高压高速舵机", price:"120元/套",  mainPart:"120元/件",  weapon:"120元/件",  note:"备注" },
-];
+/* ============================
+   PARTICLES
+   ============================ */
+(function(){
+  var container = document.getElementById("particles");
+  var colors = ["#00f0ff","#ff0044","#8000ff","#00ff88"];
+  for(var i=0;i<30;i++){
+    var p = document.createElement("div");
+    p.className = "particle";
+    var size = Math.random()*4+1;
+    p.style.cssText = "width:"+size+"px;height:"+size+"px;left:"+Math.random()*100+"%;background:"+colors[Math.floor(Math.random()*colors.length)]+";box-shadow:0 0 "+(size*3)+"px "+colors[Math.floor(Math.random()*colors.length)]+";animation-duration:"+(Math.random()*8+6)+"s;animation-delay:"+(Math.random()*8)+"s;";
+    container.appendChild(p);
+  }
+})();
 
-let rowCount = 0;
-
-/* ============================================================
-   行管理
-============================================================ */
-function createRow(data) {
-  data = data || {};
-  rowCount++;
-  const tr = document.createElement("tr");
-  tr.dataset.rowId = rowCount;
-  tr.innerHTML =
-    '<td class="num-cell">' + String(rowCount).padStart(2,"0") + '</td>' +
-    '<td class="img-cell">' +
-      '<div class="img-wrap" onclick="triggerUpload(this)">' +
-        '<div class="img-inner">' +
-          '<span class="placeholder">＋<br>图片</span>' +
-          '<span class="drag-hint">松开<br>放入</span>' +
-        '</div>' +
-        '<div class="img-toolbar">' +
-          '<button data-tip="上传/更换" onclick="event.stopPropagation();triggerUpload(this)">📂</button>' +
-          '<button data-tip="编辑图片" onclick="event.stopPropagation();openEditor(this)">✏️</button>' +
-          '<button data-tip="删除图片" onclick="event.stopPropagation();clearImg(this)">🗑️</button>' +
-        '</div>' +
-      '</div>' +
-      '<input type="file" accept="image/*" class="img-file-input" onchange="loadImg(this)">' +
-    '</td>' +
-    '<td class="td-name"><textarea rows="2" placeholder="产品名称\n分类">' + (data.name||"") + '</textarea></td>' +
-    '<td><input type="text" placeholder="价格"     value="' + (data.price||"") + '"></td>' +
-    '<td><input type="text" placeholder="主体价格" value="' + (data.mainPart||"") + '"></td>' +
-    '<td><input type="text" placeholder="武器价格" value="' + (data.weapon||"") + '"></td>' +
-    '<td><textarea rows="2" placeholder="备注信息">' + (data.note||"") + '</textarea></td>';
-  return tr;
+/* ============================
+   MOBILE MENU
+   ============================ */
+function toggleMenu(){
+  document.getElementById("navLinks").classList.toggle("open");
+  document.getElementById("hamburger").classList.toggle("open");
 }
-
-function addRow(data) {
-  const tbody = document.getElementById("tableBody");
-  const tr = createRow(data);
-  tbody.appendChild(tr);
-  var cell = tr.querySelector(".img-cell");
-  initDropZone(cell.querySelector(".img-wrap"));
-  initToolbarHover(cell);
-  updateNumbers();
-}
-
-function delLastRow() {
-  const tb = document.getElementById("tableBody");
-  if (tb.rows.length > 1) { tb.deleteRow(tb.rows.length-1); rowCount--; updateNumbers(); }
-  else alert("至少保留一行！");
-}
-
-function updateNumbers() {
-  const rows = document.getElementById("tableBody").rows;
-  for (let i=0;i<rows.length;i++) rows[i].cells[0].textContent = String(i+1).padStart(2,"0");
-  rowCount = rows.length;
-}
-
-/* ============================================================
-   保存
-============================================================ */
-function saveHTML() {
-  const html = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
-  const blob = new Blob([html],{type:"text/html;charset=utf-8"});
-  const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
-  const d = new Date();
-  a.download = "格斗机器人报价单_"+d.getFullYear()+("0"+(d.getMonth()+1)).slice(-2)+("0"+d.getDate()).slice(-2)+".html";
-  a.click(); URL.revokeObjectURL(a.href);
-}
-
-/* ============================================================
-   图片上传 & 拖拽放入
-============================================================ */
-function triggerUpload(el) { el.closest(".img-cell").querySelector(".img-file-input").click(); }
-
-function loadImg(input) {
-  if (!input.files||!input.files[0]) return;
-  readFileIntoCell(input.closest(".img-cell"), input.files[0]);
-}
-
-function readFileIntoCell(cell, file) {
-  if (!file || !file.type.startsWith("image/")) { alert("请拖入图片文件！"); return; }
-  const reader = new FileReader();
-  reader.onload = function(e) { setImgToCell(cell, e.target.result); };
-  reader.readAsDataURL(file);
-}
-
-function setImgToCell(cell, src) {
-  const wrap = cell.querySelector(".img-wrap");
-  const inner = wrap.querySelector(".img-inner");
-  // 保留 placeholder span
-  const ph = inner.querySelector(".placeholder");
-  const dh = inner.querySelector(".drag-hint");
-  inner.innerHTML = "";
-  if (ph) inner.appendChild(ph);
-  if (dh) inner.appendChild(dh);
-
-  const img = document.createElement("img");
-  img.src = src;
-  img.style.cssText = "width:100%;height:100%;object-fit:contain;position:absolute;top:0;left:0;";
-  img.dataset.scale="1"; img.dataset.mirrorX="1"; img.dataset.mirrorY="1";
-  img.dataset.rotate="0"; img.dataset.offsetX="0"; img.dataset.offsetY="0";
-  inner.appendChild(img);
-  enableWheelZoom(inner);
-}
-
-function clearImg(btn) {
-  const cell = btn.closest(".img-cell");
-  const inner = cell.querySelector(".img-inner");
-  const img = inner.querySelector("img");
-  if (img) img.remove();
-  cell.querySelector(".img-file-input").value = "";
-}
-
-/* ---- 拖拽放入图片 ---- */
-function initDropZone(wrap) {
-  wrap.addEventListener("dragover", function(e) {
-    e.preventDefault(); e.stopPropagation();
-    wrap.classList.add("drag-over");
+// Close menu on link click
+document.querySelectorAll(".nav-links a").forEach(function(a){
+  a.addEventListener("click",function(){
+    document.getElementById("navLinks").classList.remove("open");
+    document.getElementById("hamburger").classList.remove("open");
   });
-  wrap.addEventListener("dragleave", function(e) {
-    e.preventDefault(); e.stopPropagation();
-    wrap.classList.remove("drag-over");
-  });
-  wrap.addEventListener("drop", function(e) {
-    e.preventDefault(); e.stopPropagation();
-    wrap.classList.remove("drag-over");
-    var files = e.dataTransfer.files;
-    if (files && files.length > 0) {
-      readFileIntoCell(wrap.closest(".img-cell"), files[0]);
+});
+
+/* ============================
+   ACTIVE NAV LINK
+   ============================ */
+var sections = document.querySelectorAll("section[id]");
+window.addEventListener("scroll",function(){
+  var scrollY = window.scrollY+120;
+  sections.forEach(function(sec){
+    var top = sec.offsetTop;
+    var h = sec.offsetHeight;
+    var id = sec.getAttribute("id");
+    var link = document.querySelector('.nav-links a[href="#'+id+'"]');
+    if(link){
+      if(scrollY>=top && scrollY<top+h) link.classList.add("active");
+      else link.classList.remove("active");
     }
   });
-}
-
-/* 鼠标悬停显示/隐藏工具栏（延迟隐藏，防止误触） */
-function initToolbarHover(cell) {
-  var hideTimer = null;
-  cell.addEventListener("mouseenter", function() {
-    clearTimeout(hideTimer);
-    cell.classList.add("tb-show");
-  });
-  cell.addEventListener("mouseleave", function() {
-    hideTimer = setTimeout(function() {
-      cell.classList.remove("tb-show");
-    }, 300);
-  });
-}
-
-/* 滚轮缩放 */
-function enableWheelZoom(wrap) {
-  wrap.addEventListener("wheel",function(e) {
-    e.preventDefault();
-    var img = wrap.querySelector("img");
-    if (!img) return;
-    var s = parseFloat(img.dataset.scale) || 1;
-    s = Math.max(0.1, Math.min(10, s + (e.deltaY < 0 ? 0.15 : -0.15)));
-    img.dataset.scale = s;
-    img.style.transform = "scale(" + s + ")";
-  }, {passive:false});
-}
-
-/* ============================================================
-   图片编辑器（模态框）
-============================================================ */
-var editTarget = null, editorImg = null, editorState = {}, cropMode = false, cropStart = null;
-var canvas = document.getElementById("editCanvas"), ctx = canvas.getContext("2d");
-var cropRect = document.getElementById("cropRect"), statusBar = document.getElementById("statusBar");
-
-function openEditor(btn) {
-  var cell = btn.closest(".img-cell");
-  var img = cell.querySelector(".img-inner img");
-  if (!img) { alert("请先上传图片！"); return; }
-  editTarget = cell;
-  editorState = {
-    origSrc: img.src,
-    scale: parseFloat(img.dataset.scale) || 1,
-    mirrorX: parseFloat(img.dataset.mirrorX) || 1,
-    mirrorY: parseFloat(img.dataset.mirrorY) || 1,
-    rotate: parseFloat(img.dataset.rotate) || 0,
-    offsetX: 0, offsetY: 0
-  };
-  editorImg = new Image();
-  editorImg.onload = function() { renderEditor(); };
-  editorImg.src = img.src;
-  document.getElementById("imgModal").classList.add("active");
-  cropMode = false;
-  document.getElementById("cropBtn").textContent = "✂️ 框选裁剪";
-  cropRect.style.display = "none";
-}
-
-function closeModal() {
-  document.getElementById("imgModal").classList.remove("active");
-  editTarget = null;
-  cropMode = false;
-  cropStart = null;
-  canvas._drag = null;
-}
-
-function renderEditor() {
-  var W = 540, H = 340;
-  canvas.width = W; canvas.height = H;
-  ctx.clearRect(0, 0, W, H);
-  ctx.save();
-  ctx.translate(W/2 + editorState.offsetX, H/2 + editorState.offsetY);
-  ctx.rotate(editorState.rotate * Math.PI / 180);
-  ctx.scale(editorState.scale * editorState.mirrorX, editorState.scale * editorState.mirrorY);
-  ctx.drawImage(editorImg, -editorImg.width/2, -editorImg.height/2);
-  ctx.restore();
-}
-
-function editorZoom(d) {
-  editorState.scale = Math.max(0.05, Math.min(10, editorState.scale + d));
-  renderEditor();
-  setStatus("缩放：" + (editorState.scale * 100).toFixed(0) + "%");
-}
-function editorMirrorH() { editorState.mirrorX *= -1; renderEditor(); setStatus("水平镜像"); }
-function editorMirrorV() { editorState.mirrorY *= -1; renderEditor(); setStatus("垂直镜像"); }
-function editorRotate(deg) { editorState.rotate = (editorState.rotate + deg) % 360; renderEditor(); setStatus("旋转：" + editorState.rotate + "°"); }
-function editorReset() {
-  editorState.scale = 1; editorState.mirrorX = 1; editorState.mirrorY = 1;
-  editorState.rotate = 0; editorState.offsetX = 0; editorState.offsetY = 0;
-  editorImg.src = editorState.origSrc;
-  editorImg.onload = renderEditor;
-  setStatus("已重置");
-}
-
-function toggleCropMode() {
-  cropMode = !cropMode;
-  document.getElementById("cropBtn").textContent = cropMode ? "✂️ 执行裁剪" : "✂️ 框选裁剪";
-  if (!cropMode) { cropRect.style.display = "none"; setStatus("已退出裁剪模式"); return; }
-  setStatus("在图片上拖动鼠标框选裁剪区域");
-}
-
-canvas.addEventListener("mousedown", function(e) {
-  if (cropMode) { cropStart = getCanvasPos(e); cropRect.style.display = "block"; return; }
-  canvas._drag = { x: e.clientX, y: e.clientY, ox: editorState.offsetX, oy: editorState.offsetY };
 });
-canvas.addEventListener("mousemove", function(e) {
-  if (cropMode && cropStart) {
-    var p = getCanvasPos(e);
-    var x = Math.min(cropStart.x, p.x), y = Math.min(cropStart.y, p.y);
-    var w = Math.abs(p.x - cropStart.x), h = Math.abs(p.y - cropStart.y);
-    cropRect.style.left = x + "px"; cropRect.style.top = y + "px";
-    cropRect.style.width = w + "px"; cropRect.style.height = h + "px";
-    return;
-  }
-  if (canvas._drag) {
-    editorState.offsetX = canvas._drag.ox + (e.clientX - canvas._drag.x);
-    editorState.offsetY = canvas._drag.oy + (e.clientY - canvas._drag.y);
-    renderEditor();
-  }
-});
-canvas.addEventListener("mouseup", function(e) {
-  if (cropMode && cropStart) {
-    var p = getCanvasPos(e);
-    var cx = Math.min(cropStart.x, p.x), cy = Math.min(cropStart.y, p.y);
-    var cw = Math.abs(p.x - cropStart.x), ch = Math.abs(p.y - cropStart.y);
-    if (cw > 4 && ch > 4) {
-      var tmp = document.createElement("canvas"); tmp.width = cw; tmp.height = ch;
-      tmp.getContext("2d").drawImage(canvas, cx, cy, cw, ch, 0, 0, cw, ch);
-      editorImg = new Image();
-      editorImg.onload = function() { editorState.scale = 1; editorState.offsetX = 0; editorState.offsetY = 0; renderEditor(); };
-      editorImg.src = tmp.toDataURL();
-      setStatus("裁剪完成 " + cw + "×" + ch + "px");
-    }
-    cropStart = null; cropRect.style.display = "none";
-    cropMode = false; document.getElementById("cropBtn").textContent = "✂️ 框选裁剪";
-    return;
-  }
-  canvas._drag = null;
-});
-canvas.addEventListener("wheel", function(e) { e.preventDefault(); editorZoom(e.deltaY < 0 ? 0.15 : -0.15); }, {passive:false});
 
-function getCanvasPos(e) {
-  var r = canvas.getBoundingClientRect();
-  return { x: e.clientX - r.left, y: e.clientY - r.top };
-}
-
-function editorRemoveBg() {
-  setStatus("正在去除背景...");
-  setTimeout(function() {
-    var W = canvas.width, H = canvas.height;
-    var tmp = document.createElement("canvas"); tmp.width = W; tmp.height = H;
-    var tc = tmp.getContext("2d"); tc.drawImage(canvas, 0, 0);
-    var id = tc.getImageData(0, 0, W, H), d = id.data;
-    function gp(x, y) { var i = (y * W + x) * 4; return [d[i], d[i+1], d[i+2]]; }
-    var s = [gp(0,0), gp(W-1,0), gp(0,H-1), gp(W-1,H-1)];
-    var bg = [
-      s.reduce(function(a,c){return a+c[0];},0)/4,
-      s.reduce(function(a,c){return a+c[1];},0)/4,
-      s.reduce(function(a,c){return a+c[2];},0)/4
-    ];
-    for (var i = 0; i < d.length; i += 4) {
-      var dr = d[i]-bg[0], dg = d[i+1]-bg[1], db = d[i+2]-bg[2];
-      if (Math.sqrt(dr*dr + dg*dg + db*db) < 40) d[i+3] = 0;
-    }
-    tc.putImageData(id, 0, 0);
-    editorImg = new Image();
-    editorImg.onload = function() { editorState.scale = 1; editorState.offsetX = 0; editorState.offsetY = 0; renderEditor(); };
-    editorImg.src = tmp.toDataURL("image/png");
-    setStatus("背景已去除（四角采样法）");
-  }, 50);
-}
-
-function confirmEdit() {
-  if (!editTarget) return;
-  setImgToCell(editTarget, canvas.toDataURL("image/png"));
-  closeModal();
-}
-
-function setStatus(msg) { statusBar.textContent = msg; }
-
-/* ============================================================
-   初始化
-============================================================ */
-window.onload = function() {
-  defaultRows.forEach(function(r) { addRow(r); });
-  // 阻止整个页面默认拖放行为（防止浏览器直接打开图片）
-  document.body.addEventListener("dragover", function(e) { e.preventDefault(); });
-  document.body.addEventListener("drop", function(e) { e.preventDefault(); });
+/* ============================
+   RULES TAB
+   ============================ */
+var ruleData = {
+  weight:'<h3><span class="rule-icon">⚖️</span> <span>重量分级</span></h3><p>格斗机器人按重量分为不同级别，每个级别有严格的重量限制。</p><div class="rule-box"><h4>常见重量级别</h4><p>• 蚂蚁级（Antweight）：1.5kg 以下<br>• 甲壳虫级（Beetleweight）：1.5kg - 3kg<br>• 蜜蜂级（Mantisweight）：3kg - 6kg<br>• 轻量级（Lightweight）：6kg - 15kg<br>• 中量级（Middleweight）：30kg - 60kg</p></div><div class="rule-box warn"><h4>⚠️ 注意</h4><p>称重时需包含电池和所有可更换配件。</p></div>',
+  weapon:'<h3><span class="rule-icon">⚔️</span> <span>武器类型</span></h3><p>格斗机器人可使用多种武器类型，不同武器有各自的优势与限制。</p><div class="rule-box"><h4>常见武器分类</h4><p>• 旋转武器（竖转/横转/转鼓）<br>• 弹射武器（弹射臂/弹射器）<br>• 钳夹武器<br>• 锤击武器<br>• 锯片/切割武器</p></div><div class="rule-box"><h4>💡 选用建议</h4><p>根据比赛场地大小、对手类型和自身机甲设计来选择最优武器方案。</p></div>',
+  scoring:'<h3><span class="rule-icon">📊</span> <span>计分规则</span></h3><p>比赛采用裁判评分制，从多个维度综合判定胜负。</p><div class="rule-box"><h4>评分维度</h4><p>• 攻击伤害：对对手造成的物理损伤程度<br>• 操控表现：操作精度与战术执行力<br>• 积极性：主动进攻的频率与质量<br>• 防御能力：承受攻击后的状态</p></div><div class="rule-box warn"><h4>判定方式</h4><p>KO（击倒）：对手无法继续比赛<br>TKO（技术性击倒）：裁判判定对手无法继续<br>裁判判定：比赛结束时综合评分决定</p></div>',
+  safety:'<h3><span class="rule-icon">🛡️</span> <span>安全规范</span></h3><p>安全是格斗机器人赛事的首要原则，所有参赛者必须严格遵守安全规范。</p><div class="rule-box"><h4>基本安全要求</h4><p>• 机甲必须配备遥控急停开关<br>• 电池必须有防护外壳<br>• 比赛时所有人员必须佩戴护目镜<br>• 场地必须有安全隔离栏</p></div><div class="rule-box warn"><h4>⚠️ 电池安全</h4><p>禁止使用损坏的锂电池。充电必须在指定区域进行，不得在场地附近充电。</p></div>',
+  forbidden:'<h3><span class="rule-icon">🚫</span> <span>禁止事项</span></h3><p>以下行为在比赛中被严格禁止，违规者将被取消参赛资格。</p><div class="rule-box warn"><h4>绝对禁止</h4><p>• 使用易燃物/爆炸物<br>• 使用化学/生物武器<br>• 使用纠缠装置（如渔线、胶水喷射）<br>• 干扰对手遥控信号<br>• 比赛中对裁判/工作人员不服从指令</p></div><div class="rule-box"><h4>限制使用</h4><p>• 电磁干扰类武器需提前申报并获得批准<br>• 液体喷射类武器一般不允许<br>• 火焰喷射器需符合当地法规</p></div>'
 };
+
+function showRule(el, key){
+  document.querySelectorAll(".rules-nav-item").forEach(function(n){n.classList.remove("active");});
+  el.classList.add("active");
+  document.getElementById("rulesContent").innerHTML = ruleData[key] || "<p>内容加载中...</p>";
+  // Make new content editable
+  document.getElementById("rulesContent").querySelectorAll("[contenteditable]").forEach(function(e){});
+}
+
+/* ============================
+   SCROLL FADE-IN
+   ============================ */
+(function(){
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add("visible");
+      }
+    });
+  },{threshold:0.1});
+  document.querySelectorAll(".fade-in").forEach(function(el){
+    observer.observe(el);
+  });
+})();
 </script>
 </body>
 </html>
