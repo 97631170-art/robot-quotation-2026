@@ -5,445 +5,117 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MECHA ARENA - 格斗机器人竞技平台</title>
 <style>
-/* ============================
-   RESET & BASE
-   ============================ */
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{
-  font-family:"Microsoft YaHei","微软雅黑","Orbitron",sans-serif;
-  background:#0a0a0f; color:#e0e0e0;
-  overflow-x:hidden;
-}
+body{font-family:"Microsoft YaHei","微软雅黑","Orbitron",sans-serif;background:#0a0a0f;color:#e0e0e0;overflow-x:hidden;}
 a{text-decoration:none;color:inherit;}
-
-/* ============================
-   ANIMATED BACKGROUND GRID
-   ============================ */
-body::before{
-  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:
-    linear-gradient(rgba(0,240,255,.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,240,255,.03) 1px, transparent 1px);
-  background-size:60px 60px;
-}
-
-/* ============================
-   NAVIGATION
-   ============================ */
-.nav{
-  position:fixed;top:0;left:0;right:0;z-index:1000;
-  background:rgba(10,10,15,.92);
-  backdrop-filter:blur(12px);
-  border-bottom:1px solid rgba(0,240,255,.15);
-  transition:background .3s;
-}
-.nav-inner{
-  max-width:1200px;margin:0 auto;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 24px;
-}
-.nav-logo{
-  font-size:22px;font-weight:900;letter-spacing:3px;
-  background:linear-gradient(135deg,#00f0ff,#ff0044,#00f0ff);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  text-shadow:0 0 20px rgba(0,240,255,.4);
-  animation:glitch 3s infinite;
-}
-@keyframes glitch{
-  0%,90%,100%{transform:translate(0);}
-  92%{transform:translate(-2px,1px);}
-  94%{transform:translate(2px,-1px);}
-  96%{transform:translate(-1px,2px);}
-}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(rgba(0,240,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,.03) 1px,transparent 1px);background-size:60px 60px;}
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(10,10,15,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,240,255,.15);}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;}
+.nav-logo{font-size:22px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#00f0ff,#ff0044,#00f0ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:glitch 3s infinite;}
+@keyframes glitch{0%,90%,100%{transform:translate(0);}92%{transform:translate(-2px,1px);}94%{transform:translate(2px,-1px);}96%{transform:translate(-1px,2px);}}
 .nav-links{display:flex;gap:6px;flex-wrap:wrap;}
-.nav-links a{
-  padding:8px 18px;border-radius:4px;font-size:13px;font-weight:600;
-  color:#aaa;transition:all .3s;letter-spacing:1px;
-  border:1px solid transparent;
-}
-.nav-links a:hover,.nav-links a.active{
-  color:#00f0ff;border-color:rgba(0,240,255,.3);
-  background:rgba(0,240,255,.08);
-  text-shadow:0 0 8px rgba(0,240,255,.5);
-}
-.nav-hamburger{
-  display:none;flex-direction:column;gap:5px;cursor:pointer;
-  padding:8px;
-}
-.nav-hamburger span{
-  width:24px;height:2px;background:#00f0ff;
-  transition:all .3s;border-radius:2px;
-}
+.nav-links a{padding:8px 18px;border-radius:4px;font-size:13px;font-weight:600;color:#aaa;transition:all .3s;letter-spacing:1px;border:1px solid transparent;}
+.nav-links a:hover,.nav-links a.active{color:#00f0ff;border-color:rgba(0,240,255,.3);background:rgba(0,240,255,.08);text-shadow:0 0 8px rgba(0,240,255,.5);}
+.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;}
+.nav-hamburger span{width:24px;height:2px;background:#00f0ff;transition:all .3s;border-radius:2px;}
 .nav-hamburger.open span:nth-child(1){transform:rotate(45deg) translateY(5px) translateX(5px);}
 .nav-hamburger.open span:nth-child(2){opacity:0;}
 .nav-hamburger.open span:nth-child(3){transform:rotate(-45deg) translateY(-5px) translateX(5px);}
-
-/* ============================
-   HERO SECTION
-   ============================ */
-.hero{
-  position:relative;min-height:100vh;
-  display:flex;align-items:center;justify-content:center;
-  text-align:center;overflow:hidden;
-  padding:120px 20px 80px;
-}
-.hero-bg{
-  position:absolute;inset:0;z-index:0;
-  background:
-    radial-gradient(ellipse at 20% 50%, rgba(255,0,68,.15) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 50%, rgba(0,240,255,.12) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 100%, rgba(128,0,255,.1) 0%, transparent 40%);
-}
-/* Animated particles */
-.hero-particles{
-  position:absolute;inset:0;z-index:1;overflow:hidden;
-}
-.particle{
-  position:absolute;border-radius:50%;
-  animation:float linear infinite;
-  opacity:0;
-}
-@keyframes float{
-  0%{opacity:0;transform:translateY(100vh) scale(0);}
-  10%{opacity:1;}
-  90%{opacity:1;}
-  100%{opacity:0;transform:translateY(-10vh) scale(1);}
-}
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding:120px 20px 80px;}
+.hero-bg{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse at 20% 50%,rgba(255,0,68,.15) 0%,transparent 50%),radial-gradient(ellipse at 80% 50%,rgba(0,240,255,.12) 0%,transparent 50%),radial-gradient(ellipse at 50% 100%,rgba(128,0,255,.1) 0%,transparent 40%);}
+.hero-particles{position:absolute;inset:0;z-index:1;overflow:hidden;}
+.particle{position:absolute;border-radius:50%;animation:float linear infinite;opacity:0;}
+@keyframes float{0%{opacity:0;transform:translateY(100vh) scale(0);}10%{opacity:1;}90%{opacity:1;}100%{opacity:0;transform:translateY(-10vh) scale(1);}}
 .hero-content{position:relative;z-index:2;max-width:800px;}
-.hero-badge{
-  display:inline-block;padding:6px 20px;
-  border:1px solid rgba(255,0,68,.5);border-radius:20px;
-  font-size:12px;color:#ff0044;letter-spacing:3px;
-  text-transform:uppercase;margin-bottom:20px;
-  animation:badge-pulse 2s infinite;
-}
-@keyframes badge-pulse{
-  0%,100%{box-shadow:0 0 5px rgba(255,0,68,.3);}
-  50%{box-shadow:0 0 20px rgba(255,0,68,.6);}
-}
-.hero h1{
-  font-size:clamp(36px,7vw,72px);font-weight:900;line-height:1.1;
-  letter-spacing:4px;margin-bottom:20px;
-  background:linear-gradient(180deg,#fff 0%,#00f0ff 50%,#ff0044 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
-.hero p{
-  font-size:clamp(14px,2vw,18px);color:#888;line-height:1.8;
-  max-width:600px;margin:0 auto 40px;
-}
+.hero-badge{display:inline-block;padding:6px 20px;border:1px solid rgba(255,0,68,.5);border-radius:20px;font-size:12px;color:#ff0044;letter-spacing:3px;text-transform:uppercase;margin-bottom:20px;animation:badge-pulse 2s infinite;}
+@keyframes badge-pulse{0%,100%{box-shadow:0 0 5px rgba(255,0,68,.3);}50%{box-shadow:0 0 20px rgba(255,0,68,.6);}}
+.hero h1{font-size:clamp(36px,7vw,72px);font-weight:900;line-height:1.1;letter-spacing:4px;margin-bottom:20px;background:linear-gradient(180deg,#fff 0%,#00f0ff 50%,#ff0044 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero p{font-size:clamp(14px,2vw,18px);color:#888;line-height:1.8;max-width:600px;margin:0 auto 40px;}
 .hero-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
-.btn-neon{
-  padding:14px 36px;border-radius:6px;font-size:14px;font-weight:700;
-  letter-spacing:2px;cursor:pointer;transition:all .3s;
-  text-transform:uppercase;position:relative;overflow:hidden;
-}
-.btn-neon-red{
-  background:linear-gradient(135deg,#ff0044,#cc0033);
-  color:#fff;border:1px solid #ff0044;
-  box-shadow:0 0 15px rgba(255,0,68,.4);
-}
-.btn-neon-red:hover{
-  box-shadow:0 0 30px rgba(255,0,68,.7),0 0 60px rgba(255,0,68,.3);
-  transform:translateY(-2px);
-}
-.btn-neon-blue{
-  background:transparent;
-  color:#00f0ff;border:1px solid #00f0ff;
-  box-shadow:0 0 10px rgba(0,240,255,.2);
-}
-.btn-neon-blue:hover{
-  background:rgba(0,240,255,.1);
-  box-shadow:0 0 25px rgba(0,240,255,.5);
-  transform:translateY(-2px);
-}
-
-/* Scroll indicator */
-.scroll-hint{
-  position:absolute;bottom:40px;left:50%;transform:translateX(-50%);
-  z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;
-  color:#555;font-size:11px;letter-spacing:2px;
-  animation:bounce 2s infinite;
-}
+.btn-neon{padding:14px 36px;border-radius:6px;font-size:14px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .3s;text-transform:uppercase;position:relative;overflow:hidden;}
+.btn-neon-red{background:linear-gradient(135deg,#ff0044,#cc0033);color:#fff;border:1px solid #ff0044;box-shadow:0 0 15px rgba(255,0,68,.4);}
+.btn-neon-red:hover{box-shadow:0 0 30px rgba(255,0,68,.7),0 0 60px rgba(255,0,68,.3);transform:translateY(-2px);}
+.btn-neon-blue{background:transparent;color:#00f0ff;border:1px solid #00f0ff;box-shadow:0 0 10px rgba(0,240,255,.2);}
+.btn-neon-blue:hover{background:rgba(0,240,255,.1);box-shadow:0 0 25px rgba(0,240,255,.5);transform:translateY(-2px);}
+.scroll-hint{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;color:#555;font-size:11px;letter-spacing:2px;animation:bounce 2s infinite;}
 @keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(8px);}}
 .scroll-hint .arrow{width:20px;height:20px;border-right:2px solid #555;border-bottom:2px solid #555;transform:rotate(45deg);}
-
-/* ============================
-   SECTION COMMON
-   ============================ */
-.section{
-  position:relative;z-index:2;
-  padding:80px 24px;max-width:1200px;margin:0 auto;
-}
-.section-header{
-  text-align:center;margin-bottom:50px;
-}
-.section-tag{
-  display:inline-block;padding:4px 14px;
-  border:1px solid rgba(0,240,255,.3);border-radius:12px;
-  font-size:11px;color:#00f0ff;letter-spacing:3px;
-  text-transform:uppercase;margin-bottom:12px;
-}
-.section-title{
-  font-size:clamp(24px,4vw,40px);font-weight:900;
-  letter-spacing:2px;margin-bottom:12px;
-  background:linear-gradient(90deg,#fff,#00f0ff);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
+.section{position:relative;z-index:2;padding:80px 24px;max-width:1200px;margin:0 auto;}
+.section-header{text-align:center;margin-bottom:50px;}
+.section-tag{display:inline-block;padding:4px 14px;border:1px solid rgba(0,240,255,.3);border-radius:12px;font-size:11px;color:#00f0ff;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;}
+.section-title{font-size:clamp(24px,4vw,40px);font-weight:900;letter-spacing:2px;margin-bottom:12px;background:linear-gradient(90deg,#fff,#00f0ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .section-desc{color:#666;font-size:14px;max-width:500px;margin:0 auto;line-height:1.8;}
-
-/* Divider */
-.neon-divider{
-  width:80px;height:3px;margin:0 auto 40px;
-  background:linear-gradient(90deg,#00f0ff,#ff0044);
-  border-radius:2px;box-shadow:0 0 10px rgba(0,240,255,.5);
-}
-
-/* ============================
-   EVENTS / 赛事
-   ============================ */
-.events-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:24px;
-}
-.event-card{
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.06);
-  border-radius:10px;overflow:hidden;
-  transition:all .4s;cursor:pointer;
-  position:relative;
-}
-.event-card::before{
-  content:"";position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(0,240,255,.05),rgba(255,0,68,.05));
-  opacity:0;transition:opacity .4s;z-index:0;
-}
-.event-card:hover{
-  transform:translateY(-6px);
-  border-color:rgba(0,240,255,.2);
-  box-shadow:0 10px 40px rgba(0,240,255,.1);
-}
+.neon-divider{width:80px;height:3px;margin:0 auto 40px;background:linear-gradient(90deg,#00f0ff,#ff0044);border-radius:2px;box-shadow:0 0 10px rgba(0,240,255,.5);}
+.events-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;}
+.event-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;overflow:hidden;transition:all .4s;cursor:pointer;position:relative;}
+.event-card::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,240,255,.05),rgba(255,0,68,.05));opacity:0;transition:opacity .4s;z-index:0;}
+.event-card:hover{transform:translateY(-6px);border-color:rgba(0,240,255,.2);box-shadow:0 10px 40px rgba(0,240,255,.1);}
 .event-card:hover::before{opacity:1;}
 .event-card *{position:relative;z-index:1;}
-.event-img{
-  width:100%;height:180px;object-fit:cover;
-  background:linear-gradient(135deg,#1a1a2e,#16213e);
-  display:flex;align-items:center;justify-content:center;
-  font-size:48px;color:#333;
-}
+.event-img{width:100%;height:180px;object-fit:cover;background:linear-gradient(135deg,#1a1a2e,#16213e);display:flex;align-items:center;justify-content:center;font-size:48px;color:#333;}
 .event-img img{width:100%;height:100%;object-fit:cover;}
 .event-body{padding:20px;}
-.event-status{
-  display:inline-block;padding:3px 10px;border-radius:10px;
-  font-size:10px;font-weight:700;letter-spacing:1px;margin-bottom:10px;
-}
+.event-status{display:inline-block;padding:3px 10px;border-radius:10px;font-size:10px;font-weight:700;letter-spacing:1px;margin-bottom:10px;}
 .status-upcoming{background:rgba(0,240,255,.15);color:#00f0ff;border:1px solid rgba(0,240,255,.3);}
 .status-live{background:rgba(255,0,68,.15);color:#ff0044;border:1px solid rgba(255,0,68,.3);animation:badge-pulse 2s infinite;}
 .status-ended{background:rgba(100,100,100,.15);color:#888;border:1px solid rgba(100,100,100,.3);}
 .event-title{font-size:18px;font-weight:700;color:#eee;margin-bottom:8px;}
 .event-meta{font-size:12px;color:#666;line-height:1.8;}
 .event-meta span{margin-right:16px;}
-.event-meta .icon{margin-right:4px;}
-
-/* ============================
-   RULES / 规则解读
-   ============================ */
-.rules-container{
-  display:grid;grid-template-columns:280px 1fr;gap:32px;
-}
-.rules-nav{
-  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
-  border-radius:10px;padding:8px;position:sticky;top:80px;
-  align-self:start;
-}
-.rules-nav-item{
-  display:block;padding:12px 16px;border-radius:6px;
-  font-size:13px;color:#888;cursor:pointer;
-  transition:all .3s;margin-bottom:4px;
-  border:1px solid transparent;
-}
-.rules-nav-item:hover,.rules-nav-item.active{
-  background:rgba(0,240,255,.08);color:#00f0ff;
-  border-color:rgba(0,240,255,.15);
-}
-.rules-content{
-  background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);
-  border-radius:10px;padding:32px;
-}
+.rules-container{display:grid;grid-template-columns:280px 1fr;gap:32px;}
+.rules-nav{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:8px;position:sticky;top:80px;align-self:start;}
+.rules-nav-item{display:block;padding:12px 16px;border-radius:6px;font-size:13px;color:#888;cursor:pointer;transition:all .3s;margin-bottom:4px;border:1px solid transparent;}
+.rules-nav-item:hover,.rules-nav-item.active{background:rgba(0,240,255,.08);color:#00f0ff;border-color:rgba(0,240,255,.15);}
+.rules-content{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:32px;}
 .rules-content h3{font-size:20px;color:#eee;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
 .rules-content h3 .rule-icon{color:#00f0ff;}
 .rules-content p{color:#999;font-size:14px;line-height:2;margin-bottom:16px;}
-.rules-content .rule-box{
-  background:rgba(0,240,255,.05);border-left:3px solid #00f0ff;
-  padding:16px 20px;border-radius:0 8px 8px 0;margin-bottom:20px;
-}
-.rules-content .rule-box.warn{
-  background:rgba(255,0,68,.05);border-left-color:#ff0044;
-}
+.rules-content .rule-box{background:rgba(0,240,255,.05);border-left:3px solid #00f0ff;padding:16px 20px;border-radius:0 8px 8px 0;margin-bottom:20px;}
+.rules-content .rule-box.warn{background:rgba(255,0,68,.05);border-left-color:#ff0044;}
 .rules-content .rule-box h4{color:#eee;font-size:14px;margin-bottom:6px;}
 .rules-content .rule-box p{margin:0;font-size:13px;}
-.rule-tag{
-  display:inline-block;padding:2px 8px;border-radius:4px;
-  font-size:10px;background:rgba(128,0,255,.2);color:#b366ff;
-  margin-right:6px;margin-bottom:6px;
-}
-
-/* ============================
-   EQUIPMENT / 比赛器材
-   ============================ */
-.equip-banner{
-  background:linear-gradient(135deg,rgba(255,0,68,.1),rgba(0,240,255,.1));
-  border:1px solid rgba(0,240,255,.15);border-radius:12px;
-  padding:40px;text-align:center;margin-bottom:40px;
-  position:relative;overflow:hidden;
-}
-.equip-banner::before{
-  content:"";position:absolute;inset:0;
-  background:
-    radial-gradient(circle at 20% 50%, rgba(255,0,68,.2) 0%, transparent 50%),
-    radial-gradient(circle at 80% 50%, rgba(0,240,255,.2) 0%, transparent 50%);
-}
+.equip-banner{background:linear-gradient(135deg,rgba(255,0,68,.1),rgba(0,240,255,.1));border:1px solid rgba(0,240,255,.15);border-radius:12px;padding:40px;text-align:center;margin-bottom:40px;position:relative;overflow:hidden;}
+.equip-banner::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 50%,rgba(255,0,68,.2) 0%,transparent 50%),radial-gradient(circle at 80% 50%,rgba(0,240,255,.2) 0%,transparent 50%);}
 .equip-banner *{position:relative;z-index:1;}
 .equip-banner h3{font-size:clamp(20px,3vw,28px);font-weight:900;color:#fff;margin-bottom:10px;}
 .equip-banner p{color:#888;font-size:14px;margin-bottom:20px;}
 .equip-banner .btn-neon-red{display:inline-block;}
-.equip-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:20px;
-}
-.equip-card{
-  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
-  border-radius:10px;overflow:hidden;transition:all .4s;
-  text-align:center;
-}
-.equip-card:hover{
-  transform:translateY(-4px);
-  border-color:rgba(255,0,68,.3);
-  box-shadow:0 8px 30px rgba(255,0,68,.1);
-}
-.equip-card-img{
-  height:160px;background:linear-gradient(135deg,#111,#1a1a2e);
-  display:flex;align-items:center;justify-content:center;
-  font-size:48px;
-}
+.equip-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;}
+.equip-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;overflow:hidden;transition:all .4s;text-align:center;}
+.equip-card:hover{transform:translateY(-4px);border-color:rgba(255,0,68,.3);box-shadow:0 8px 30px rgba(255,0,68,.1);}
+.equip-card-img{height:160px;background:linear-gradient(135deg,#111,#1a1a2e);display:flex;align-items:center;justify-content:center;font-size:48px;}
 .equip-card-img img{width:100%;height:100%;object-fit:cover;}
 .equip-card-body{padding:18px;}
 .equip-card-name{font-size:15px;font-weight:700;color:#eee;margin-bottom:6px;}
 .equip-card-desc{font-size:12px;color:#666;line-height:1.6;}
-.equip-card-price{
-  display:inline-block;margin-top:10px;padding:4px 14px;
-  border-radius:12px;font-size:13px;font-weight:700;
-  background:linear-gradient(135deg,rgba(255,0,68,.15),rgba(0,240,255,.15));
-  color:#ff6688;border:1px solid rgba(255,0,68,.2);
-}
-
-/* ============================
-   VIDEOS / 精彩视频
-   ============================ */
-.video-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-  gap:24px;
-}
-.video-card{
-  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
-  border-radius:10px;overflow:hidden;transition:all .4s;cursor:pointer;
-}
-.video-card:hover{
-  transform:translateY(-4px);
-  border-color:rgba(255,0,68,.3);
-  box-shadow:0 8px 30px rgba(255,0,68,.15);
-}
-.video-thumb{
-  position:relative;height:200px;
-  background:linear-gradient(135deg,#1a1a2e,#16213e);
-  display:flex;align-items:center;justify-content:center;
-  overflow:hidden;
-}
+.equip-card-price{display:inline-block;margin-top:10px;padding:4px 14px;border-radius:12px;font-size:13px;font-weight:700;background:linear-gradient(135deg,rgba(255,0,68,.15),rgba(0,240,255,.15));color:#ff6688;border:1px solid rgba(255,0,68,.2);}
+.video-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;}
+.video-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;overflow:hidden;transition:all .4s;cursor:pointer;}
+.video-card:hover{transform:translateY(-4px);border-color:rgba(255,0,68,.3);box-shadow:0 8px 30px rgba(255,0,68,.15);}
+.video-thumb{position:relative;height:200px;background:linear-gradient(135deg,#1a1a2e,#16213e);display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:48px;}
 .video-thumb img{width:100%;height:100%;object-fit:cover;}
-.video-play{
-  position:absolute;width:56px;height:56px;
-  background:rgba(255,0,68,.9);border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  transition:all .3s;box-shadow:0 0 20px rgba(255,0,68,.5);
-}
-.video-play::after{
-  content:"";width:0;height:0;
-  border-top:10px solid transparent;border-bottom:10px solid transparent;
-  border-left:16px solid #fff;margin-left:4px;
-}
-.video-card:hover .video-play{
-  transform:scale(1.15);
-  box-shadow:0 0 40px rgba(255,0,68,.7);
-}
+.video-play{position:absolute;width:56px;height:56px;background:rgba(255,0,68,.9);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .3s;box-shadow:0 0 20px rgba(255,0,68,.5);}
+.video-play::after{content:"";width:0;height:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-left:16px solid #fff;margin-left:4px;}
+.video-card:hover .video-play{transform:scale(1.15);box-shadow:0 0 40px rgba(255,0,68,.7);}
 .video-body{padding:16px;}
 .video-title{font-size:15px;font-weight:700;color:#eee;margin-bottom:6px;}
 .video-meta{font-size:11px;color:#666;}
 .video-meta span{margin-right:12px;}
-
-/* ============================
-   FOOTER
-   ============================ */
-.footer{
-  position:relative;z-index:2;
-  border-top:1px solid rgba(255,255,255,.06);
-  padding:40px 24px;margin-top:60px;
-  text-align:center;
-}
+.footer{position:relative;z-index:2;border-top:1px solid rgba(255,255,255,.06);padding:40px 24px;margin-top:60px;text-align:center;}
 .footer-inner{max-width:1200px;margin:0 auto;}
-.footer-logo{
-  font-size:18px;font-weight:900;letter-spacing:3px;
-  background:linear-gradient(135deg,#00f0ff,#ff0044);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  margin-bottom:12px;
-}
+.footer-logo{font-size:18px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#00f0ff,#ff0044);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;}
 .footer-links{display:flex;gap:20px;justify-content:center;margin-bottom:16px;flex-wrap:wrap;}
 .footer-links a{font-size:12px;color:#555;transition:color .3s;}
 .footer-links a:hover{color:#00f0ff;}
 .footer-copy{font-size:11px;color:#333;}
-
-/* ============================
-   RESPONSIVE
-   ============================ */
-@media(max-width:768px){
-  .nav-links{
-    display:none;position:absolute;top:100%;left:0;right:0;
-    background:rgba(10,10,15,.98);
-    border-bottom:1px solid rgba(0,240,255,.15);
-    flex-direction:column;padding:16px;
-    gap:4px;
-  }
-  .nav-links.open{display:flex;}
-  .nav-links a{padding:12px 20px;width:100%;text-align:left;}
-  .nav-hamburger{display:flex;}
-  .rules-container{grid-template-columns:1fr;}
-  .rules-nav{position:static;display:flex;flex-wrap:wrap;gap:0;padding:4px;}
-  .rules-nav-item{margin-bottom:0;padding:8px 12px;font-size:12px;}
-  .section{padding:50px 16px;}
-  .hero{padding:100px 16px 60px;min-height:auto;}
-  .hero-btns{flex-direction:column;align-items:center;}
-  .video-grid{grid-template-columns:1fr;}
-}
-@media(max-width:480px){
-  .events-grid{grid-template-columns:1fr;}
-  .equip-grid{grid-template-columns:1fr 1fr;}
-}
-
-/* ============================
-   SCROLL ANIMATIONS
-   ============================ */
-.fade-in{
-  opacity:0;transform:translateY(30px);
-  transition:opacity .6s ease, transform .6s ease;
-}
+@media(max-width:768px){.nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:rgba(10,10,15,.98);border-bottom:1px solid rgba(0,240,255,.15);flex-direction:column;padding:16px;gap:4px;}.nav-links.open{display:flex;}.nav-links a{padding:12px 20px;width:100%;text-align:left;}.nav-hamburger{display:flex;}.rules-container{grid-template-columns:1fr;}.rules-nav{position:static;display:flex;flex-wrap:wrap;gap:0;padding:4px;}.rules-nav-item{margin-bottom:0;padding:8px 12px;font-size:12px;}.section{padding:50px 16px;}.hero{padding:100px 16px 60px;min-height:auto;}.hero-btns{flex-direction:column;align-items:center;}.video-grid{grid-template-columns:1fr;}}
+@media(max-width:480px){.events-grid{grid-template-columns:1fr;}.equip-grid{grid-template-columns:1fr 1fr;}}
+.fade-in{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease;}
 .fade-in.visible{opacity:1;transform:translateY(0);}
 </style>
 </head>
 <body>
-
-<!-- ======== NAVIGATION ======== -->
 <nav class="nav">
   <div class="nav-inner">
     <div class="nav-logo">MECHA ARENA</div>
@@ -453,222 +125,187 @@ body::before{
       <a href="#equipment">比赛器材</a>
       <a href="#videos">精彩视频</a>
     </div>
-    <div class="nav-hamburger" id="hamburger" onclick="toggleMenu()">
-      <span></span><span></span><span></span>
-    </div>
+    <div class="nav-hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
   </div>
 </nav>
-
-<!-- ======== HERO ======== -->
 <section class="hero">
   <div class="hero-bg"></div>
   <div class="hero-particles" id="particles"></div>
   <div class="hero-content">
-    <div class="hero-badge" contenteditable="true">⚡ 2026 SEASON</div>
-    <h1 contenteditable="true">钢铁碰撞<br>智能对决</h1>
-    <p contenteditable="true">格斗机器人竞技平台 — 汇集赛事资讯、器材报价、规则解读与精彩视频，为你打造一站式的格斗机器人竞技体验</p>
+    <div class="hero-badge">⚡ 2026 SEASON</div>
+    <h1>格斗机器人<br>智能对决</h1>
+    <p>格斗机器人竞技平台 — 汇集赛事资讯、器材报价、规则解读与精彩视频，为你打造一站式的格斗机器人竞技体验</p>
     <div class="hero-btns">
       <a href="#events" class="btn-neon btn-neon-red">探索赛事</a>
       <a href="#equipment" class="btn-neon btn-neon-blue">器材报价</a>
     </div>
   </div>
-  <div class="scroll-hint">
-    <span>SCROLL</span>
-    <div class="arrow"></div>
-  </div>
+  <div class="scroll-hint"><span>SCROLL</span><div class="arrow"></div></div>
 </section>
-
-<!-- ======== EVENTS / 赛事 ======== -->
 <section class="section" id="events">
   <div class="section-header fade-in">
     <div class="section-tag">EVENTS</div>
     <h2 class="section-title">赛事动态</h2>
     <div class="neon-divider"></div>
-    <p class="section-desc" contenteditable="true">获取最新格斗机器人赛事信息，了解赛程安排与报名方式</p>
+    <p class="section-desc">获取最新格斗机器人赛事信息，了解赛程安排与报名方式</p>
   </div>
   <div class="events-grid">
-
     <div class="event-card fade-in">
       <div class="event-img">🤖</div>
       <div class="event-body">
         <span class="event-status status-live">🔥 进行中</span>
-        <h3 class="event-title" contenteditable="true">2026 全国格斗机器人锦标赛</h3>
+        <h3 class="event-title">2026 全国格斗机器人锦标赛</h3>
         <div class="event-meta">
           <span>📅 2026.05.15 - 05.18</span>
           <span>📍 北京·国家会议中心</span>
         </div>
       </div>
     </div>
-
     <div class="event-card fade-in">
       <div class="event-img">⚔️</div>
       <div class="event-body">
         <span class="event-status status-upcoming">即将开始</span>
-        <h3 class="event-title" contenteditable="true">青少年格斗机器人联赛·夏季赛</h3>
+        <h3 class="event-title">青少年格斗机器人联赛·夏季赛</h3>
         <div class="event-meta">
           <span>📅 2026.07.20 - 07.22</span>
           <span>📍 上海·世博展览馆</span>
         </div>
       </div>
     </div>
-
     <div class="event-card fade-in">
       <div class="event-img">🏆</div>
       <div class="event-body">
-        <span class="event-status status-upcoming">报名中</span>
-        <h3 class="event-title" contenteditable="true">城际对抗赛·华南赛区</h3>
+        <span class="event-status status-upcoming">即将开始</span>
+        <h3 class="event-title">城际对抗赛·华南赛区</h3>
         <div class="event-meta">
           <span>📅 2026.08.10 - 08.12</span>
           <span>📍 深圳·会展中心</span>
         </div>
       </div>
     </div>
-
     <div class="event-card fade-in">
       <div class="event-img">🎓</div>
       <div class="event-body">
         <span class="event-status status-ended">已结束</span>
-        <h3 class="event-title" contenteditable="true">校园机器人格斗联赛·春季赛</h3>
+        <h3 class="event-title">校园机器人格斗联赛·春季赛</h3>
         <div class="event-meta">
           <span>📅 2026.03.08 - 03.10</span>
           <span>📍 广州·华南理工</span>
         </div>
       </div>
     </div>
-
   </div>
 </section>
-
-<!-- ======== RULES / 规则解读 ======== -->
 <section class="section" id="rules">
   <div class="section-header fade-in">
     <div class="section-tag">RULES</div>
     <h2 class="section-title">规则解读</h2>
     <div class="neon-divider"></div>
-    <p class="section-desc" contenteditable="true">深入了解格斗机器人竞赛规则，掌握取胜之道</p>
+    <p class="section-desc">深入了解格斗机器人竞赛规则，掌握取胜之道</p>
   </div>
   <div class="rules-container fade-in">
     <div class="rules-nav">
       <a class="rules-nav-item active" onclick="showRule(this,'weight')">重量分级</a>
-      <a class="rules-nav-item" onclick="showRule(this,'weapon')">武器类型</a>
-      <a class="rules-nav-item" onclick="showRule(this,'scoring')">计分规则</a>
-      <a class="rules-nav-item" onclick="showRule(this,'safety')">安全规范</a>
-      <a class="rules-nav-item" onclick="showRule(this,'forbidden')">禁止事项</a>
+      <a class="rules-nav-item active" onclick="showRule(this,'weapon')">武器类型</a>
+      <a class="rules-nav-item active" onclick="showRule(this,'scoring')">计分规则</a>
+      <a class="rules-nav-item active" onclick="showRule(this,'safety')">安全规范</a>
+      <a class="rules-nav-item active" onclick="showRule(this,'forbidden')">禁止事项</a>
+      
     </div>
     <div class="rules-content" id="rulesContent">
-      <h3><span class="rule-icon">⚖️</span> <span contenteditable="true">重量分级</span></h3>
-      <p contenteditable="true">格斗机器人按重量分为不同级别，每个级别有严格的重量限制。参赛机器人必须通过赛前称重，超重将无法参赛。</p>
-      <div class="rule-box">
-        <h4 contenteditable="true">常见重量级别</h4>
-        <p contenteditable="true">• 蚂蚁级（Antweight）：1.5kg 以下<br>• 甲壳虫级（Beetleweight）：1.5kg - 3kg<br>• 蜜蜂级（Mantisweight）：3kg - 6kg<br>• 轻量级（Lightweight）：6kg - 15kg<br>• 中量级（Middleweight）：30kg - 60kg<br>• 重量级（Heavyweight）：60kg - 110kg</p>
-      </div>
-      <div class="rule-box warn">
-        <h4 contenteditable="true">⚠️ 注意事项</h4>
-        <p contenteditable="true">称重时需包含电池和所有可更换配件。气动/液压系统气体不计入重量，但气瓶/液压罐本身必须计入。</p>
-      </div>
-      <p contenteditable="true">所有文字均可直接编辑 — 点击即可修改内容。此为占位示例内容，请替换为实际规则。</p>
+      <h3><span class="rule-icon">⚖️</span> <span>重量分级</span></h3>
+      <p>格斗机器人按重量分为不同级别，每个级别有严格的重量限制。参赛机器人必须通过赛前称重，超重将无法参赛。</p>
+      <div class="rule-box"><h4>常见重量级别</h4><p>• 蚂蚁级（Antweight）：1.5kg 以下<br>• 甲壳虫级（Beetleweight）：1.5kg - 3kg<br>• 蜜蜂级（Mantisweight）：3kg - 6kg<br>• 轻量级（Lightweight）：6kg - 15kg<br>• 中量级（Middleweight）：30kg - 60kg<br>• 重量级（Heavyweight）：60kg - 110kg</p></div><div class="rule-box warn"><h4>⚠️ 注意事项</h4><p>称重时需包含电池和所有可更换配件。气动/液压系统气体不计入重量，但气瓶/液压罐本身必须计入。</p></div>
     </div>
   </div>
 </section>
-
-<!-- ======== EQUIPMENT / 比赛器材 ======== -->
 <section class="section" id="equipment">
   <div class="section-header fade-in">
     <div class="section-tag">EQUIPMENT</div>
     <h2 class="section-title">比赛器材</h2>
     <div class="neon-divider"></div>
-    <p class="section-desc" contenteditable="true">专业格斗机器人器材报价，一站式采购所需装备</p>
+    <p class="section-desc">专业格斗机器人器材报价，一站式采购所需装备</p>
   </div>
-
   <div class="equip-banner fade-in">
-    <h3 contenteditable="true">📋 2026 格斗机器人完整报价单</h3>
-    <p contenteditable="true">包含全套机甲、易损配件、电机、控制器等完整价格信息</p>
+    <h3>📋 2026 格斗机器人完整报价单</h3>
+    <p>包含全套机甲、易损配件、电机、控制器等完整价格信息</p>
     <a href="格斗机器人报价单模板.html" class="btn-neon btn-neon-red" target="_blank">查看完整报价单 →</a>
   </div>
-
   <div class="equip-grid">
     <div class="equip-card fade-in">
       <div class="equip-card-img">🤖</div>
       <div class="equip-card-body">
-        <div class="equip-card-name" contenteditable="true">竖转格斗机甲</div>
-        <div class="equip-card-desc" contenteditable="true">全套3D打印机甲，含易损件、螺丝配件、电控</div>
-        <div class="equip-card-price" contenteditable="true">¥ 1,400/套</div>
+        <div class="equip-card-name">竖转格斗机甲</div>
+        <div class="equip-card-desc">全套3D打印机甲，含易损件、螺丝配件、电控</div>
+        <div class="equip-card-price">¥ 1,400/套</div>
       </div>
     </div>
     <div class="equip-card fade-in">
       <div class="equip-card-img">🥁</div>
       <div class="equip-card-body">
-        <div class="equip-card-name" contenteditable="true">转鼓格斗机甲</div>
-        <div class="equip-card-desc" contenteditable="true">全套3D打印机甲，竖转类高性能方案</div>
-        <div class="equip-card-price" contenteditable="true">¥ 1,400/套</div>
+        <div class="equip-card-name">转鼓格斗机甲</div>
+        <div class="equip-card-desc">全套3D打印机甲，竖转类高性能方案</div>
+        <div class="equip-card-price">¥ 1,400/套</div>
       </div>
     </div>
     <div class="equip-card fade-in">
       <div class="equip-card-img">⚡</div>
       <div class="equip-card-body">
-        <div class="equip-card-name" contenteditable="true">武器电机</div>
-        <div class="equip-card-desc" contenteditable="true">定制高性能电机，专为格斗场景优化</div>
-        <div class="equip-card-price" contenteditable="true">¥ 25/件</div>
+        <div class="equip-card-name">武器电机</div>
+        <div class="equip-card-desc">定制高性能电机，专为格斗场景优化</div>
+        <div class="equip-card-price">¥ 25/件</div>
       </div>
     </div>
     <div class="equip-card fade-in">
       <div class="equip-card-img">⚙️</div>
       <div class="equip-card-body">
-        <div class="equip-card-name" contenteditable="true">高速舵机</div>
-        <div class="equip-card-desc" contenteditable="true">高压高速舵机，弹射类机甲必备</div>
-        <div class="equip-card-price" contenteditable="true">¥ 120/件</div>
+        <div class="equip-card-name">高速舵机</div>
+        <div class="equip-card-desc">高压高速舵机，弹射类机甲必备</div>
+        <div class="equip-card-price">¥ 120/件</div>
       </div>
     </div>
   </div>
 </section>
-
-<!-- ======== VIDEOS / 精彩视频 ======== -->
 <section class="section" id="videos">
   <div class="section-header fade-in">
     <div class="section-tag">HIGHLIGHTS</div>
     <h2 class="section-title">精彩视频</h2>
     <div class="neon-divider"></div>
-    <p class="section-desc" contenteditable="true">回顾赛场上的经典对决，感受钢铁碰撞的震撼</p>
+    <p class="section-desc">回顾赛场上的经典对决，感受钢铁碰撞的震撼</p>
   </div>
   <div class="video-grid">
-
     <div class="video-card fade-in">
-      <div class="video-thumb">🎬</div>
+      <div class="video-thumb">🎬<div class="video-play"></div></div>
       <div class="video-body">
-        <h3 class="video-title" contenteditable="true">2026春季赛总决赛 竖转 vs 横传</h3>
+        <h3 class="video-title">2026春季赛总决赛 竖转 vs 横传</h3>
         <div class="video-meta">
           <span>🔥 12.8万次观看</span>
           <span>03:42</span>
         </div>
       </div>
     </div>
-
     <div class="video-card fade-in">
-      <div class="video-thumb">🎥</div>
+      <div class="video-thumb">🎥<div class="video-play"></div></div>
       <div class="video-body">
-        <h3 class="video-title" contenteditable="true">弹射机器人的完美一击 KO集锦</h3>
+        <h3 class="video-title">弹射机器人的完美一击 KO集锦</h3>
         <div class="video-meta">
           <span>🔥 8.6万次观看</span>
           <span>05:15</span>
         </div>
       </div>
     </div>
-
     <div class="video-card fade-in">
-      <div class="video-thumb">📹</div>
+      <div class="video-thumb">📹<div class="video-play"></div></div>
       <div class="video-body">
-        <h3 class="video-title" contenteditable="true">新手入门：如何组装你的第一台格斗机器人</h3>
+        <h3 class="video-title">新手入门：如何组装你的第一台格斗机器人</h3>
         <div class="video-meta">
           <span>🔥 6.2万次观看</span>
           <span>12:30</span>
         </div>
       </div>
     </div>
-
   </div>
 </section>
-
-<!-- ======== FOOTER ======== -->
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-logo">MECHA ARENA</div>
@@ -678,93 +315,22 @@ body::before{
       <a href="#equipment">器材</a>
       <a href="#videos">视频</a>
     </div>
-    <div class="footer-copy" contenteditable="true">© 2026 MECHA ARENA · 格斗机器人竞技平台 · All Rights Reserved</div>
+    <div class="footer-copy">© 2026 MECHA ARENA · 格斗机器人竞技平台 · All Rights Reserved</div>
   </div>
 </footer>
-
 <script>
-/* ============================
-   PARTICLES
-   ============================ */
-(function(){
-  var container = document.getElementById("particles");
-  var colors = ["#00f0ff","#ff0044","#8000ff","#00ff88"];
-  for(var i=0;i<30;i++){
-    var p = document.createElement("div");
-    p.className = "particle";
-    var size = Math.random()*4+1;
-    p.style.cssText = "width:"+size+"px;height:"+size+"px;left:"+Math.random()*100+"%;background:"+colors[Math.floor(Math.random()*colors.length)]+";box-shadow:0 0 "+(size*3)+"px "+colors[Math.floor(Math.random()*colors.length)]+";animation-duration:"+(Math.random()*8+6)+"s;animation-delay:"+(Math.random()*8)+"s;";
-    container.appendChild(p);
-  }
-})();
-
-/* ============================
-   MOBILE MENU
-   ============================ */
-function toggleMenu(){
-  document.getElementById("navLinks").classList.toggle("open");
-  document.getElementById("hamburger").classList.toggle("open");
-}
-// Close menu on link click
-document.querySelectorAll(".nav-links a").forEach(function(a){
-  a.addEventListener("click",function(){
-    document.getElementById("navLinks").classList.remove("open");
-    document.getElementById("hamburger").classList.remove("open");
-  });
-});
-
-/* ============================
-   ACTIVE NAV LINK
-   ============================ */
-var sections = document.querySelectorAll("section[id]");
-window.addEventListener("scroll",function(){
-  var scrollY = window.scrollY+120;
-  sections.forEach(function(sec){
-    var top = sec.offsetTop;
-    var h = sec.offsetHeight;
-    var id = sec.getAttribute("id");
-    var link = document.querySelector('.nav-links a[href="#'+id+'"]');
-    if(link){
-      if(scrollY>=top && scrollY<top+h) link.classList.add("active");
-      else link.classList.remove("active");
-    }
-  });
-});
-
-/* ============================
-   RULES TAB
-   ============================ */
-var ruleData = {
-  weight:'<h3><span class="rule-icon">⚖️</span> <span>重量分级</span></h3><p>格斗机器人按重量分为不同级别，每个级别有严格的重量限制。</p><div class="rule-box"><h4>常见重量级别</h4><p>• 蚂蚁级（Antweight）：1.5kg 以下<br>• 甲壳虫级（Beetleweight）：1.5kg - 3kg<br>• 蜜蜂级（Mantisweight）：3kg - 6kg<br>• 轻量级（Lightweight）：6kg - 15kg<br>• 中量级（Middleweight）：30kg - 60kg</p></div><div class="rule-box warn"><h4>⚠️ 注意</h4><p>称重时需包含电池和所有可更换配件。</p></div>',
+(function(){var c=document.getElementById("particles");var cols=["#00f0ff","#ff0044","#8000ff","#00ff88"];for(var i=0;i<30;i++){var p=document.createElement("div");p.className="particle";var s=Math.random()*4+1;p.style.cssText="width:"+s+"px;height:"+s+"px;left:"+Math.random()*100+"%;background:"+cols[Math.floor(Math.random()*cols.length)]+";box-shadow:0 0 "+(s*3)+"px "+cols[Math.floor(Math.random()*cols.length)]+";animation-duration:"+(Math.random()*8+6)+"s;animation-delay:"+(Math.random()*8)+"s;";c.appendChild(p);}})();
+function toggleMenu(){document.getElementById("navLinks").classList.toggle("open");document.getElementById("hamburger").classList.toggle("open");}
+document.querySelectorAll(".nav-links a").forEach(function(a){a.addEventListener("click",function(){document.getElementById("navLinks").classList.remove("open");document.getElementById("hamburger").classList.remove("open");});});
+var sections=document.querySelectorAll("section[id]");
+window.addEventListener("scroll",function(){var sy=window.scrollY+120;sections.forEach(function(sec){var top=sec.offsetTop,h=sec.offsetHeight,id=sec.getAttribute("id"),lk=document.querySelector('.nav-links a[href="#'+id+'"]');if(lk){if(sy>=top&&sy<top+h)lk.classList.add("active");else lk.classList.remove("active");}});});
+var ruleData = {weight:'<h3><span class="rule-icon">⚖️</span> <span>重量分级</span></h3><p>格斗机器人按重量分为不同级别，每个级别有严格的重量限制。参赛机器人必须通过赛前称重，超重将无法参赛。</p><div class="rule-box"><h4>常见重量级别</h4><p>• 蚂蚁级（Antweight）：1.5kg 以下<br>• 甲壳虫级（Beetleweight）：1.5kg - 3kg<br>• 蜜蜂级（Mantisweight）：3kg - 6kg<br>• 轻量级（Lightweight）：6kg - 15kg<br>• 中量级（Middleweight）：30kg - 60kg<br>• 重量级（Heavyweight）：60kg - 110kg</p></div><div class="rule-box warn"><h4>⚠️ 注意事项</h4><p>称重时需包含电池和所有可更换配件。气动/液压系统气体不计入重量，但气瓶/液压罐本身必须计入。</p></div>',
   weapon:'<h3><span class="rule-icon">⚔️</span> <span>武器类型</span></h3><p>格斗机器人可使用多种武器类型，不同武器有各自的优势与限制。</p><div class="rule-box"><h4>常见武器分类</h4><p>• 旋转武器（竖转/横转/转鼓）<br>• 弹射武器（弹射臂/弹射器）<br>• 钳夹武器<br>• 锤击武器<br>• 锯片/切割武器</p></div><div class="rule-box"><h4>💡 选用建议</h4><p>根据比赛场地大小、对手类型和自身机甲设计来选择最优武器方案。</p></div>',
   scoring:'<h3><span class="rule-icon">📊</span> <span>计分规则</span></h3><p>比赛采用裁判评分制，从多个维度综合判定胜负。</p><div class="rule-box"><h4>评分维度</h4><p>• 攻击伤害：对对手造成的物理损伤程度<br>• 操控表现：操作精度与战术执行力<br>• 积极性：主动进攻的频率与质量<br>• 防御能力：承受攻击后的状态</p></div><div class="rule-box warn"><h4>判定方式</h4><p>KO（击倒）：对手无法继续比赛<br>TKO（技术性击倒）：裁判判定对手无法继续<br>裁判判定：比赛结束时综合评分决定</p></div>',
   safety:'<h3><span class="rule-icon">🛡️</span> <span>安全规范</span></h3><p>安全是格斗机器人赛事的首要原则，所有参赛者必须严格遵守安全规范。</p><div class="rule-box"><h4>基本安全要求</h4><p>• 机甲必须配备遥控急停开关<br>• 电池必须有防护外壳<br>• 比赛时所有人员必须佩戴护目镜<br>• 场地必须有安全隔离栏</p></div><div class="rule-box warn"><h4>⚠️ 电池安全</h4><p>禁止使用损坏的锂电池。充电必须在指定区域进行，不得在场地附近充电。</p></div>',
-  forbidden:'<h3><span class="rule-icon">🚫</span> <span>禁止事项</span></h3><p>以下行为在比赛中被严格禁止，违规者将被取消参赛资格。</p><div class="rule-box warn"><h4>绝对禁止</h4><p>• 使用易燃物/爆炸物<br>• 使用化学/生物武器<br>• 使用纠缠装置（如渔线、胶水喷射）<br>• 干扰对手遥控信号<br>• 比赛中对裁判/工作人员不服从指令</p></div><div class="rule-box"><h4>限制使用</h4><p>• 电磁干扰类武器需提前申报并获得批准<br>• 液体喷射类武器一般不允许<br>• 火焰喷射器需符合当地法规</p></div>'
-};
-
-function showRule(el, key){
-  document.querySelectorAll(".rules-nav-item").forEach(function(n){n.classList.remove("active");});
-  el.classList.add("active");
-  document.getElementById("rulesContent").innerHTML = ruleData[key] || "<p>内容加载中...</p>";
-  // Make new content editable
-  document.getElementById("rulesContent").querySelectorAll("[contenteditable]").forEach(function(e){});
-}
-
-/* ============================
-   SCROLL FADE-IN
-   ============================ */
-(function(){
-  var observer = new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      if(entry.isIntersecting){
-        entry.target.classList.add("visible");
-      }
-    });
-  },{threshold:0.1});
-  document.querySelectorAll(".fade-in").forEach(function(el){
-    observer.observe(el);
-  });
-})();
+  forbidden:'<h3><span class="rule-icon">🚫</span> <span>禁止事项</span></h3><p>以下行为在比赛中被严格禁止，违规者将被取消参赛资格。</p><div class="rule-box warn"><h4>绝对禁止</h4><p>• 使用易燃物/爆炸物<br>• 使用化学/生物武器<br>• 使用纠缠装置（如渔线、胶水喷射）<br>• 干扰对手遥控信号<br>• 比赛中对裁判/工作人员不服从指令</p></div><div class="rule-box"><h4>限制使用</h4><p>• 电磁干扰类武器需提前申报并获得批准<br>• 液体喷射类武器一般不允许<br>• 火焰喷射器需符合当地法规</p></div>'};
+function showRule(el,key){document.querySelectorAll(".rules-nav-item").forEach(function(n){n.classList.remove("active");});el.classList.add("active");document.getElementById("rulesContent").innerHTML=ruleData[key]||"<p>内容加载中...</p>";}
+(function(){var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add("visible");});},{threshold:0.1});document.querySelectorAll(".fade-in").forEach(function(el){obs.observe(el);});})();
 </script>
 </body>
 </html>
