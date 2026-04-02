@@ -205,17 +205,18 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
   </div>
   <div class="rules-container fade-in">
     <div class="rules-nav">
-      <a class="rules-nav-item active" onclick="showRule(this,'weight')">重量分级</a>
-      <a class="rules-nav-item active" onclick="showRule(this,'weapon')">武器类型</a>
-      <a class="rules-nav-item active" onclick="showRule(this,'scoring')">计分规则</a>
-      <a class="rules-nav-item active" onclick="showRule(this,'safety')">安全规范</a>
-      <a class="rules-nav-item active" onclick="showRule(this,'forbidden')">禁止事项</a>
+      <a class="rules-nav-item active" onclick="showRule(this,'overview')">赛事概览</a>
+      <a class="rules-nav-item active" onclick="showRule(this,'specs')">场地与参数</a>
+      <a class="rules-nav-item active" onclick="showRule(this,'materials')">材料与动力</a>
+      <a class="rules-nav-item active" onclick="showRule(this,'weapons')">武器与装备</a>
+      <a class="rules-nav-item active" onclick="showRule(this,'format')">赛制与流程</a>
+      <a class="rules-nav-item active" onclick="showRule(this,'scoring')">计分与判罚</a>
       
     </div>
     <div class="rules-content" id="rulesContent">
-      <h3><span class="rule-icon">⚖️</span> <span>重量分级</span></h3>
-      <p>格斗机器人按重量分为不同级别，每个级别有严格的重量限制。参赛机器人必须通过赛前称重，超重将无法参赛。</p>
-      <div class="rule-box"><h4>常见重量级别</h4><p>• 蚂蚁级（Antweight）：1.5kg 以下<br>• 甲壳虫级（Beetleweight）：1.5kg - 3kg<br>• 蜜蜂级（Mantisweight）：3kg - 6kg<br>• 轻量级（Lightweight）：6kg - 15kg<br>• 中量级（Middleweight）：30kg - 60kg<br>• 重量级（Heavyweight）：60kg - 110kg</p></div><div class="rule-box warn"><h4>⚠️ 注意事项</h4><p>称重时需包含电池和所有可更换配件。气动/液压系统气体不计入重量，但气瓶/液压罐本身必须计入。</p></div>
+      <h3><span class="rule-icon">📋</span> <span>赛事概览</span></h3>
+      <p>2026 BoxBot 机器人格斗赛项包含三个重量级别：轻量级、羽量级和迷你级，分别面向小学组、中学组。以下为简化解读，完整规则以官方文件为准。</p>
+      <div class="rule-box"><h4>三个级别一览</h4><p>• <b>轻量级</b>：小学组 + 中学组，三局两胜制，可使用多种武器类型<br>• <b>羽量级</b>：小学低龄组，一局定胜负，仅限弹射类武器<br>• <b>迷你级</b>：小学低龄组，一局定胜负，仅限弹射类武器</p></div><div class="rule-box warn"><h4>⚠️ 规则状态</h4><p>本版本规则为拟定稿，仅供参考，后续可能微调。参赛前请务必确认最新官方版本。</p></div>
     </div>
   </div>
 </section>
@@ -324,11 +325,12 @@ function toggleMenu(){document.getElementById("navLinks").classList.toggle("open
 document.querySelectorAll(".nav-links a").forEach(function(a){a.addEventListener("click",function(){document.getElementById("navLinks").classList.remove("open");document.getElementById("hamburger").classList.remove("open");});});
 var sections=document.querySelectorAll("section[id]");
 window.addEventListener("scroll",function(){var sy=window.scrollY+120;sections.forEach(function(sec){var top=sec.offsetTop,h=sec.offsetHeight,id=sec.getAttribute("id"),lk=document.querySelector('.nav-links a[href="#'+id+'"]');if(lk){if(sy>=top&&sy<top+h)lk.classList.add("active");else lk.classList.remove("active");}});});
-var ruleData = {weight:'<h3><span class="rule-icon">⚖️</span> <span>重量分级</span></h3><p>格斗机器人按重量分为不同级别，每个级别有严格的重量限制。参赛机器人必须通过赛前称重，超重将无法参赛。</p><div class="rule-box"><h4>常见重量级别</h4><p>• 蚂蚁级（Antweight）：1.5kg 以下<br>• 甲壳虫级（Beetleweight）：1.5kg - 3kg<br>• 蜜蜂级（Mantisweight）：3kg - 6kg<br>• 轻量级（Lightweight）：6kg - 15kg<br>• 中量级（Middleweight）：30kg - 60kg<br>• 重量级（Heavyweight）：60kg - 110kg</p></div><div class="rule-box warn"><h4>⚠️ 注意事项</h4><p>称重时需包含电池和所有可更换配件。气动/液压系统气体不计入重量，但气瓶/液压罐本身必须计入。</p></div>',
-  weapon:'<h3><span class="rule-icon">⚔️</span> <span>武器类型</span></h3><p>格斗机器人可使用多种武器类型，不同武器有各自的优势与限制。</p><div class="rule-box"><h4>常见武器分类</h4><p>• 旋转武器（竖转/横转/转鼓）<br>• 弹射武器（弹射臂/弹射器）<br>• 钳夹武器<br>• 锤击武器<br>• 锯片/切割武器</p></div><div class="rule-box"><h4>💡 选用建议</h4><p>根据比赛场地大小、对手类型和自身机甲设计来选择最优武器方案。</p></div>',
-  scoring:'<h3><span class="rule-icon">📊</span> <span>计分规则</span></h3><p>比赛采用裁判评分制，从多个维度综合判定胜负。</p><div class="rule-box"><h4>评分维度</h4><p>• 攻击伤害：对对手造成的物理损伤程度<br>• 操控表现：操作精度与战术执行力<br>• 积极性：主动进攻的频率与质量<br>• 防御能力：承受攻击后的状态</p></div><div class="rule-box warn"><h4>判定方式</h4><p>KO（击倒）：对手无法继续比赛<br>TKO（技术性击倒）：裁判判定对手无法继续<br>裁判判定：比赛结束时综合评分决定</p></div>',
-  safety:'<h3><span class="rule-icon">🛡️</span> <span>安全规范</span></h3><p>安全是格斗机器人赛事的首要原则，所有参赛者必须严格遵守安全规范。</p><div class="rule-box"><h4>基本安全要求</h4><p>• 机甲必须配备遥控急停开关<br>• 电池必须有防护外壳<br>• 比赛时所有人员必须佩戴护目镜<br>• 场地必须有安全隔离栏</p></div><div class="rule-box warn"><h4>⚠️ 电池安全</h4><p>禁止使用损坏的锂电池。充电必须在指定区域进行，不得在场地附近充电。</p></div>',
-  forbidden:'<h3><span class="rule-icon">🚫</span> <span>禁止事项</span></h3><p>以下行为在比赛中被严格禁止，违规者将被取消参赛资格。</p><div class="rule-box warn"><h4>绝对禁止</h4><p>• 使用易燃物/爆炸物<br>• 使用化学/生物武器<br>• 使用纠缠装置（如渔线、胶水喷射）<br>• 干扰对手遥控信号<br>• 比赛中对裁判/工作人员不服从指令</p></div><div class="rule-box"><h4>限制使用</h4><p>• 电磁干扰类武器需提前申报并获得批准<br>• 液体喷射类武器一般不允许<br>• 火焰喷射器需符合当地法规</p></div>'};
+var ruleData = {overview:'<h3><span class="rule-icon">📋</span> <span>赛事概览</span></h3><p>2026 BoxBot 机器人格斗赛项包含三个重量级别：轻量级、羽量级和迷你级，分别面向小学组、中学组。以下为简化解读，完整规则以官方文件为准。</p><div class="rule-box"><h4>三个级别一览</h4><p>• <b>轻量级</b>：小学组 + 中学组，三局两胜制，可使用多种武器类型<br>• <b>羽量级</b>：小学低龄组，一局定胜负，仅限弹射类武器<br>• <b>迷你级</b>：小学低龄组，一局定胜负，仅限弹射类武器</p></div><div class="rule-box warn"><h4>⚠️ 规则状态</h4><p>本版本规则为拟定稿，仅供参考，后续可能微调。参赛前请务必确认最新官方版本。</p></div>',
+  specs:'<h3><span class="rule-icon">📐</span> <span>场地与参数</span></h3><p>各级别对格斗仓尺寸、机器人尺寸和重量都有明确规定，赛前检录将严格执行。</p><div class="rule-box"><h4>轻量级参数（小学/中学组）</h4><p>• 格斗仓：0.8m × 0.8m，含初始区、竞赛区和 OOTA 区<br>• OOTA 陷阱高度：23-24mm<br>• 小学/中学手控：底面 ≤ 150mm×180mm，高 ≤ 130mm，重 ≤ 320g<br>• 中学智能：底面 ≤ 150mm×145mm，高 ≤ 180mm，重 ≤ 360g<br>• 比赛中允许伸缩结构</p></div><div class="rule-box"><h4>羽量级参数</h4><p>• 格斗仓：0.5m × 0.5m，含 OOTA 区<br>• OOTA 陷阱高度：15-16mm<br>• 机器人 ≤ 110mm×110mm，高度不限，重 ≤ 220g<br>• 比赛过程中允许变形</p></div><div class="rule-box"><h4>迷你级参数</h4><p>• 格斗仓：0.35m × 0.35m，含 OOTA 区<br>• OOTA 陷阱高度：11-12mm<br>• 机器人长轴 ≤ 80mm，短轴 ≤ 80mm，高度不限，重 ≤ 65g</p></div>',
+  materials:'<h3><span class="rule-icon">🔧</span> <span>材料与动力</span></h3><p>各级别对机器人使用的材料和动力来源有严格限制，确保公平性和安全性。</p><div class="rule-box"><h4>允许使用的 3D 打印材料</h4><p>仅允许以下 4 类 FDM 材料：<br>• PLA（含 PLA+、PLA Pro 等）<br>• PETG<br>• ABS<br>• PA<br><b>禁止</b>：TPU、光固化等其他材料；禁止 PC 板、木材、碳纤板等板材</p></div><div class="rule-box"><h4>金属与材料限制</h4><p>• 除固定轴、电机、舵机、螺丝螺母、弹簧、电子器件外，禁止金属物<br>• 轮毂/轮胎/法兰可用橡胶、PU、硅胶、EVA 等塑胶材料<br>• 禁止使用任何胶水或粘接剂<br>• 金属部件不得凸出 3D 打印部件本体范围</p></div><div class="rule-box warn"><h4>动力限制</h4><p>• 仅允许电力驱动，禁止气动、油动<br>• 禁止使用镭射灯等损害视觉的配件<br>• 轻量级：允许皮筋/弹簧/磁铁蓄能<br>• 羽量级/迷你级：禁止皮筋、弹簧等蓄能弹性配件</p></div><div class="rule-box"><h4>电池规范</h4><p>• 轻量级：≤ 8.4V / ≤ 800mAh，功率 ≤ 70W<br>• 羽量级：≤ 8.4V / ≤ 380mAh，功率 ≤ 70W<br>• 迷你级：≤ 3.7V / ≤ 200mAh<br>• 仅允许圆柱体金属外壳锂电池，禁止软包<br>• 必须带保护板，放电口仅限 JST2p，充电口仅限 XH2.54</p></div>',
+  weapons:'<h3><span class="rule-icon">⚔️</span> <span>武器与装备</span></h3><p>每台机器人仅允许 1 个可独立操作的武器。轻量级允许多种武器类型，羽量级和迷你级仅限弹射类。</p><div class="rule-box"><h4>武器类型规定</h4><p>• <b>轻量级</b>：允许旋转、弹射、钳夹、锤击等多种类型（禁止发射/抛射/喷射/缠绕）<br>• <b>羽量级</b>：仅允许弹射类武器<br>• <b>迷你级</b>：仅允许弹射类武器<br>• 所有级别禁止携带超过 1 个武器</p></div><div class="rule-box"><h4>电机限制</h4><p>• 轻量级：禁止无刷电机作为移动/旋转武器电机<br>• 轻量级武器电机：长 ≤ 32mm，宽 ≤ 25mm，厚 ≤ 20mm<br>• 羽量级：同样禁止无刷电机</p></div><div class="rule-box warn"><h4>通讯要求</h4><p>• 所有组别须使用 2.4G 通讯设备<br>• 须具备锁频功能，禁止一次性对频设备<br>• 机载端须支持 S-BUS 模式<br>• 中学组智能机器人须具备视觉识别和无线安全开关</p></div>',
+  format:'<h3><span class="rule-icon">🏆</span> <span>赛制与流程</span></h3><p>轻量级采用三局两胜制，羽量级和迷你级采用一局定胜负制。每局竞赛时长为 120 秒。</p><div class="rule-box"><h4>轻量级赛制（小学组）</h4><p>• 每场三局，三局两胜<br>• 前两局 1v1，第三局 2v2<br>• 每队 3 台机器人，每人至少 1 台<br>• 同一场次必须使用 3 种不同类型机器人<br>• 小组赛 + 淘汰赛，小分作为排名依据</p></div><div class="rule-box"><h4>轻量级赛制（中学组）</h4><p>• 每支队伍 1-3 人<br>• 一台手控机器人 + 一台智能机器人<br>• 需完成手动对战 + 自动对战各一局<br>• 淘汰赛制</p></div><div class="rule-box"><h4>羽量级/迷你级赛制</h4><p>• 一局定胜负<br>• 小组赛 + 淘汰赛<br>• 根据净胜分排名，胜场相同看胜负关系<br>• 三队互胜看净胜分</p></div>',
+  scoring:'<h3><span class="rule-icon">📊</span> <span>计分与判罚</span></h3><p>比赛通过 KO 获胜或裁判评分决定胜负。KO 指通过击翻或重击使对手无法移动，或对手脱离场地 3 次。</p><div class="rule-box"><h4>得分规则</h4><p>• KO 对手：+100 分<br>• 被击翻：-1 分/次<br>• 提前启动：-10 分<br>• 消极比赛（10 秒不进攻）：-5 分/次<br>• 脱离场地：-10 分/次<br>• 赛后称重每减少 1g：-1 分<br>• 黄牌：-50 分</p></div><div class="rule-box"><h4>环分数（终局判定）</h4><p>若未 KO，根据机器人最终位置计算环分数：<br>• 最外侧环：5 分<br>• 最内侧环：50 分<br>• 综合比赛表现分数 + 环分数判定胜负</p></div><div class="rule-box warn"><h4>特殊判罚</h4><p>• 弃权：己方 -100 分，对手 +100 分<br>• 电池脱落导致裸露：判负（算 KO）<br>• 机器人冒烟/危险情况：立即终止，判 KO<br>• 辱骂裁判/选手：黄牌警告 → 红牌驱逐<br>• 提前启动致 KO：KO 无效，重赛并扣 10 分</p></div>'};
 function showRule(el,key){document.querySelectorAll(".rules-nav-item").forEach(function(n){n.classList.remove("active");});el.classList.add("active");document.getElementById("rulesContent").innerHTML=ruleData[key]||"<p>内容加载中...</p>";}
 (function(){var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add("visible");});},{threshold:0.1});document.querySelectorAll(".fade-in").forEach(function(el){obs.observe(el);});})();
 </script>
