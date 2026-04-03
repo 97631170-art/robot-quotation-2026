@@ -238,11 +238,11 @@ body{font-family:"Microsoft YaHei","微软雅黑",sans-serif;background:var(--bg
 </nav>
 
 <div class="container">
-  <!-- CONFIG WARNING (shown when LeanCloud not configured) -->
+  <!-- CONFIG WARNING (shown when CloudBase not configured) -->
   <div class="config-warn" id="configWarn" style="display:none;margin-top:20px;">
-    ⚠️ <strong>未配置 LeanCloud</strong> — 当前处于演示模式，数据不会持久保存。<br>
-    请在 <a href="admin.html" style="color:var(--gold);">后台管理 → 论坛配置</a> 中填入你的 LeanCloud AppID 和 AppKey，然后刷新页面即可启用完整功能。<br>
-    还没有 LeanCloud 账号？<a href="https://leancloud.cn" target="_blank" style="color:var(--gold);">点此免费注册</a>（国内节点，免费）。
+    ⚠️ <strong>未配置腾讯云开发</strong> — 当前处于演示模式，数据不会持久保存。<br>
+    请在 <a href="admin.html" style="color:var(--gold);">后台管理 → 论坛配置</a> 中填入你的腾讯云开发环境 ID，然后刷新页面即可启用完整功能。<br>
+    还没有腾讯云开发账号？<a href="https://tcb.cloud.tencent.com/" target="_blank" style="color:var(--gold);">点此免费开通</a>（免费额度充足）。
   </div>
 
   <!-- VIEW: LIST -->
@@ -396,20 +396,26 @@ body{font-family:"Microsoft YaHei","微软雅黑",sans-serif;background:var(--bg
 <!-- TOAST -->
 <div class="toast-wrap" id="toastWrap"></div>
 
+<!-- 腾讯云开发 SDK -->
+<script src="//imgcache.qq.com/qcloud/tcbjs/2.9.4/tcb.js"></script>
+
 <script>
 /* ============================================================
-   CONFIG  (从后台 localStorage 读取 LeanCloud 配置)
+   CONFIG  (从后台 localStorage 读取腾讯云开发配置)
    ============================================================ */
-var LC_CONFIG_KEY = 'mecha_lc_config';
-var lcConfig = null;
-var AV = null; // LeanCloud SDK 实例
+var TCB_CONFIG_KEY = 'mecha_tcb_config';
+var tcbConfig = null;
+var app = null;    // CloudBase app 实例
+var db = null;     // 数据库引用
+var auth = null;   // 认证引用
+var _ = null;      // 云数据库命令
 
-function getLCConfig(){
-  try{ return JSON.parse(localStorage.getItem(LC_CONFIG_KEY)||'{}'); }catch(e){ return {}; }
+function getTCBConfig(){
+  try{ return JSON.parse(localStorage.getItem(TCB_CONFIG_KEY)||'{}'); }catch(e){ return {}; }
 }
 
 /* ============================================================
-   DEMO / OFFLINE MODE  (无 LeanCloud 时使用内存模拟)
+   DEMO / OFFLINE MODE  (无配置时使用 localStorage 模拟)
    ============================================================ */
 var DEMO_KEY = 'mecha_forum_demo';
 var demoData = null;
@@ -443,15 +449,15 @@ var currentUser = null;
 var currentCat = '';
 var currentPage = 1;
 var PAGE_SIZE = 15;
-var isOnline = false; // true = LeanCloud 模式
+var isOnline = false; // true = CloudBase 模式
 
 /* ============================================================
    INIT
    ============================================================ */
 window.addEventListener('DOMContentLoaded', function(){
-  var cfg = getLCConfig();
-  if(cfg.appId && cfg.appKey && cfg.serverURL){
-    initLeanCloud(cfg);
+  var cfg = getTCBConfig();
+  if(cfg.envId){
+    initCloudBase(cfg);
   } else {
     // Demo mode
     document.getElementById('configWarn').style.display='block';
@@ -462,7 +468,6 @@ window.addEventListener('DOMContentLoaded', function(){
 function initDemoMode(){
   isOnline = false;
   getDemoData();
-  // Restore session
   var saved = demoData.currentUser;
   if(saved) setCurrentUser(saved, false);
   loadList();
@@ -471,28 +476,35 @@ function initDemoMode(){
 }
 
 /* ============================================================
-   LEANCLOUD INIT
+   CLOUDBASE INIT
    ============================================================ */
-function initLeanCloud(cfg){
-  // Dynamically load LeanCloud SDK
-  var s = document.createElement('script');
-  s.src = 'https://cdn.jsdelivr.net/npm/leancloud-storage@4/dist/av-min.js';
-  s.onload = function(){
-    AV = window.AV;
-    AV.init({ appId: cfg.appId, appKey: cfg.appKey, serverURL: cfg.serverURL });
+function initCloudBase(cfg){
+  try {
+    app = tcb.init({ env: cfg.envId });
+    db = app.database();
+    auth = app.auth();
+    _ = db.command;
     isOnline = true;
-    // Restore session
-    var u = AV.User.current();
-    if(u) setCurrentUser({id:u.id, username:u.get('username'), nickname:u.get('nickname')||u.get('username')}, false);
-    loadList();
-    loadSideStats();
-    loadHotPosts();
-  };
-  s.onerror = function(){
-    toast('LeanCloud SDK 加载失败，使用离线演示模式','error');
+
+    // 匿名登录先获取基础访问权限（未注册用户可浏览）
+    auth.signInAnonymously().then(function(){
+      console.log('CloudBase 匿名登录成功');
+      // 检查是否有已登录的用户（之前用户名密码登录的 session）
+      var loginState = auth.hasLoginState();
+      loadList();
+      loadSideStats();
+      loadHotPosts();
+    }).catch(function(e){
+      console.warn('匿名登录失败，仍可浏览:', e);
+      isOnline = false;
+      document.getElementById('configWarn').style.display='block';
+      initDemoMode();
+    });
+  } catch(e) {
+    console.error('CloudBase 初始化失败:', e);
+    toast('腾讯云开发初始化失败，使用离线演示模式','error');
     initDemoMode();
-  };
-  document.head.appendChild(s);
+  }
 }
 
 /* ============================================================
@@ -508,7 +520,6 @@ function setCurrentUser(u, save){
   document.getElementById('sideAvatarBig').textContent = (u.nickname||u.username).charAt(0).toUpperCase();
   document.getElementById('sideUserName').textContent = u.nickname || u.username;
   document.getElementById('sideJoined').textContent = '欢迎回来！';
-  // Load user stats
   loadUserStats(u.id);
   if(!isOnline && save !== false){
     demoData.currentUser = u;
@@ -536,13 +547,13 @@ function loadUserStats(uid){
     document.getElementById('statReplies').textContent = r;
     return;
   }
-  // LeanCloud
-  var qP = new AV.Query('ForumPost');
-  qP.equalTo('authorId', uid);
-  qP.count().then(function(c){ document.getElementById('statPosts').textContent = c; });
-  var qR = new AV.Query('ForumReply');
-  qR.equalTo('authorId', uid);
-  qR.count().then(function(c){ document.getElementById('statReplies').textContent = c; });
+  // CloudBase: 统计帖子数
+  db.collection('ForumPost').where({ authorId: uid }).count().then(function(res){
+    document.getElementById('statPosts').textContent = res.total;
+  }).catch(function(){});
+  db.collection('ForumReply').where({ authorId: uid }).count().then(function(res){
+    document.getElementById('statReplies').textContent = res.total;
+  }).catch(function(){});
 }
 
 function openAuth(tab){
@@ -576,12 +587,25 @@ function doLogin(){
     toast('欢迎回来，'+( u.nickname||u.username)+'！','success');
     return;
   }
-  AV.User.logIn(uname, pwd).then(function(u){
-    setCurrentUser({id:u.id, username:u.get('username'), nickname:u.get('nickname')||u.get('username')});
+  // CloudBase: 用户名密码登录
+  auth.signInWithUsernameAndPassword(uname, pwd).then(function(loginState){
+    var userInfo = loginState.user || {};
+    var nickname = userInfo.nickname || userInfo.username || uname;
+    var userId = userInfo.uid || loginState.uid || '';
+    // 从 users 表获取完整信息
+    db.collection('users').doc(userId).get().then(function(res){
+      var data = res.data && res.data[0] ? res.data[0] : {};
+      setCurrentUser({id:userId, username:uname, nickname:data.nickname || nickname});
+    }).catch(function(){
+      setCurrentUser({id:userId, username:uname, nickname:nickname});
+    });
     closeAuth();
     toast('登录成功！','success');
   }).catch(function(e){
-    errEl.textContent = e.code===210?'用户名或密码错误':(e.message||'登录失败，请重试');
+    var msg = '登录失败，请重试';
+    if(e.message) msg = e.message;
+    if(typeof e === 'string') msg = e;
+    errEl.textContent = msg;
   });
 }
 
@@ -610,22 +634,52 @@ function doRegister(){
     loadSideStats();
     return;
   }
-  var user = new AV.User();
-  user.set('username', uname);
-  user.set('password', pwd);
-  user.set('nickname', nick);
-  user.signUp().then(function(u){
-    setCurrentUser({id:u.id, username:uname, nickname:nick});
+  // CloudBase: 先检查用户名是否已注册
+  auth.isUsernameRegistered(uname).then(function(registered){
+    if(registered){
+      errEl.textContent='用户名已被注册';
+      return null;
+    }
+    // 注册
+    return auth.signUpWithUsernameAndPassword(uname, pwd);
+  }).then(function(result){
+    if(!result) return; // username taken
+    var userId = (result.user && result.user.uid) || result.uid || '';
+    // 保存用户信息到 users 集合
+    return db.collection('users').add({
+      data: {
+        _id: userId,
+        username: uname,
+        nickname: nick,
+        createdAt: db.serverDate()
+      }
+    }).catch(function(){
+      // 如果权限不允许自选 _id，去掉它
+      return db.collection('users').add({
+        data: {
+          username: uname,
+          nickname: nick,
+          createdAt: db.serverDate()
+        }
+      });
+    });
+  }).then(function(){
+    setCurrentUser({id: currentUser ? currentUser.id : 'u'+Date.now(), username:uname, nickname:nick});
     closeAuth();
     toast('注册成功！欢迎加入造悟社','success');
     loadSideStats();
   }).catch(function(e){
-    errEl.textContent = e.code===202?'用户名已被注册':(e.message||'注册失败，请重试');
+    var msg = '注册失败，请重试';
+    if(e.message) msg = e.message;
+    if(typeof e === 'string') msg = e;
+    errEl.textContent = msg;
   });
 }
 
 function doLogout(){
-  if(isOnline) AV.User.logOut();
+  if(isOnline){
+    try { auth.signOut(); } catch(e){}
+  }
   clearCurrentUser();
   toast('已退出登录','info');
 }
@@ -650,23 +704,36 @@ function loadList(){
   var el = document.getElementById('postList');
   el.innerHTML = '<div class="loading"><div class="spin"></div></div>';
   if(!isOnline){ loadListDemo(); return; }
-  // LeanCloud
-  var q = new AV.Query('ForumPost');
-  if(currentCat) q.equalTo('category', currentCat);
-  q.descending('pinned');
-  q.addDescending('createdAt');
-  q.limit(PAGE_SIZE);
-  q.skip((currentPage-1)*PAGE_SIZE);
-  q.find().then(function(posts){
-    renderPostList(posts.map(function(p){
+  // CloudBase
+  var where = {};
+  if(currentCat) where.category = currentCat;
+  var q = db.collection('ForumPost').where(where)
+    .orderBy('pinned', 'desc')
+    .orderBy('createdAt', 'desc')
+    .skip((currentPage-1)*PAGE_SIZE)
+    .limit(PAGE_SIZE);
+  q.get().then(function(res){
+    var posts = (res.data || []).map(function(p){
       return {
-        id:p.id, title:p.get('title'), category:p.get('category'),
-        authorName:p.get('authorName'), createdAt:p.get('createdAt'),
-        replyCount:p.get('replyCount')||0, views:p.get('views')||0,
-        pinned:p.get('pinned')
+        id: p._id || p.id,
+        title: p.title,
+        category: p.category,
+        authorName: p.authorName,
+        createdAt: p.createdAt,
+        replyCount: p.replyCount || 0,
+        views: p.views || 0,
+        pinned: p.pinned || false
       };
-    }));
-  }).catch(function(e){ el.innerHTML='<div class="empty-state">加载失败：'+e.message+'</div>'; });
+    });
+    // 获取总数
+    db.collection('ForumPost').where(where).count().then(function(cnt){
+      renderPostList(posts, cnt.total);
+    }).catch(function(){
+      renderPostList(posts);
+    });
+  }).catch(function(e){
+    el.innerHTML='<div class="empty-state">加载失败：'+(e.message||e)+'</div>';
+  });
 }
 
 function loadListDemo(){
@@ -674,7 +741,6 @@ function loadListDemo(){
   var posts = d.posts.filter(function(p){
     return !currentCat || p.category===currentCat;
   });
-  // Sort: pinned first, then by date desc
   posts = posts.slice().sort(function(a,b){
     if(a.pinned && !b.pinned) return -1;
     if(!a.pinned && b.pinned) return 1;
@@ -743,12 +809,16 @@ function loadSideStats(){
     document.getElementById('statToday').textContent = todayPosts;
     return;
   }
-  var qP = new AV.Query('ForumPost'); qP.count().then(function(c){ document.getElementById('statTotal').textContent=c; });
-  var qU = new AV.Query(AV.User); qU.count().then(function(c){ document.getElementById('statUsers').textContent=c; });
+  db.collection('ForumPost').count().then(function(res){
+    document.getElementById('statTotal').textContent = res.total;
+  }).catch(function(){});
+  db.collection('users').count().then(function(res){
+    document.getElementById('statUsers').textContent = res.total;
+  }).catch(function(){});
   var today = new Date(); today.setHours(0,0,0,0);
-  var qT = new AV.Query('ForumPost');
-  qT.greaterThanOrEqualTo('createdAt', today);
-  qT.count().then(function(c){ document.getElementById('statToday').textContent=c; });
+  db.collection('ForumPost').where({ createdAt: _.gte(today) }).count().then(function(res){
+    document.getElementById('statToday').textContent = res.total;
+  }).catch(function(){});
 }
 
 function loadHotPosts(){
@@ -759,14 +829,12 @@ function loadHotPosts(){
     renderHotPosts(hot);
     return;
   }
-  var q = new AV.Query('ForumPost');
-  q.descending('replyCount');
-  q.limit(5);
-  q.find().then(function(posts){
-    renderHotPosts(posts.map(function(p){
-      return {id:p.id,title:p.get('title'),replyCount:p.get('replyCount')||0,createdAt:p.get('createdAt')};
-    }));
-  });
+  db.collection('ForumPost').orderBy('replyCount', 'desc').limit(5).get().then(function(res){
+    var posts = (res.data || []).map(function(p){
+      return {id:p._id||p.id, title:p.title, replyCount:p.replyCount||0, createdAt:p.createdAt};
+    });
+    renderHotPosts(posts);
+  }).catch(function(){});
 }
 
 function renderHotPosts(posts){
@@ -791,27 +859,26 @@ function openPost(id){
   document.getElementById('viewNewPost').style.display='none';
   document.getElementById('detailContent').innerHTML='<div class="loading"><div class="spin"></div></div>';
   if(!isOnline){ loadDetailDemo(id); return; }
-  // Increment view count
-  var post = AV.Object.createWithoutData('ForumPost', id);
-  post.increment('views',1);
-  post.save();
-  // Load post
-  var q = new AV.Query('ForumPost');
-  q.get(id).then(function(p){
-    var rq = new AV.Query('ForumReply');
-    rq.equalTo('postId', id);
-    rq.ascending('createdAt');
-    return rq.find().then(function(replies){
+  // CloudBase: 增加浏览量 + 加载帖子
+  db.collection('ForumPost').doc(id).update({
+    data: { views: _.inc(1) }
+  }).catch(function(){});
+  // 加载帖子
+  db.collection('ForumPost').doc(id).get().then(function(res){
+    var p = res.data && res.data[0] ? res.data[0] : (res.data || {});
+    // 加载回复
+    return db.collection('ForumReply').where({ postId: id }).orderBy('createdAt', 'asc').get().then(function(rRes){
+      var replies = (rRes.data || []).map(function(r){
+        return {id:r._id||r.id, content:r.content, authorId:r.authorId, authorName:r.authorName, createdAt:r.createdAt};
+      });
       renderDetail({
-        id:p.id, title:p.get('title'), category:p.get('category'),
-        content:p.get('content'), authorId:p.get('authorId'), authorName:p.get('authorName'),
-        createdAt:p.get('createdAt'), views:p.get('views')||0, replyCount:p.get('replyCount')||0
-      }, replies.map(function(r){
-        return {id:r.id,content:r.get('content'),authorId:r.get('authorId'),authorName:r.get('authorName'),createdAt:r.get('createdAt')};
-      }));
+        id: p._id || p.id, title:p.title, category:p.category,
+        content:p.content, authorId:p.authorId, authorName:p.authorName,
+        createdAt:p.createdAt, views:p.views||0, replyCount:p.replyCount||0
+      }, replies);
     });
   }).catch(function(e){
-    document.getElementById('detailContent').innerHTML='<div style="color:var(--red)">加载失败：'+e.message+'</div>';
+    document.getElementById('detailContent').innerHTML='<div style="color:var(--red)">加载失败：'+(e.message||e)+'</div>';
   });
 }
 
@@ -866,7 +933,6 @@ function renderDetail(post, replies){
   html+='</div>';
   document.getElementById('detailContent').innerHTML = html;
   window.scrollTo(0,0);
-  // Store current post id for reply
   document.getElementById('detailContent').dataset.postId = post.id;
 }
 
@@ -886,18 +952,26 @@ function submitReply(postId, postAuthorId){
     loadDetailDemo(postId);
     return;
   }
-  var replyObj = new AV.Object('ForumReply');
-  replyObj.set('postId', postId);
-  replyObj.set('content', content);
-  replyObj.set('authorId', currentUser.id);
-  replyObj.set('authorName', currentUser.nickname||currentUser.username);
-  replyObj.save().then(function(){
-    var post = AV.Object.createWithoutData('ForumPost', postId);
-    post.increment('replyCount',1);
-    post.save();
+  // CloudBase: 添加回复
+  db.collection('ForumReply').add({
+    data: {
+      postId: postId,
+      content: content,
+      authorId: currentUser.id,
+      authorName: currentUser.nickname || currentUser.username,
+      createdAt: db.serverDate()
+    }
+  }).then(function(){
+    // 更新帖子回复计数
+    return db.collection('ForumPost').doc(postId).update({
+      data: { replyCount: _.inc(1) }
+    });
+  }).then(function(){
     toast('回复发布成功！','success');
     openPost(postId);
-  }).catch(function(e){ toast('发布失败：'+e.message,'error'); });
+  }).catch(function(e){
+    toast('发布失败：'+(e.message||e),'error');
+  });
 }
 
 /* ============================================================
@@ -932,29 +1006,27 @@ function submitPost(){
     showList();
     return;
   }
-  var postObj = new AV.Object('ForumPost');
-  postObj.set('title', title);
-  postObj.set('content', content);
-  postObj.set('category', category);
-  postObj.set('authorId', currentUser.id);
-  postObj.set('authorName', currentUser.nickname||currentUser.username);
-  postObj.set('replyCount', 0);
-  postObj.set('views', 0);
-  postObj.set('pinned', false);
-  // Set ACL
-  var acl = new AV.ACL();
-  acl.setPublicReadAccess(true);
-  acl.setPublicWriteAccess(false);
-  acl.setWriteAccess(AV.User.current(), true);
-  postObj.setACL(acl);
-  postObj.save().then(function(){
+  // CloudBase: 添加帖子
+  db.collection('ForumPost').add({
+    data: {
+      title: title,
+      content: content,
+      category: category,
+      authorId: currentUser.id,
+      authorName: currentUser.nickname || currentUser.username,
+      replyCount: 0,
+      views: 0,
+      pinned: false,
+      createdAt: db.serverDate()
+    }
+  }).then(function(){
     btnPost.disabled=false; btnPost.textContent='🚀 发布帖子';
     toast('发帖成功！','success');
     loadSideStats();
     showList();
   }).catch(function(e){
     btnPost.disabled=false; btnPost.textContent='🚀 发布帖子';
-    toast('发帖失败：'+e.message,'error');
+    toast('发帖失败：'+(e.message||e),'error');
   });
 }
 
