@@ -245,13 +245,9 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:20px 0}
     <!-- 产品页 -->
     <div class="page" id="page-products">
       <div class="panel">
-        <div class="panel-head"><h3>产品系列管理</h3><span style="font-size:12px;color:var(--muted)">共 3 款</span></div>
+        <div class="panel-head"><h3>产品系列管理</h3><span id="prod-count-label" style="font-size:12px;color:var(--muted)">共 0 款</span></div>
         <div class="panel-body">
-          <div class="tabs">
-            <div class="tab active" onclick="showTab(0,this)">产品 A</div>
-            <div class="tab" onclick="showTab(1,this)">产品 B</div>
-            <div class="tab" onclick="showTab(2,this)">产品 C</div>
-          </div>
+          <div class="tabs" id="prod-tabs"></div>
           <div id="prod-panels"></div>
         </div>
       </div>
@@ -306,33 +302,29 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:20px 0}
     <div class="page" id="page-publish">
       <div class="publish-box">
         <h3>🚀 一键发布到公网</h3>
-        <p>先保存内容，再点击「生成静态页面」，然后点击「发布到公网」获取可分享链接。<br/>公网链接通过 localtunnel 隧道实现，需保持本程序运行。</p>
+        <p>自动保存内容、生成静态页面并发布到 GitHub Pages。<br/><strong>发布后约 1-2 分钟生效，可通过域名 zaowushe.cn 访问。</strong></p>
         <div class="publish-actions">
-          <button class="btn btn-secondary" onclick="saveAll(true)">💾 保存内容</button>
-          <button class="btn btn-blue" onclick="buildStatic()">⚙️ 生成静态页面</button>
-          <button class="btn btn-success" id="btn-tunnel" onclick="startTunnel()">🌐 发布到公网</button>
+          <button class="btn btn-primary" id="btn-publish" onclick="publishSite()">🚀 发布网站</button>
         </div>
-        <div class="tunnel-result" id="tunnel-result">
-          <div style="font-size:12px;color:var(--muted);letter-spacing:1px;">🌐 公网访问地址（发给任何人都可以打开）</div>
-          <div class="tunnel-url" id="tunnel-url">正在获取...</div>
-          <div class="tunnel-hint">⚠️ 此链接在本程序关闭后失效。如需永久域名，请部署到云服务器。</div>
-          <button class="btn btn-secondary btn-sm" style="margin-top:12px" onclick="copyUrl()">📋 复制链接</button>
-          <a id="tunnel-open" href="#" target="_blank"><button class="btn btn-blue btn-sm" style="margin-top:12px;margin-left:8px">↗ 打开预览</button></a>
-          <div class="tunnel-log" id="tunnel-log"></div>
+        <div id="publish-log" style="margin-top:20px;text-align:left;background:#000;border-radius:8px;padding:16px;font-family:monospace;font-size:13px;max-height:300px;overflow-y:auto;"></div>
+        <div id="publish-result" style="margin-top:20px;display:none;">
+          <div style="font-size:14px;color:#4ade80;margin-bottom:8px;">🎉 发布成功！</div>
+          <a id="publish-url" href="#" target="_blank" style="color:#60a5fa;font-size:16px;font-weight:bold;"></a>
+          <div style="font-size:12px;color:#888;margin-top:8px;">约 1-2 分钟后生效</div>
         </div>
       </div>
 
       <div class="panel" style="margin-top:28px">
-        <div class="panel-head"><h3>本地访问地址</h3></div>
+        <div class="panel-head"><h3>访问地址</h3></div>
         <div class="panel-body">
           <div style="display:flex;gap:16px;flex-wrap:wrap">
             <div style="flex:1;background:var(--input-bg);border:1px solid var(--border);border-radius:8px;padding:16px">
-              <div style="font-size:11px;color:var(--muted);letter-spacing:1px;margin-bottom:8px">前台展示页</div>
-              <a href="http://localhost:8090" target="_blank" style="color:var(--blue);font-size:15px;font-weight:700;">http://localhost:8090</a>
+              <div style="font-size:11px;color:var(--muted);letter-spacing:1px;margin-bottom:8px">前台展示页（本地）</div>
+              <a href="http://localhost:7788" target="_blank" style="color:var(--blue);font-size:15px;font-weight:700;">http://localhost:7788</a>
             </div>
             <div style="flex:1;background:var(--input-bg);border:1px solid var(--border);border-radius:8px;padding:16px">
-              <div style="font-size:11px;color:var(--muted);letter-spacing:1px;margin-bottom:8px">后台管理</div>
-              <a href="http://localhost:8080/admin.html" target="_blank" style="color:var(--red);font-size:15px;font-weight:700;">http://localhost:8080/admin.html</a>
+              <div style="font-size:11px;color:var(--muted);letter-spacing:1px;margin-bottom:8px">GitHub Pages</div>
+              <a href="https://97631170-art.github.io/robot-quotation-2026/" target="_blank" style="color:var(--green);font-size:15px;font-weight:700;">点此打开</a>
             </div>
           </div>
         </div>
@@ -348,9 +340,9 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:20px 0}
             <span style="background:#febc2e"></span>
             <span style="background:#28c840"></span>
           </div>
-          <span style="font-size:12px;color:var(--muted);margin-left:10px;">http://localhost:8090</span>
-          <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="document.getElementById('preview-frame').src='http://localhost:8090?t='+Date.now()">↺ 刷新</button>
-          <a href="http://localhost:8090" target="_blank"><button class="btn btn-blue btn-sm">↗ 新标签打开</button></a>
+          <span style="font-size:12px;color:var(--muted);margin-left:10px;">http://localhost:7788</span>
+          <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="document.getElementById('preview-frame').src='http://localhost:7788?t='+Date.now()">↺ 刷新</button>
+          <a href="http://localhost:7788" target="_blank"><button class="btn btn-blue btn-sm">↗ 新标签打开</button></a>
         </div>
         <iframe id="preview-frame" src="http://localhost:8090"></iframe>
       </div>
@@ -363,7 +355,7 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:20px 0}
 <div class="toast" id="toast"></div>
 
 <script>
-const API = 'http://localhost:8080/api';
+const API = 'http://localhost:7788/api';
 let siteData = {};
 
 // ===== 页面切换 =====
@@ -379,7 +371,7 @@ function showPage(id, el) {
   };
   document.getElementById('pageTitle').textContent = titles[id] || '';
   if (id === 'page-preview') {
-    document.getElementById('preview-frame').src = 'http://localhost:8090?t=' + Date.now();
+    document.getElementById('preview-frame').src = 'http://localhost:7788/?t=' + Date.now();
   }
 }
 
@@ -387,8 +379,60 @@ function showPage(id, el) {
 function showTab(idx, el) {
   document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-  document.querySelectorAll('.tab-panel')[idx].classList.add('active');
+  if (el) el.classList.add('active');
+  document.querySelectorAll('.tab-panel')[idx]?.classList.add('active');
+}
+
+// ===== 产品标签渲染 =====
+function renderProductTabs() {
+  const tabs = document.getElementById('prod-tabs');
+  const prods = siteData.products || [];
+  const labels = ['A','B','C','D','E','F','G','H','I','J'];
+  
+  tabs.innerHTML = prods.map((p, i) => `
+    <div class="tab ${i===0?'active':''}" onclick="showTab(${i},this)" style="display:flex;align-items:center;gap:4px;">
+      <span>${labels[i]||(i+1)}</span>
+      ${prods.length > 1 ? `<button onclick="event.stopPropagation();delProduct(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0;line-height:1;" title="删除">×</button>` : ''}
+    </div>
+  `).join('') + `
+    <button class="tab" onclick="addProduct()" style="opacity:0.7;font-size:16px;" title="添加产品">+</button>
+  `;
+  
+  document.getElementById('prod-count-label').textContent = `共 ${prods.length} 款`;
+}
+
+function addProduct() {
+  const newProduct = {
+    tag: '新品',
+    series: 'SERIES-X',
+    name: '新机器人',
+    desc: '请编辑产品描述...',
+    specs: ['重量: 320g', '材质: ABS+'],
+    price: '¥1,000',
+    priceNote: '整机含遥控器',
+    hot: false,
+    img: ''
+  };
+  siteData.products.push(newProduct);
+  renderProductTabs();
+  renderProducts(siteData.products);
+  // 切换到新产品
+  const tabs = document.querySelectorAll('#prod-tabs .tab');
+  if (tabs.length > 0) {
+    showTab(siteData.products.length - 1, tabs[siteData.products.length - 1]);
+  }
+}
+
+function delProduct(idx) {
+  if (siteData.products.length <= 1) {
+    toast('至少保留一款产品', 'error');
+    return;
+  }
+  if (!confirm(`确定删除第 ${idx + 1} 款产品？`)) return;
+  siteData.products.splice(idx, 1);
+  renderProductTabs();
+  renderProducts(siteData.products);
+  showTab(Math.max(0, idx - 1), document.querySelectorAll('#prod-tabs .tab')[Math.max(0, idx - 1)]);
 }
 
 // ===== Toast =====
@@ -403,7 +447,7 @@ function toast(msg, type='success') {
 // ===== 加载数据 =====
 async function loadData() {
   try {
-    const r = await fetch(API + '/data');
+    const r = await fetch(API + '/site');
     siteData = await r.json();
     renderAll();
     toast('数据加载成功', 'success');
@@ -425,6 +469,7 @@ function renderAll() {
   // KPI
   renderKpi(d.kpi || []);
   // 产品
+  renderProductTabs();
   renderProducts(d.products || []);
   // 特性
   renderFeatures(d.features || []);
@@ -456,6 +501,20 @@ function renderProducts(prods) {
   const container = document.getElementById('prod-panels');
   container.innerHTML = prods.map((p, i) => `
     <div class="tab-panel ${i===0?'active':''}">
+      <div class="form-row"><label>产品图片</label>
+        <div class="img-upload" style="margin-top:8px;">
+          <div class="img-preview" onclick="triggerUpload('prod-file-${i}','prod-img-input-${i}','prod-img-prev-${i}','prod-img-icon-${i}')">
+            ${p.img ? `<img id="prod-img-prev-${i}" src="${esc(p.img)}" alt="" style="width:100%;height:100%;object-fit:cover;"/>` : `<img id="prod-img-prev-${i}" src="" alt="" style="display:none;"/>`}
+            <span id="prod-img-icon-${i}" ${p.img?'style="display:none"':''}>📷</span>
+          </div>
+          <div>
+            <div class="img-preview-label" onclick="triggerUpload('prod-file-${i}','prod-img-input-${i}','prod-img-prev-${i}','prod-img-icon-${i}')">点击上传产品图</div>
+            <input id="prod-img-input-${i}" type="text" style="width:240px;margin-top:8px;" value="${esc(p.img)}" placeholder="或填写图片 URL" oninput="siteData.products[${i}].img=this.value"/>
+          </div>
+        </div>
+        <input type="file" id="prod-file-${i}" class="file-input" accept="image/*" onchange="uploadProdImg(this,${i})"/>
+      </div>
+      <hr class="divider"/>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
         <div class="form-row"><label>标签文字</label><input type="text" value="${esc(p.tag)}" oninput="siteData.products[${i}].tag=this.value"/></div>
         <div class="form-row"><label>系列编号</label><input type="text" value="${esc(p.series)}" oninput="siteData.products[${i}].series=this.value"/></div>
@@ -479,20 +538,6 @@ function renderProducts(prods) {
       <div class="toggle-row">
         <label>标记为主推爆款</label>
         <label class="toggle"><input type="checkbox" ${p.hot?'checked':''} onchange="siteData.products[${i}].hot=this.checked"/><span class="toggle-slider"></span></label>
-      </div>
-      <hr class="divider"/>
-      <div class="form-row"><label>产品图片</label>
-        <div class="img-upload" style="margin-top:8px;">
-          <div class="img-preview" onclick="triggerUpload('prod-file-${i}','prod-img-input-${i}','prod-img-prev-${i}','prod-img-icon-${i}')">
-            ${p.img ? `<img id="prod-img-prev-${i}" src="${esc(p.img)}" alt="" style="width:100%;height:100%;object-fit:cover;"/>` : `<img id="prod-img-prev-${i}" src="" alt="" style="display:none;"/>`}
-            <span id="prod-img-icon-${i}" ${p.img?'style="display:none"':''}>📷</span>
-          </div>
-          <div>
-            <div class="img-preview-label" onclick="triggerUpload('prod-file-${i}','prod-img-input-${i}','prod-img-prev-${i}','prod-img-icon-${i}')">点击上传产品图</div>
-            <input id="prod-img-input-${i}" type="text" style="width:240px;margin-top:8px;" value="${esc(p.img)}" placeholder="或填写图片 URL" oninput="siteData.products[${i}].img=this.value"/>
-          </div>
-        </div>
-        <input type="file" id="prod-file-${i}" class="file-input" accept="image/*" onchange="uploadProdImg(this,${i})"/>
       </div>
     </div>`).join('');
 }
@@ -545,6 +590,66 @@ async function saveAll(quiet) {
       else toast('✅ 内容已保存', 'success');
     }
   } catch(e) { toast('保存失败：' + e.message, 'error'); }
+}
+
+// ===== 发布到 GitHub Pages =====
+async function publishSite() {
+  const btn = document.getElementById('btn-publish');
+  const log = document.getElementById('publish-log');
+  const result = document.getElementById('publish-result');
+  const urlEl = document.getElementById('publish-url');
+
+  btn.disabled = true;
+  btn.textContent = '发布中...';
+  log.innerHTML = '';
+  result.style.display = 'none';
+
+  const addLog = (msg, color = '#fff') => {
+    log.innerHTML += `<div style="color:${color}">${msg}</div>`;
+    log.scrollTop = log.scrollHeight;
+  };
+
+  try {
+    // 1. 保存内容
+    addLog('💾 正在保存内容...', '#60a5fa');
+    await saveAll(true);
+    addLog('✅ 保存完成', '#4ade80');
+
+    // 2. 发布
+    addLog('🚀 正在发布到 GitHub Pages...', '#60a5fa');
+    
+    const es = new EventSource(API + '/publish');
+    es.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      addLog(data.msg);
+      
+      if (data.msg?.includes('发布成功')) {
+        es.close();
+        const publishUrl = 'https://97631170-art.github.io/robot-quotation-2026/';
+        urlEl.href = publishUrl;
+        urlEl.textContent = publishUrl;
+        result.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = '🚀 再次发布';
+        toast('🎉 发布成功！', 'success');
+      }
+      if (data.msg?.includes('❌')) {
+        es.close();
+        btn.disabled = false;
+        btn.textContent = '🚀 发布网站';
+      }
+    };
+    es.onerror = () => {
+      addLog('❌ 连接断开', '#f87171');
+      es.close();
+      btn.disabled = false;
+      btn.textContent = '🚀 发布网站';
+    };
+  } catch(e) {
+    addLog('❌ 发布失败: ' + e.message, '#f87171');
+    btn.disabled = false;
+    btn.textContent = '🚀 发布网站';
+  }
 }
 
 // ===== 图片上传 =====
