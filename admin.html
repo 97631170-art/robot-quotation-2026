@@ -1,1873 +1,656 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>造悟社 - 后台管理</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>BattleBot CMS · 后台管理</title>
 <style>
-/* ============================
-   BASE
-   ============================ */
-*{margin:0;padding:0;box-sizing:border-box;}
-body{
-  font-family:"Microsoft YaHei","微软雅黑",sans-serif;
-  background:#0a0a0f;color:#e0e0e0;
-  min-height:100vh;display:flex;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c0c14; --sidebar:#111120; --card:#181828;
+  --border:#2a2a3e; --red:#e8242a; --red2:#ff4e4e;
+  --text:#e8e8f0; --muted:#7070a0; --input-bg:#1e1e30;
+  --green:#22c55e; --blue:#3b82f6; --yellow:#f59e0b;
 }
+html,body{height:100%;font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text)}
+a{text-decoration:none;color:inherit}
 
-/* ============================
-   SIDEBAR
-   ============================ */
-.sidebar{
-  width:240px;min-height:100vh;
-  background:rgba(15,15,22,.98);
-  border-right:1px solid rgba(0,240,255,.12);
-  display:flex;flex-direction:column;
-  position:fixed;left:0;top:0;bottom:0;z-index:100;
-  transition:transform .3s;
-}
-.sidebar-logo{
-  padding:24px 20px;font-size:18px;font-weight:900;
-  letter-spacing:3px;
-  background:linear-gradient(135deg,#00f0ff,#ff0044);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  border-bottom:1px solid rgba(0,240,255,.1);
-}
-.sidebar-sub{
-  padding:8px 20px;font-size:10px;color:#555;letter-spacing:2px;
-  border-bottom:1px solid rgba(255,255,255,.04);
-}
-.sidebar-nav{flex:1;padding:16px 0;overflow-y:auto;}
-.nav-section{
-  padding:0 16px;margin-bottom:8px;
-  font-size:10px;color:#444;letter-spacing:2px;
-  text-transform:uppercase;
-}
-.nav-item{
-  display:flex;align-items:center;gap:10px;
-  padding:11px 20px;margin:2px 10px;border-radius:6px;
-  font-size:13px;color:#888;cursor:pointer;
-  transition:all .25s;border:1px solid transparent;
-}
-.nav-item:hover{color:#ccc;background:rgba(255,255,255,.03);}
-.nav-item.active{
-  color:#00f0ff;background:rgba(0,240,255,.08);
-  border-color:rgba(0,240,255,.15);
-}
-.nav-item .icon{font-size:16px;width:22px;text-align:center;}
+/* ===== 布局 ===== */
+.layout{display:flex;height:100vh;overflow:hidden}
 
-.sidebar-footer{
-  padding:16px 20px;border-top:1px solid rgba(255,255,255,.05);
-  font-size:11px;color:#444;
-}
+/* 侧边栏 */
+.sidebar{width:220px;flex-shrink:0;background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto}
+.sidebar-logo{padding:24px 20px 16px;font-size:16px;font-weight:900;letter-spacing:2px;border-bottom:1px solid var(--border)}
+.sidebar-logo em{color:var(--red);font-style:normal}
+.sidebar-section{padding:8px 12px 4px;font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-top:8px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;cursor:pointer;border-radius:0;transition:background .15s,color .15s;border-left:3px solid transparent;color:var(--muted)}
+.nav-item:hover{background:rgba(232,36,42,.06);color:var(--text)}
+.nav-item.active{background:rgba(232,36,42,.1);color:#fff;border-left-color:var(--red)}
+.nav-item .icon{font-size:16px;width:20px;text-align:center}
+.sidebar-footer{margin-top:auto;padding:16px 20px;font-size:11px;color:var(--muted);border-top:1px solid var(--border)}
+.status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:6px;box-shadow:0 0 8px var(--green)}
 
-/* ============================
-   MAIN CONTENT
-   ============================ */
-.main{
-  flex:1;margin-left:240px;padding:0;
-  display:flex;flex-direction:column;
-  min-height:100vh;
-}
+/* 主区域 */
+.main{flex:1;overflow-y:auto;background:var(--bg)}
 
-/* Top bar */
-.topbar{
-  position:sticky;top:0;z-index:50;
-  background:rgba(10,10,15,.92);
-  backdrop-filter:blur(12px);
-  border-bottom:1px solid rgba(0,240,255,.1);
-  padding:14px 32px;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.topbar-title{font-size:16px;font-weight:700;color:#eee;}
-.topbar-actions{display:flex;gap:10px;}
+/* 顶部栏 */
+.topbar{padding:0 32px;height:60px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg);position:sticky;top:0;z-index:100}
+.topbar-title{font-size:16px;font-weight:700;letter-spacing:1px}
+.topbar-right{display:flex;gap:10px;align-items:center}
 
-/* Page */
-.page{padding:28px 32px;flex:1;display:none;}
-.page.active{display:block;}
+/* 按钮 */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;letter-spacing:.5px}
+.btn-primary{background:var(--red);color:#fff;box-shadow:0 4px 16px rgba(232,36,42,.3)}
+.btn-primary:hover{background:#c41e23;transform:translateY(-1px)}
+.btn-secondary{background:var(--card);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{border-color:var(--red);color:var(--red)}
+.btn-success{background:var(--green);color:#000}
+.btn-success:hover{background:#16a34a}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue:hover{background:#2563eb}
+.btn-sm{padding:6px 14px;font-size:12px}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important}
 
-/* ============================
-   COMMON COMPONENTS
-   ============================ */
-.card{
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.06);
-  border-radius:10px;padding:24px;margin-bottom:20px;
-}
-.card-title{
-  font-size:15px;font-weight:700;color:#eee;
-  margin-bottom:16px;padding-bottom:12px;
-  border-bottom:1px solid rgba(255,255,255,.06);
-  display:flex;align-items:center;gap:8px;
-}
-.card-title .dot{
-  width:8px;height:8px;border-radius:50%;
-  background:#00f0ff;box-shadow:0 0 8px rgba(0,240,255,.5);
-}
+/* 页面内容 */
+.page{display:none;padding:28px 32px}
+.page.active{display:block}
 
-.form-group{margin-bottom:16px;}
-.form-label{
-  display:block;font-size:12px;color:#888;
-  margin-bottom:6px;letter-spacing:1px;
-}
-.form-input,.form-textarea,.form-select{
-  width:100%;background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:6px;padding:10px 14px;
-  color:#e0e0e0;font-size:13px;font-family:inherit;
-  outline:none;transition:all .25s;
-}
-.form-input:focus,.form-textarea:focus,.form-select:focus{
-  border-color:rgba(0,240,255,.4);
-  box-shadow:0 0 0 2px rgba(0,240,255,.1);
-}
-.form-textarea{resize:vertical;min-height:80px;line-height:1.6;}
+/* 卡片 */
+.panel{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:24px;overflow:hidden}
+.panel-head{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.panel-head h3{font-size:14px;font-weight:700;letter-spacing:.5px}
+.panel-body{padding:22px}
 
-.btn{
-  padding:9px 22px;border:none;border-radius:6px;
-  cursor:pointer;font-size:13px;font-family:inherit;
-  font-weight:600;transition:all .25s;display:inline-flex;
-  align-items:center;gap:6px;
-}
-.btn-primary{
-  background:linear-gradient(135deg,#00c8ff,#0080ff);
-  color:#fff;box-shadow:0 2px 10px rgba(0,200,255,.3);
-}
-.btn-primary:hover{
-  box-shadow:0 4px 20px rgba(0,200,255,.5);
-  transform:translateY(-1px);
-}
-.btn-danger{
-  background:rgba(255,0,68,.15);color:#ff0044;
-  border:1px solid rgba(255,0,68,.3);
-}
-.btn-danger:hover{background:rgba(255,0,68,.25);}
-.btn-success{
-  background:linear-gradient(135deg,#00c853,#00895e);
-  color:#fff;box-shadow:0 2px 10px rgba(0,200,83,.3);
-}
-.btn-success:hover{
-  box-shadow:0 4px 20px rgba(0,200,83,.5);
-  transform:translateY(-1px);
-}
-.btn-ghost{
-  background:transparent;color:#888;
-  border:1px solid rgba(255,255,255,.1);
-}
-.btn-ghost:hover{color:#e0e0e0;border-color:rgba(255,255,255,.2);}
-.btn-sm{padding:6px 14px;font-size:12px;}
-.btn-lg{padding:12px 32px;font-size:15px;}
-.btn-warn{
-  background:rgba(255,170,0,.15);color:#ffaa00;
-  border:1px solid rgba(255,170,0,.3);
-}
-.btn-warn:hover{background:rgba(255,170,0,.25);}
+/* 表单 */
+.form-row{margin-bottom:18px}
+.form-row label{display:block;font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:7px}
+.form-row input[type=text],
+.form-row textarea{width:100%;background:var(--input-bg);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:7px;font-size:13px;outline:none;transition:border-color .2s;font-family:inherit;resize:vertical}
+.form-row input[type=text]:focus,
+.form-row textarea:focus{border-color:var(--red)}
+.form-row textarea{min-height:90px;line-height:1.7}
 
-/* Tags */
-.tag{
-  display:inline-block;padding:3px 10px;border-radius:10px;
-  font-size:10px;font-weight:700;letter-spacing:.5px;
-}
-.tag-live{background:rgba(255,0,68,.15);color:#ff0044;border:1px solid rgba(255,0,68,.3);}
-.tag-upcoming{background:rgba(0,240,255,.15);color:#00f0ff;border:1px solid rgba(0,240,255,.3);}
-.tag-ended{background:rgba(100,100,100,.15);color:#888;border:1px solid rgba(100,100,100,.3);}
+/* 图片上传 */
+.img-upload{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.img-preview{width:120px;height:80px;border-radius:8px;overflow:hidden;background:var(--input-bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;position:relative;cursor:pointer}
+.img-preview img{width:100%;height:100%;object-fit:cover;border-radius:8px}
+.img-preview-label{font-size:11px;color:var(--muted);cursor:pointer}
+.img-preview-label:hover{color:var(--red)}
+.file-input{display:none}
 
-/* Status indicator */
-.status-dot{
-  display:inline-block;width:6px;height:6px;border-radius:50%;
-  margin-right:6px;
-}
-.status-dot.online{background:#00c853;box-shadow:0 0 6px rgba(0,200,83,.5);}
-.status-dot.offline{background:#ff0044;box-shadow:0 0 6px rgba(255,0,68,.5);}
+/* 产品选项卡 */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px}
+.tab{padding:10px 20px;font-size:13px;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s;letter-spacing:.5px}
+.tab.active{color:#fff;border-bottom-color:var(--red)}
+.tab:hover{color:var(--text)}
+.tab-panel{display:none}.tab-panel.active{display:block}
 
-/* Toast notification */
-.toast-container{
-  position:fixed;top:20px;right:20px;z-index:9999;
-  display:flex;flex-direction:column;gap:8px;
-}
-.toast{
-  padding:14px 20px;border-radius:8px;
-  font-size:13px;min-width:280px;
-  box-shadow:0 4px 20px rgba(0,0,0,.4);
-  animation:slideIn .3s ease;
-  display:flex;align-items:center;gap:8px;
-}
-.toast-success{background:rgba(0,200,83,.95);color:#fff;}
-.toast-error{background:rgba(255,0,68,.95);color:#fff;}
-.toast-info{background:rgba(0,200,255,.95);color:#fff;}
-@keyframes slideIn{from{transform:translateX(100%);opacity:0;}to{transform:translateX(0);opacity:1;}}
+/* 规格标签编辑 */
+.spec-list{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.spec-item{display:flex;align-items:center;gap:6px;background:var(--input-bg);border:1px solid var(--border);border-radius:5px;padding:4px 10px;font-size:12px}
+.spec-item span{outline:none;min-width:60px}
+.spec-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0 2px;line-height:1}
+.spec-del:hover{color:var(--red)}
+.spec-add{background:rgba(232,36,42,.12);border:1px dashed rgba(232,36,42,.4);color:var(--red);padding:4px 14px;border-radius:5px;font-size:12px;cursor:pointer;transition:background .2s}
+.spec-add:hover{background:rgba(232,36,42,.2)}
 
-/* Grid helpers */
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+/* 特性条目 */
+.feat-row{display:grid;grid-template-columns:60px 1fr 2fr;gap:10px;align-items:start;margin-bottom:12px}
+.feat-row input{width:100%;background:var(--input-bg);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:6px;font-size:13px;outline:none;font-family:inherit}
+.feat-row input:focus{border-color:var(--red)}
+.feat-row textarea{width:100%;background:var(--input-bg);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:6px;font-size:13px;outline:none;font-family:inherit;resize:vertical;min-height:60px}
+.feat-row textarea:focus{border-color:var(--red)}
 
-/* Item cards for events/videos */
-.item-card{
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.06);
-  border-radius:8px;padding:16px;
-  transition:all .3s;
-}
-.item-card:hover{border-color:rgba(0,240,255,.15);}
+/* KPI 网格 */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+.kpi-card{background:var(--input-bg);border:1px solid var(--border);border-radius:8px;padding:14px}
+.kpi-card label{font-size:10px;color:var(--muted);letter-spacing:1px;display:block;margin-bottom:5px}
+.kpi-card input{width:100%;background:transparent;border:none;color:var(--text);font-size:22px;font-weight:900;outline:none;font-family:inherit}
 
-/* Deploy panel */
-.deploy-box{
-  background:linear-gradient(135deg,rgba(0,240,255,.05),rgba(128,0,255,.05));
-  border:1px solid rgba(0,240,255,.15);
-  border-radius:12px;padding:32px;text-align:center;
-}
-.deploy-box h3{font-size:20px;color:#eee;margin-bottom:8px;}
-.deploy-box p{color:#888;font-size:13px;margin-bottom:20px;line-height:1.8;}
-.deploy-url{
-  display:inline-block;padding:8px 16px;
-  background:rgba(255,255,255,.05);border-radius:6px;
-  font-size:12px;color:#00f0ff;word-break:break-all;
-  max-width:100%;margin-bottom:16px;
-}
+/* 发布区 */
+.publish-box{background:linear-gradient(135deg,rgba(232,36,42,.06),rgba(232,36,42,.02));border:1px solid rgba(232,36,42,.2);border-radius:12px;padding:28px;text-align:center}
+.publish-box h3{font-size:18px;font-weight:800;margin-bottom:8px}
+.publish-box p{color:var(--muted);font-size:13px;margin-bottom:24px;line-height:1.7}
+.publish-actions{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
+.tunnel-result{margin-top:20px;background:var(--input-bg);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:left;display:none}
+.tunnel-url{font-size:20px;font-weight:700;color:var(--green);word-break:break-all;margin:8px 0}
+.tunnel-hint{font-size:12px;color:var(--muted)}
+.tunnel-log{font-size:11px;color:var(--muted);margin-top:8px;font-family:monospace;max-height:80px;overflow-y:auto}
 
-/* Empty state */
-.empty-state{
-  text-align:center;padding:40px;color:#555;
-  font-size:13px;
-}
+/* 预览iframe */
+.preview-wrap{border:1px solid var(--border);border-radius:10px;overflow:hidden;position:relative;background:#000}
+.preview-wrap iframe{width:100%;height:500px;border:none;background:#000}
+.preview-toolbar{padding:10px 16px;background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.preview-dots{display:flex;gap:6px}.preview-dots span{width:10px;height:10px;border-radius:50%}
 
-/* Mobile sidebar toggle */
-.sidebar-toggle{
-  display:none;position:fixed;top:14px;left:14px;z-index:200;
-  width:36px;height:36px;border-radius:6px;
-  background:rgba(0,240,255,.1);border:1px solid rgba(0,240,255,.2);
-  color:#00f0ff;font-size:18px;cursor:pointer;
-  align-items:center;justify-content:center;
-}
+/* toast */
+.toast{position:fixed;top:20px;right:20px;padding:12px 24px;border-radius:8px;font-size:13px;font-weight:600;z-index:9999;transform:translateX(120%);transition:transform .3s;letter-spacing:.5px}
+.toast.show{transform:translateX(0)}
+.toast-success{background:var(--green);color:#000}
+.toast-error{background:var(--red);color:#fff}
+.toast-info{background:var(--blue);color:#fff}
 
-/* Image uploader in admin */
-.img-upload-area{
-  width:100%;max-width:360px;height:200px;
-  border:2px dashed rgba(0,240,255,.25);
-  border-radius:8px;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  cursor:pointer;transition:all .25s;
-  position:relative;overflow:hidden;
-  background:rgba(0,240,255,.02);
-}
-.img-upload-area:hover{
-  border-color:rgba(0,240,255,.5);
-  background:rgba(0,240,255,.05);
-}
-.img-upload-area.has-img{
-  border-color:rgba(0,200,83,.4);
-  background:transparent;
-}
-.img-upload-area .upload-hint{
-  font-size:12px;color:#666;text-align:center;line-height:1.6;
-}
-.img-upload-area .upload-hint .big{font-size:24px;display:block;margin-bottom:4px;}
-.img-upload-area img{
-  width:100%;height:100%;object-fit:cover;
-  position:absolute;top:0;left:0;
-}
-.img-upload-area .img-remove{
-  position:absolute;top:4px;right:4px;
-  width:24px;height:24px;border-radius:50%;
-  background:rgba(255,0,68,.85);color:#fff;
-  border:none;cursor:pointer;font-size:14px;
-  display:none;align-items:center;justify-content:center;
-  z-index:2;line-height:1;
-}
-.img-upload-area.has-img .img-remove{display:flex;}
-.img-upload-area.has-img .upload-hint{display:none;}
+/* badge */
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.5px}
+.badge-green{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+.badge-red{background:rgba(232,36,42,.15);color:var(--red);border:1px solid rgba(232,36,42,.3)}
 
-/* ============================
-   RESPONSIVE
-   ============================ */
-@media(max-width:768px){
-  .sidebar{transform:translateX(-100%);}
-  .sidebar.open{transform:translateX(0);}
-  .sidebar-toggle{display:flex;}
-  .main{margin-left:0;}
-  .topbar{padding:14px 16px 14px 56px;}
-  .page{padding:20px 16px;}
-  .grid-2,.grid-3{grid-template-columns:1fr;}
-}
+/* 分割线 */
+hr.divider{border:none;border-top:1px solid var(--border);margin:20px 0}
 
-/* Scrollbar */
-::-webkit-scrollbar{width:6px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:rgba(0,240,255,.2);border-radius:3px;}
-::-webkit-scrollbar-thumb:hover{background:rgba(0,240,255,.4);}
+/* 开关 */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
+.toggle-row label{font-size:13px;color:var(--text)}
+.toggle{position:relative;width:44px;height:24px}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;cursor:pointer;inset:0;background:var(--border);border-radius:12px;transition:.3s}
+.toggle-slider::before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.3s}
+.toggle input:checked+.toggle-slider{background:var(--red)}
+.toggle input:checked+.toggle-slider::before{transform:translateX(20px)}
 </style>
 </head>
 <body>
 
-<!-- Sidebar Toggle (mobile) -->
-<button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+<div class="layout">
 
-<!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-  <div class="sidebar-logo" id="sidebarLogo">造悟社</div>
-  <div class="sidebar-sub">ADMIN PANEL v2.0</div>
-  <nav class="sidebar-nav">
-    <div class="nav-section">内容管理</div>
-    <div class="nav-item active" onclick="switchPage('dashboard',this)">
-      <span class="icon">📊</span> 仪表盘
+  <!-- 侧边栏 -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">⚡ BATTLE<em>BOT</em><br/><span style="font-size:10px;color:var(--muted);font-weight:400;letter-spacing:1px;">后台管理系统</span></div>
+
+    <div class="sidebar-section">内容管理</div>
+    <div class="nav-item active" onclick="showPage('page-hero',this)">
+      <span class="icon">🏠</span> 首屏 / 品牌信息
     </div>
-    <div class="nav-item" onclick="switchPage('events',this)">
-      <span class="icon">🏆</span> 赛事管理
+    <div class="nav-item" onclick="showPage('page-products',this)">
+      <span class="icon">🤖</span> 产品系列
     </div>
-    <div class="nav-item" onclick="switchPage('rules',this)">
-      <span class="icon">📜</span> 规则管理
+    <div class="nav-item" onclick="showPage('page-features',this)">
+      <span class="icon">⚙️</span> 核心特性
     </div>
-    <div class="nav-item" onclick="switchPage('equipment',this)">
-      <span class="icon">⚙️</span> 器材管理
-    </div>
-    <div class="nav-item" onclick="switchPage('videos',this)">
-      <span class="icon">🎬</span> 视频管理
-    </div>
-    <div class="nav-item" onclick="switchPage('hero',this)">
-      <span class="icon">🏠</span> 首页设置
+    <div class="nav-item" onclick="showPage('page-footer',this)">
+      <span class="icon">📄</span> 页脚信息
     </div>
 
-    <div class="nav-section" style="margin-top:16px">社区</div>
-    <div class="nav-item" onclick="switchPage('forum',this)">
-      <span class="icon">💬</span> 论坛管理
+    <div class="sidebar-section">发布</div>
+    <div class="nav-item" onclick="showPage('page-publish',this)">
+      <span class="icon">🚀</span> 发布到网上
     </div>
-    <div class="nav-item" onclick="switchPage('users',this)">
-      <span class="icon">👥</span> 用户管理
-    </div>
-    <div class="nav-item" onclick="switchPage('visitors',this)">
-      <span class="icon">📈</span> 浏览记录
+    <div class="nav-item" onclick="showPage('page-preview',this)">
+      <span class="icon">👁️</span> 预览前台
     </div>
 
-    <div class="nav-section" style="margin-top:16px">系统</div>
-    <div class="nav-item" onclick="switchPage('deploy',this)">
-      <span class="icon">🚀</span> 发布管理
+    <div class="sidebar-footer">
+      <span class="status-dot"></span>服务运行中
     </div>
-    <div class="nav-item" onclick="switchPage('config',this)">
-      <span class="icon">🔧</span> 配置
-    </div>
-  </nav>
-  <div class="sidebar-footer">
-    © 2026 MECHA ARENA<br>格斗机器人竞技平台
-  </div>
-</div>
+  </aside>
 
-<!-- Main -->
-<div class="main">
-  <div class="topbar">
-    <div class="topbar-title" id="topbarTitle">📊 仪表盘</div>
-    <div class="topbar-actions">
-      <button class="btn btn-success btn-sm" onclick="previewFrontend()">👁 预览前台</button>
-      <button class="btn btn-primary btn-sm" onclick="switchPage('deploy',document.querySelectorAll('.nav-item')[6])">🚀 发布</button>
-    </div>
-  </div>
-
-  <!-- ======== DASHBOARD ======== -->
-  <div class="page active" id="page-dashboard">
-    <div class="grid-3" style="margin-bottom:24px;">
-      <div class="card" style="text-align:center;padding:20px;">
-        <div style="font-size:32px;margin-bottom:8px;">🏆</div>
-        <div style="font-size:28px;font-weight:900;color:#00f0ff;" id="statEvents">4</div>
-        <div style="font-size:11px;color:#666;margin-top:4px;">赛事数量</div>
-      </div>
-      <div class="card" style="text-align:center;padding:20px;">
-        <div style="font-size:32px;margin-bottom:8px;">⚙️</div>
-        <div style="font-size:28px;font-weight:900;color:#ff0044;" id="statEquip">4</div>
-        <div style="font-size:11px;color:#666;margin-top:4px;">器材项目</div>
-      </div>
-      <div class="card" style="text-align:center;padding:20px;">
-        <div style="font-size:32px;margin-bottom:8px;">🎬</div>
-        <div style="font-size:28px;font-weight:900;color:#8000ff;" id="statVideos">3</div>
-        <div style="font-size:11px;color:#666;margin-top:4px;">视频数量</div>
+  <!-- 主区域 -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="pageTitle">首屏 / 品牌信息</div>
+      <div class="topbar-right">
+        <button class="btn btn-secondary btn-sm" onclick="loadData()">↺ 刷新数据</button>
+        <button class="btn btn-primary btn-sm" onclick="saveAll()">💾 保存</button>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-title"><span class="dot"></span> 快捷操作</div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;">
-        <button class="btn btn-primary" onclick="switchPage('events',document.querySelectorAll('.nav-item')[1])">编辑赛事</button>
-        <button class="btn btn-ghost" onclick="switchPage('equipment',document.querySelectorAll('.nav-item')[3])">编辑器材</button>
-        <button class="btn btn-ghost" onclick="switchPage('videos',document.querySelectorAll('.nav-item')[4])">编辑视频</button>
-        <button class="btn btn-success" onclick="previewFrontend()">预览前台</button>
-        <button class="btn btn-primary" onclick="switchPage('deploy',document.querySelectorAll('.nav-item')[6])">一键发布</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><span class="dot"></span> 线上状态</div>
-      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-        <div>
-          <span class="status-dot online" id="siteStatus"></span>
-          <span id="siteStatusText">检查中...</span>
+    <!-- 首屏页 -->
+    <div class="page active" id="page-hero">
+      <div class="panel">
+        <div class="panel-head"><h3>品牌 &amp; 导航</h3></div>
+        <div class="panel-body">
+          <div class="form-row"><label>品牌名称</label><input type="text" id="f-brand" placeholder="⚡ BATTLEBOT"/></div>
+          <div class="form-row"><label>导航徽标文字</label><input type="text" id="f-navBadge" placeholder="2026 新品"/></div>
         </div>
-        <div style="font-size:12px;color:#666;" id="siteUrl">--</div>
       </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><span class="dot"></span> 说明</div>
-      <div style="font-size:13px;color:#888;line-height:2;">
-        <p>🔒 <b style="color:#00f0ff">安全模式</b>：发布后的网页内容浏览者<b style="color:#ff0044">无法修改</b>，只有通过此后台才能编辑和发布。</p>
-        <p>📷 所有图片（器材/赛事/视频）均可在后台上传，发布时自动打包到网页中。</p>
-        <p>💡 修改内容后点击「一键发布」即可更新线上网站。</p>
+      <div class="panel">
+        <div class="panel-head"><h3>英雄区文字</h3></div>
+        <div class="panel-body">
+          <div class="form-row"><label>副标签文字</label><input type="text" id="f-heroEyebrow"/></div>
+          <div class="form-row"><label>标题第一行</label><input type="text" id="f-heroLine1"/></div>
+          <div class="form-row"><label>标题第二行（红色）</label><input type="text" id="f-heroLine2"/></div>
+          <div class="form-row"><label>描述文案</label><textarea id="f-heroDesc"></textarea></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div class="form-row"><label>按钮一（主）</label><input type="text" id="f-heroBtn1"/></div>
+            <div class="form-row"><label>按钮二（次）</label><input type="text" id="f-heroBtn2"/></div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-
-  <!-- ======== HERO SETTINGS ======== -->
-  <div class="page" id="page-hero">
-    <div class="card">
-      <div class="card-title"><span class="dot"></span> 首页顶部（Hero 区域）</div>
-      <div class="form-group">
-        <label class="form-label">站点名称（Logo）</label>
-        <input class="form-input" id="heroSiteName" placeholder="例如：造悟社">
+      <div class="panel">
+        <div class="panel-head"><h3>英雄区图片</h3></div>
+        <div class="panel-body">
+          <div class="img-upload">
+            <div class="img-preview" onclick="triggerUpload('hero-img-input','f-heroImg','hero-img-preview')">
+              <img id="hero-img-preview" src="" alt="" style="display:none"/>
+              <span id="hero-img-icon">🖼</span>
+            </div>
+            <div>
+              <div class="img-preview-label" onclick="triggerUpload('hero-img-input','f-heroImg','hero-img-preview')">点击上传英雄区背景图</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:4px;">建议尺寸 1400×900，支持 JPG/PNG/WEBP</div>
+              <input id="f-heroImg" type="text" style="width:240px;margin-top:8px;" placeholder="或填写图片 URL"/>
+            </div>
+          </div>
+          <input type="file" id="hero-img-input" class="file-input" accept="image/*" onchange="uploadImg(this,'f-heroImg','hero-img-preview','hero-img-icon')"/>
+        </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">徽章文字</label>
-        <input class="form-input" id="heroBadge" placeholder="例如：⚡ 2026 SEASON">
-      </div>
-      <div class="form-group">
-        <label class="form-label">主标题</label>
-        <textarea class="form-textarea" id="heroTitle" rows="2" placeholder="支持换行"></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">副标题描述</label>
-        <textarea class="form-textarea" id="heroSubtitle"></textarea>
-      </div>
-      <button class="btn btn-primary" onclick="saveHeroSettings()">💾 保存</button>
-    </div>
-    <div class="card">
-      <div class="card-title"><span class="dot"></span> 页脚设置</div>
-      <div class="form-group">
-        <label class="form-label">版权信息</label>
-        <input class="form-input" id="footerText" placeholder="例如：© 2026 MECHA ARENA">
-      </div>
-      <button class="btn btn-primary" onclick="saveFooterSettings()">💾 保存</button>
-    </div>
-  </div>
-
-  <!-- ======== EVENTS ======== -->
-  <div class="page" id="page-events">
-    <div class="card">
-      <div class="card-title"><span class="dot"></span> 赛事列表</div>
-      <button class="btn btn-primary btn-sm" onclick="addEvent()" style="margin-bottom:16px;">＋ 添加赛事</button>
-      <div id="eventsList"></div>
-    </div>
-  </div>
-
-  <!-- ======== RULES ======== -->
-  <div class="page" id="page-rules">
-    <div class="card">
-      <div class="card-title"><span class="dot"></span> 规则内容编辑</div>
-      <p style="font-size:12px;color:#666;margin-bottom:16px;">编辑各分类的规则内容，修改会实时保存到本地数据</p>
-      <div id="rulesEditor"></div>
-    </div>
-  </div>
-
-  <!-- ======== EQUIPMENT ======== -->
-  <div class="page" id="page-equipment">
-    <div class="card">
-      <div class="card-title"><span class="dot"></span> 器材列表</div>
-      <button class="btn btn-primary btn-sm" onclick="addEquipment()" style="margin-bottom:16px;">＋ 添加器材</button>
-      <div id="equipmentList"></div>
-    </div>
-  </div>
-
-  <!-- ======== VIDEOS ======== -->
-  <div class="page" id="page-videos">
-    <div class="card">
-      <div class="card-title"><span class="dot"></span> 视频列表</div>
-      <button class="btn btn-primary btn-sm" onclick="addVideo()" style="margin-bottom:16px;">＋ 添加视频</button>
-      <div id="videosList"></div>
-    </div>
-  </div>
-
-  <!-- ======== DEPLOY ======== -->
-  <div class="page" id="page-deploy">
-    <div class="card">
-      <div class="card-title"><span class="dot"></span> 一键发布</div>
-      <div class="deploy-box">
-        <h3>🚀 发布到 GitHub Pages</h3>
-        <p>将修改后的首页和报价单一键推送到线上<br><b style="color:#00f0ff">发布后的网页浏览者无法修改任何内容</b></p>
-        <div class="deploy-url" id="deployUrl">--</div>
-        <div style="margin-top:16px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-          <button class="btn btn-success btn-lg" onclick="deployAll()">🚀 一键发布全部</button>
-          <button class="btn btn-ghost" onclick="deployIndex()">仅发布首页</button>
-          <button class="btn btn-ghost" onclick="deployQuotation()">仅发布报价单</button>
+      <div class="panel">
+        <div class="panel-head"><h3>数据指标（KPI）</h3></div>
+        <div class="panel-body">
+          <div class="kpi-grid" id="kpi-grid"></div>
         </div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-title"><span class="dot"></span> 发布日志</div>
-      <div id="deployLog" style="font-size:12px;color:#888;max-height:300px;overflow-y:auto;line-height:1.8;">
-        暂无发布记录
+    <!-- 产品页 -->
+    <div class="page" id="page-products">
+      <div class="panel">
+        <div class="panel-head"><h3>产品系列管理</h3><span style="font-size:12px;color:var(--muted)">共 3 款</span></div>
+        <div class="panel-body">
+          <div class="tabs">
+            <div class="tab active" onclick="showTab(0,this)">产品 A</div>
+            <div class="tab" onclick="showTab(1,this)">产品 B</div>
+            <div class="tab" onclick="showTab(2,this)">产品 C</div>
+          </div>
+          <div id="prod-panels"></div>
+        </div>
       </div>
-    </div>
-  </div>
-
-  <!-- ======== CONFIG ======== -->
-  <div class="page" id="page-config">
-    <div class="card">
-      <div class="card-title"><span class="dot"></span> GitHub 配置</div>
-      <p style="font-size:12px;color:#666;margin-bottom:16px;">配置你的 GitHub 账号信息，用于发布到 GitHub Pages</p>
-      <div class="form-group">
-        <label class="form-label">GitHub 用户名</label>
-        <input type="text" class="form-input" id="cfgUsername" placeholder="例如：97631170-art">
-      </div>
-      <div class="form-group">
-        <label class="form-label">GitHub Token</label>
-        <input type="password" class="form-input" id="cfgToken" placeholder="ghp_xxxx...">
-        <div style="font-size:11px;color:#555;margin-top:4px;">Token 仅保存在浏览器本地，不会上传到任何服务器</div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">仓库名称</label>
-        <input type="text" class="form-input" id="cfgRepo" placeholder="例如：robot-quotation-2026">
-      </div>
-      <div class="form-group">
-        <label class="form-label">分支</label>
-        <input type="text" class="form-input" id="cfgBranch" placeholder="例如：main" value="main">
-      </div>
-      <button class="btn btn-primary" onclick="saveConfig()">💾 保存配置</button>
-      <button class="btn btn-ghost" onclick="testConnection()" style="margin-left:8px;">🔍 测试连接</button>
     </div>
 
-    <div class="card">
-      <div class="card-title"><span class="dot"></span> 数据管理</div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;">
-        <button class="btn btn-ghost" onclick="exportData()">📥 导出数据 (JSON)</button>
-        <button class="btn btn-ghost" onclick="document.getElementById('importFile').click()">📤 导入数据</button>
-        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
-        <button class="btn btn-danger" onclick="resetData()">🗑️ 重置所有数据</button>
+    <!-- 特性页 -->
+    <div class="page" id="page-features">
+      <div class="panel">
+        <div class="panel-head"><h3>特性区标题</h3></div>
+        <div class="panel-body">
+          <div class="form-row"><label>大标题</label><input type="text" id="f-featTitle"/></div>
+          <div class="form-row"><label>特性区图片</label>
+            <div class="img-upload" style="margin-top:8px">
+              <div class="img-preview" onclick="triggerUpload('feat-img-input','f-featImg','feat-img-preview')">
+                <img id="feat-img-preview" src="" alt="" style="display:none"/>
+                <span id="feat-img-icon">📸</span>
+              </div>
+              <div>
+                <div class="img-preview-label" onclick="triggerUpload('feat-img-input','f-featImg','feat-img-preview')">点击上传特性区图片</div>
+                <input id="f-featImg" type="text" style="width:240px;margin-top:8px;" placeholder="或填写图片 URL"/>
+              </div>
+            </div>
+            <input type="file" id="feat-img-input" class="file-input" accept="image/*" onchange="uploadImg(this,'f-featImg','feat-img-preview','feat-img-icon')"/>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
-
-<!-- PAGE: FORUM -->
-<div class="page" id="page-forum">
-  <div class="card">
-    <div class="card-title"><span class="dot"></span> 腾讯云开发 · 论坛配置</div>
-    <p style="font-size:12px;color:#666;margin-bottom:16px;">
-      论坛使用 <strong style="color:#00f0ff;">腾讯云开发 CloudBase</strong> 存储用户和帖子数据（免费额度充足）。
-      <a href="https://tcb.cloud.tencent.com/" target="_blank" style="color:#00f0ff;">点此开通腾讯云开发 →</a>
-    </p>
-    <div style="background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.25);border-radius:8px;padding:14px;margin-bottom:20px;font-size:12px;color:#bbb;line-height:2;">
-      <strong style="color:#ffd700;">📖 配置步骤：</strong><br>
-      1. 登录腾讯云 → 开通云开发 → 创建一个环境（免费模板即可）<br>
-      2. 在环境详情页复制 <code>环境 ID</code>（格式：<code>env-xxxxxxxxxx</code>）<br>
-      3. 进入「数据库」→ 创建以下集合：<code>ForumPost</code>、<code>ForumReply</code>、<code>users</code><br>
-      4. 将集合权限设为「所有用户可读，仅创建者可读写」<br>
-      5. 填入环境 ID 保存，刷新 forum.html 后生效<br>
-      <strong style="color:#07C160;">💬 微信登录（可选）：</strong><br>
-      6. 前往 <a href="https://open.weixin.qq.com/" target="_blank" style="color:#07C160;">微信开放平台</a> → 创建网站应用 → 获取 AppID 和 AppSecret<br>
-      7. 在 CloudBase 控制台「登录方式」中配置微信开放平台 AppID 和 AppSecret<br>
-      8. 将网站应用的「授权回调域」填写为你的网站域名
-    </div>
-    <div class="form-group">
-      <label class="form-label">环境 ID</label>
-      <input type="text" class="form-input" id="tcbEnvId" placeholder="env-xxxxxxxxxx（腾讯云开发环境 ID）">
+      <div class="panel">
+        <div class="panel-head"><h3>特性条目</h3></div>
+        <div class="panel-body">
+          <div style="display:grid;grid-template-columns:60px 1fr 2fr;gap:10px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border)">
+            <div style="font-size:11px;color:var(--muted);letter-spacing:1px;">图标</div>
+            <div style="font-size:11px;color:var(--muted);letter-spacing:1px;">标题</div>
+            <div style="font-size:11px;color:var(--muted);letter-spacing:1px;">描述</div>
+          </div>
+          <div id="feat-rows"></div>
+        </div>
+      </div>
     </div>
 
-    <!-- 微信登录配置 -->
-    <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,.06);">
-      <label class="form-label" style="display:flex;align-items:center;gap:6px;">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="#07C160"><path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 01.213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.328.328 0 00.186-.059l2.025-1.215a.58.58 0 01.55-.054 9.42 9.42 0 002.804.422c.164 0 .326-.005.488-.013a5.77 5.77 0 01-.248-1.649c0-3.642 3.384-6.597 7.56-6.597.262 0 .52.012.776.034C16.707 4.862 13.07 2.188 8.69 2.188zm-2.87 4.401a1.06 1.06 0 11-.001 2.12 1.06 1.06 0 01.001-2.12zm5.742 0a1.06 1.06 0 110 2.12 1.06 1.06 0 010-2.12zM16.964 9.08c-3.655 0-6.62 2.462-6.62 5.498 0 3.037 2.965 5.498 6.62 5.498a7.8 7.8 0 002.266-.334.47.47 0 01.444.043l1.642.983a.264.264 0 00.15.048c.132 0 .235-.107.235-.24 0-.058-.023-.115-.038-.171l-.315-1.196a.477.477 0 01.172-.536C22.894 17.193 23.8 15.55 23.8 14.578c0-3.036-2.964-5.498-6.619-5.498h-.217zm-2.525 3.49a.856.856 0 110 1.712.856.856 0 010-1.712zm5.049 0a.856.856 0 110 1.712.856.856 0 010-1.712z"/></svg>
-        微信开放平台 · AppID
-        <span style="font-size:11px;color:#888;font-weight:400;">（可选，不填则隐藏微信登录按钮）</span>
-      </label>
-      <input type="text" class="form-input" id="tcbWxAppId" placeholder="wx 开头的微信开放平台网站应用 AppID">
+    <!-- 页脚页 -->
+    <div class="page" id="page-footer">
+      <div class="panel">
+        <div class="panel-head"><h3>页脚信息</h3></div>
+        <div class="panel-body">
+          <div class="form-row"><label>品牌文字</label><input type="text" id="f-footerBrand"/></div>
+          <div class="form-row"><label>联系信息</label><textarea id="f-footerInfo" style="min-height:60px;"></textarea></div>
+        </div>
+      </div>
     </div>
-    <div class="form-group" style="margin-top:10px;">
-      <label class="form-label">微信开放平台 · AppSecret</label>
-      <input type="password" class="form-input" id="tcbWxAppSecret" placeholder="微信开放平台网站应用 AppSecret（仅保存在 CloudBase 控制台，此处仅作记录）">
-    </div>
-    <button class="btn btn-primary" onclick="saveTCBConfig()">💾 保存配置</button>
-    <button class="btn btn-ghost" onclick="testTCBConfig()" style="margin-left:8px;">🔍 测试连接</button>
-    <a href="forum.html" target="_blank" class="btn btn-ghost" style="margin-left:8px;">🌐 打开论坛</a>
-    <div id="tcbTestResult" style="margin-top:12px;font-size:12px;"></div>
-  </div>
 
-  <div class="card">
-    <div class="card-title"><span class="dot"></span> 论坛快速统计</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;" id="forumStats">
-      <div style="text-align:center;background:rgba(0,240,255,.04);border:1px solid rgba(0,240,255,.1);border-radius:8px;padding:16px;">
-        <div style="font-size:28px;font-weight:900;color:#00f0ff;" id="fsTotalPosts">-</div>
-        <div style="font-size:12px;color:#666;margin-top:4px;">总帖子</div>
+    <!-- 发布页 -->
+    <div class="page" id="page-publish">
+      <div class="publish-box">
+        <h3>🚀 一键发布到公网</h3>
+        <p>先保存内容，再点击「生成静态页面」，然后点击「发布到公网」获取可分享链接。<br/>公网链接通过 localtunnel 隧道实现，需保持本程序运行。</p>
+        <div class="publish-actions">
+          <button class="btn btn-secondary" onclick="saveAll(true)">💾 保存内容</button>
+          <button class="btn btn-blue" onclick="buildStatic()">⚙️ 生成静态页面</button>
+          <button class="btn btn-success" id="btn-tunnel" onclick="startTunnel()">🌐 发布到公网</button>
+        </div>
+        <div class="tunnel-result" id="tunnel-result">
+          <div style="font-size:12px;color:var(--muted);letter-spacing:1px;">🌐 公网访问地址（发给任何人都可以打开）</div>
+          <div class="tunnel-url" id="tunnel-url">正在获取...</div>
+          <div class="tunnel-hint">⚠️ 此链接在本程序关闭后失效。如需永久域名，请部署到云服务器。</div>
+          <button class="btn btn-secondary btn-sm" style="margin-top:12px" onclick="copyUrl()">📋 复制链接</button>
+          <a id="tunnel-open" href="#" target="_blank"><button class="btn btn-blue btn-sm" style="margin-top:12px;margin-left:8px">↗ 打开预览</button></a>
+          <div class="tunnel-log" id="tunnel-log"></div>
+        </div>
       </div>
-      <div style="text-align:center;background:rgba(0,240,255,.04);border:1px solid rgba(0,240,255,.1);border-radius:8px;padding:16px;">
-        <div style="font-size:28px;font-weight:900;color:#00f0ff;" id="fsTotalUsers">-</div>
-        <div style="font-size:12px;color:#666;margin-top:4px;">注册用户</div>
-      </div>
-      <div style="text-align:center;background:rgba(0,240,255,.04);border:1px solid rgba(0,240,255,.1);border-radius:8px;padding:16px;">
-        <div style="font-size:28px;font-weight:900;color:#00f0ff;" id="fsTotalReplies">-</div>
-        <div style="font-size:12px;color:#666;margin-top:4px;">总回复</div>
-      </div>
-      <div style="text-align:center;background:rgba(0,240,255,.04);border:1px solid rgba(0,240,255,.1);border-radius:8px;padding:16px;">
-        <div style="font-size:28px;font-weight:900;color:#00f0ff;" id="fsTodayPosts">-</div>
-        <div style="font-size:12px;color:#666;margin-top:4px;">今日新帖</div>
-      </div>
-    </div>
-    <button class="btn btn-ghost" style="margin-top:14px;" onclick="loadForumStats()">🔄 刷新统计</button>
-  </div>
-</div>
 
-<!-- PAGE: USERS -->
-<div class="page" id="page-users">
-  <div class="card">
-    <div class="card-title"><span class="dot"></span> 注册用户管理</div>
-    <div style="display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">
-      <input class="form-input" id="userSearch" placeholder="搜索用户名/昵称…" style="max-width:240px;" oninput="loadUsers()">
-      <button class="btn btn-ghost btn-sm" onclick="loadUsers()">🔍 查询</button>
-      <span style="font-size:12px;color:#555;margin-left:auto;">共 <span id="usersTotal">0</span> 位用户</span>
+      <div class="panel" style="margin-top:28px">
+        <div class="panel-head"><h3>本地访问地址</h3></div>
+        <div class="panel-body">
+          <div style="display:flex;gap:16px;flex-wrap:wrap">
+            <div style="flex:1;background:var(--input-bg);border:1px solid var(--border);border-radius:8px;padding:16px">
+              <div style="font-size:11px;color:var(--muted);letter-spacing:1px;margin-bottom:8px">前台展示页</div>
+              <a href="http://localhost:8090" target="_blank" style="color:var(--blue);font-size:15px;font-weight:700;">http://localhost:8090</a>
+            </div>
+            <div style="flex:1;background:var(--input-bg);border:1px solid var(--border);border-radius:8px;padding:16px">
+              <div style="font-size:11px;color:var(--muted);letter-spacing:1px;margin-bottom:8px">后台管理</div>
+              <a href="http://localhost:8080/admin.html" target="_blank" style="color:var(--red);font-size:15px;font-weight:700;">http://localhost:8080/admin.html</a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div id="usersTable">
-      <div style="text-align:center;padding:40px;color:#444;">请先配置腾讯云开发并保存，然后刷新此页面</div>
-    </div>
-    <div id="usersPagination" style="display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;"></div>
-  </div>
-</div>
 
-<!-- PAGE: VISITORS -->
-<div class="page" id="page-visitors">
-  <div class="card">
-    <div class="card-title"><span class="dot"></span> 访客浏览记录</div>
-    <p style="font-size:12px;color:#555;margin-bottom:16px;">
-      浏览记录由前台页面自动上报，每次访问时记录 IP 概况、来源页面、时间等信息（不含个人隐私）。
-    </p>
-    <div style="display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">
-      <select class="form-input" id="visitRange" onchange="loadVisitors()" style="max-width:160px;">
-        <option value="7">近7天</option>
-        <option value="30">近30天</option>
-        <option value="90">近3个月</option>
-        <option value="0">全部</option>
-      </select>
-      <button class="btn btn-ghost btn-sm" onclick="loadVisitors()">🔄 刷新</button>
-      <span style="font-size:12px;color:#555;margin-left:auto;">共 <span id="visitorsTotal">0</span> 条记录</span>
-    </div>
-    <!-- Summary charts -->
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px;" id="visitSummary">
-      <div style="background:rgba(0,240,255,.04);border:1px solid rgba(0,240,255,.1);border-radius:8px;padding:14px;text-align:center;">
-        <div style="font-size:26px;font-weight:900;color:#00f0ff;" id="vstPV">-</div>
-        <div style="font-size:12px;color:#666;margin-top:4px;">总访问量 PV</div>
-      </div>
-      <div style="background:rgba(0,240,255,.04);border:1px solid rgba(0,240,255,.1);border-radius:8px;padding:14px;text-align:center;">
-        <div style="font-size:26px;font-weight:900;color:#00f0ff;" id="vstUV">-</div>
-        <div style="font-size:12px;color:#666;margin-top:4px;">独立访客 UV</div>
-      </div>
-      <div style="background:rgba(0,240,255,.04);border:1px solid rgba(0,240,255,.1);border-radius:8px;padding:14px;text-align:center;">
-        <div style="font-size:26px;font-weight:900;color:#00f0ff;" id="vstToday">-</div>
-        <div style="font-size:12px;color:#666;margin-top:4px;">今日访问</div>
-      </div>
-      <div style="background:rgba(0,240,255,.04);border:1px solid rgba(0,240,255,.1);border-radius:8px;padding:14px;text-align:center;">
-        <div style="font-size:26px;font-weight:900;color:#00f0ff;" id="vstAvg">-</div>
-        <div style="font-size:12px;color:#666;margin-top:4px;">日均访问</div>
+    <!-- 预览页 -->
+    <div class="page" id="page-preview">
+      <div class="preview-wrap">
+        <div class="preview-toolbar">
+          <div class="preview-dots">
+            <span style="background:#ff5f57"></span>
+            <span style="background:#febc2e"></span>
+            <span style="background:#28c840"></span>
+          </div>
+          <span style="font-size:12px;color:var(--muted);margin-left:10px;">http://localhost:8090</span>
+          <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="document.getElementById('preview-frame').src='http://localhost:8090?t='+Date.now()">↺ 刷新</button>
+          <a href="http://localhost:8090" target="_blank"><button class="btn btn-blue btn-sm">↗ 新标签打开</button></a>
+        </div>
+        <iframe id="preview-frame" src="http://localhost:8090"></iframe>
       </div>
     </div>
-    <!-- Page breakdown -->
-    <div style="margin-bottom:20px;">
-      <div style="font-size:13px;font-weight:700;color:#00f0ff;margin-bottom:10px;">页面访问分布</div>
-      <div id="pageBreakdown" style="display:flex;flex-direction:column;gap:6px;"></div>
-    </div>
-    <!-- Record list -->
-    <div id="visitTable"></div>
-    <div id="visitPagination" style="display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;"></div>
-  </div>
-</div>
 
-<!-- Toast container -->
-<div class="toast-container" id="toastContainer"></div>
-<!-- Hidden file input for image upload -->
-<input type="file" id="hiddenImgInput" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 
 <script>
-/* ============================================================
-   DATA STORE (localStorage)
-   ============================================================ */
-var STORAGE_KEY = "mecha_admin_data";
-var CONFIG_KEY = "mecha_admin_config";
-var IMGS_KEY = "mecha_admin_imgs"; // 图片单独存储
+const API = 'http://localhost:8080/api';
+let siteData = {};
 
-var defaultData = {
-  hero: {
-    siteName: "造悟社",
-    badge: "⚡ 2026 SEASON",
-    title: "钢铁碰撞\n智能对决",
-    subtitle: "格斗机器人竞技平台 — 汇集赛事资讯、器材报价、规则解读与精彩视频，为你打造一站式的格斗机器人竞技体验"
-  },
-  footer: "© 2026 造悟社 · 格斗机器人竞技平台 · All Rights Reserved",
-  events: [
-    { id:1, title:"2026 全国格斗机器人锦标赛", date:"2026.05.15 - 05.18", location:"北京·国家会议中心", status:"live", emoji:"🤖", img:"" },
-    { id:2, title:"青少年格斗机器人联赛·夏季赛", date:"2026.07.20 - 07.22", location:"上海·世博展览馆", status:"upcoming", emoji:"⚔️", img:"" },
-    { id:3, title:"城际对抗赛·华南赛区", date:"2026.08.10 - 08.12", location:"深圳·会展中心", status:"upcoming", emoji:"🏆", img:"" },
-    { id:4, title:"校园机器人格斗联赛·春季赛", date:"2026.03.08 - 03.10", location:"广州·华南理工", status:"ended", emoji:"🎓", img:"" }
-  ],
-  rules: {
-    overview: {
-      title: "赛事概览", icon: "📋",
-      content: "2026 BoxBot 机器人格斗赛项包含三个重量级别：轻量级、羽量级和迷你级，分别面向小学组、中学组。以下为简化解读，完整规则以官方文件为准。",
-      boxes: [
-        { type:"info", title:"三个级别一览", content:"• <b>轻量级</b>：小学组 + 中学组，三局两胜制，可使用多种武器类型<br>• <b>羽量级</b>：小学低龄组，一局定胜负，仅限弹射类武器<br>• <b>迷你级</b>：小学低龄组，一局定胜负，仅限弹射类武器" },
-        { type:"warn", title:"⚠️ 规则状态", content:"本版本规则为拟定稿，仅供参考，后续可能微调。参赛前请务必确认最新官方版本。" }
-      ]
-    },
-    specs: {
-      title: "场地与参数", icon: "📐",
-      content: "各级别对格斗仓尺寸、机器人尺寸和重量都有明确规定，赛前检录将严格执行。",
-      boxes: [
-        { type:"info", title:"轻量级参数（小学/中学组）", content:"• 格斗仓：0.8m × 0.8m，含初始区、竞赛区和 OOTA 区<br>• OOTA 陷阱高度：23-24mm<br>• 小学/中学手控：底面 ≤ 150mm×180mm，高 ≤ 130mm，重 ≤ 320g<br>• 中学智能：底面 ≤ 150mm×145mm，高 ≤ 180mm，重 ≤ 360g<br>• 比赛中允许伸缩结构" },
-        { type:"info", title:"羽量级参数", content:"• 格斗仓：0.5m × 0.5m，含 OOTA 区<br>• OOTA 陷阱高度：15-16mm<br>• 机器人 ≤ 110mm×110mm，高度不限，重 ≤ 220g<br>• 比赛过程中允许变形" },
-        { type:"info", title:"迷你级参数", content:"• 格斗仓：0.35m × 0.35m，含 OOTA 区<br>• OOTA 陷阱高度：11-12mm<br>• 机器人长轴 ≤ 80mm，短轴 ≤ 80mm，高度不限，重 ≤ 65g" }
-      ]
-    },
-    materials: {
-      title: "材料与动力", icon: "🔧",
-      content: "各级别对机器人使用的材料和动力来源有严格限制，确保公平性和安全性。",
-      boxes: [
-        { type:"info", title:"允许使用的 3D 打印材料", content:"仅允许以下 4 类 FDM 材料：<br>• PLA（含 PLA+、PLA Pro 等）<br>• PETG<br>• ABS<br>• PA<br><b>禁止</b>：TPU、光固化等其他材料；禁止 PC 板、木材、碳纤板等板材" },
-        { type:"info", title:"金属与材料限制", content:"• 除固定轴、电机、舵机、螺丝螺母、弹簧、电子器件外，禁止金属物<br>• 轮毂/轮胎/法兰可用橡胶、PU、硅胶、EVA 等塑胶材料<br>• 禁止使用任何胶水或粘接剂<br>• 金属部件不得凸出 3D 打印部件本体范围" },
-        { type:"warn", title:"动力限制", content:"• 仅允许电力驱动，禁止气动、油动<br>• 禁止使用镭射灯等损害视觉的配件<br>• 轻量级：允许皮筋/弹簧/磁铁蓄能<br>• 羽量级/迷你级：禁止皮筋、弹簧等蓄能弹性配件" },
-        { type:"info", title:"电池规范", content:"• 轻量级：≤ 8.4V / ≤ 800mAh，功率 ≤ 70W<br>• 羽量级：≤ 8.4V / ≤ 380mAh，功率 ≤ 70W<br>• 迷你级：≤ 3.7V / ≤ 200mAh<br>• 仅允许圆柱体金属外壳锂电池，禁止软包<br>• 必须带保护板，放电口仅限 JST2p，充电口仅限 XH2.54" }
-      ]
-    },
-    weapons: {
-      title: "武器与装备", icon: "⚔️",
-      content: "每台机器人仅允许 1 个可独立操作的武器。轻量级允许多种武器类型，羽量级和迷你级仅限弹射类。",
-      boxes: [
-        { type:"info", title:"武器类型规定", content:"• <b>轻量级</b>：允许旋转、弹射、钳夹、锤击等多种类型（禁止发射/抛射/喷射/缠绕）<br>• <b>羽量级</b>：仅允许弹射类武器<br>• <b>迷你级</b>：仅允许弹射类武器<br>• 所有级别禁止携带超过 1 个武器" },
-        { type:"info", title:"电机限制", content:"• 轻量级：禁止无刷电机作为移动/旋转武器电机<br>• 轻量级武器电机：长 ≤ 32mm，宽 ≤ 25mm，厚 ≤ 20mm<br>• 羽量级：同样禁止无刷电机" },
-        { type:"warn", title:"通讯要求", content:"• 所有组别须使用 2.4G 通讯设备<br>• 须具备锁频功能，禁止一次性对频设备<br>• 机载端须支持 S-BUS 模式<br>• 中学组智能机器人须具备视觉识别和无线安全开关" }
-      ]
-    },
-    format: {
-      title: "赛制与流程", icon: "🏆",
-      content: "轻量级采用三局两胜制，羽量级和迷你级采用一局定胜负制。每局竞赛时长为 120 秒。",
-      boxes: [
-        { type:"info", title:"轻量级赛制（小学组）", content:"• 每场三局，三局两胜<br>• 前两局 1v1，第三局 2v2<br>• 每队 3 台机器人，每人至少 1 台<br>• 同一场次必须使用 3 种不同类型机器人<br>• 小组赛 + 淘汰赛，小分作为排名依据" },
-        { type:"info", title:"轻量级赛制（中学组）", content:"• 每支队伍 1-3 人<br>• 一台手控机器人 + 一台智能机器人<br>• 需完成手动对战 + 自动对战各一局<br>• 淘汰赛制" },
-        { type:"info", title:"羽量级/迷你级赛制", content:"• 一局定胜负<br>• 小组赛 + 淘汰赛<br>• 根据净胜分排名，胜场相同看胜负关系<br>• 三队互胜看净胜分" }
-      ]
-    },
-    scoring: {
-      title: "计分与判罚", icon: "📊",
-      content: "比赛通过 KO 获胜或裁判评分决定胜负。KO 指通过击翻或重击使对手无法移动，或对手脱离场地 3 次。",
-      boxes: [
-        { type:"info", title:"得分规则", content:"• KO 对手：+100 分<br>• 被击翻：-1 分/次<br>• 提前启动：-10 分<br>• 消极比赛（10 秒不进攻）：-5 分/次<br>• 脱离场地：-10 分/次<br>• 赛后称重每减少 1g：-1 分<br>• 黄牌：-50 分" },
-        { type:"info", title:"环分数（终局判定）", content:"若未 KO，根据机器人最终位置计算环分数：<br>• 最外侧环：5 分<br>• 最内侧环：50 分<br>• 综合比赛表现分数 + 环分数判定胜负" },
-        { type:"warn", title:"特殊判罚", content:"• 弃权：己方 -100 分，对手 +100 分<br>• 电池脱落导致裸露：判负（算 KO）<br>• 机器人冒烟/危险情况：立即终止，判 KO<br>• 辱骂裁判/选手：黄牌警告 → 红牌驱逐<br>• 提前启动致 KO：KO 无效，重赛并扣 10 分" }
-      ]
-    }
-  },
-  equipment: [
-    { id:1, name:"竖转格斗机甲", desc:"全套3D打印机甲，含易损件、螺丝配件、电控", price:"¥ 1,400/套", emoji:"🤖", img:"" },
-    { id:2, name:"转鼓格斗机甲", desc:"全套3D打印机甲，竖转类高性能方案", price:"¥ 1,400/套", emoji:"🥁", img:"" },
-    { id:3, name:"武器电机", desc:"定制高性能电机，专为格斗场景优化", price:"¥ 25/件", emoji:"⚡", img:"" },
-    { id:4, name:"高速舵机", desc:"高压高速舵机，弹射类机甲必备", price:"¥ 120/件", emoji:"⚙️", img:"" }
-  ],
-  videos: [
-    { id:1, title:"2026春季赛总决赛 竖转 vs 横传", views:"12.8万次观看", duration:"03:42", emoji:"🎬", img:"" },
-    { id:2, title:"弹射机器人的完美一击 KO集锦", views:"8.6万次观看", duration:"05:15", emoji:"🎥", img:"" },
-    { id:3, title:"新手入门：如何组装你的第一台格斗机器人", views:"6.2万次观看", duration:"12:30", emoji:"📹", img:"" }
-  ]
-};
+// ===== 页面切换 =====
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+  const titles = {
+    'page-hero':'首屏 / 品牌信息','page-products':'产品系列',
+    'page-features':'核心特性','page-footer':'页脚信息',
+    'page-publish':'发布到网上','page-preview':'预览前台'
+  };
+  document.getElementById('pageTitle').textContent = titles[id] || '';
+  if (id === 'page-preview') {
+    document.getElementById('preview-frame').src = 'http://localhost:8090?t=' + Date.now();
+  }
+}
 
-function loadData() {
+// ===== Tab 切换 =====
+function showTab(idx, el) {
+  document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.tab-panel')[idx].classList.add('active');
+}
+
+// ===== Toast =====
+function toast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast toast-' + type;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ===== 加载数据 =====
+async function loadData() {
   try {
-    var raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      var d = JSON.parse(raw);
-      // Migrate old data: add img fields if missing
-      if(!d.hero) d.hero = JSON.parse(JSON.stringify(defaultData.hero));
-      if(!d.hero.siteName) d.hero.siteName = defaultData.hero.siteName;
-      if(!d.footer) d.footer = defaultData.footer;
-      // Migrate rules to 2026 BoxBot official rules
-      if(!d.rules || !d.rules.overview) d.rules = JSON.parse(JSON.stringify(defaultData.rules));
-      if(d.events) d.events.forEach(function(e){if(e.img===undefined)e.img="";});
-      if(d.equipment) d.equipment.forEach(function(e){if(e.img===undefined)e.img="";});
-      if(d.videos) d.videos.forEach(function(e){if(e.img===undefined)e.img="";});
-      
-      // 迁移旧的 base64 图片到独立存储
-      var imgs = loadImgs();
-      var migrated = false;
-      function migrateImg(type, id, imgVal) {
-        if(imgVal && imgVal.startsWith('data:') && imgVal.length > 100) {
-          var key = type + '_' + id;
-          if(!imgs[key]) {
-            imgs[key] = imgVal;
-            migrated = true;
-          }
-          return 'img:' + key;
-        }
-        return imgVal;
-      }
-      if(d.events) d.events.forEach(function(e){ e.img = migrateImg('event', e.id, e.img); });
-      if(d.equipment) d.equipment.forEach(function(e){ e.img = migrateImg('equipment', e.id, e.img); });
-      if(d.videos) d.videos.forEach(function(e){ e.img = migrateImg('video', e.id, e.img); });
-      if(d.hero && d.hero.bgImg) d.hero.bgImg = migrateImg('hero', 'bg', d.hero.bgImg);
-      if(migrated) {
-        try { localStorage.setItem(IMGS_KEY, JSON.stringify(imgs)); } catch(e) {}
-        saveData(d);
-      }
-      
-      return d;
-    }
-  } catch(e) {}
-  return JSON.parse(JSON.stringify(defaultData));
+    const r = await fetch(API + '/data');
+    siteData = await r.json();
+    renderAll();
+    toast('数据加载成功', 'success');
+  } catch(e) { toast('加载失败：' + e.message, 'error'); }
 }
 
-function saveData(data) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+function renderAll() {
+  const d = siteData;
+  // 基础字段
+  ['brand','navBadge','heroEyebrow','heroLine1','heroLine2','heroDesc','heroBtn1','heroBtn2',
+   'featTitle','footerBrand','footerInfo','heroImg','featImg'].forEach(k => {
+    const el = document.getElementById('f-' + k);
+    if (el) el.value = d[k] || '';
+  });
+  // 图片预览
+  setImgPreview('f-heroImg', 'hero-img-preview', 'hero-img-icon');
+  setImgPreview('f-featImg', 'feat-img-preview', 'feat-img-icon');
+
+  // KPI
+  renderKpi(d.kpi || []);
+  // 产品
+  renderProducts(d.products || []);
+  // 特性
+  renderFeatures(d.features || []);
 }
 
-function loadConfig() {
-  try {
-    var raw = localStorage.getItem(CONFIG_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch(e) {}
-  return { username:"", token:"", repo:"", branch:"main" };
-}
-
-function saveConfigData(cfg) {
-  localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
-}
-
-var adminData = loadData();
-var nextId = { events:10, equipment:10, videos:10 };
-var _imgUploadTarget = null; // {type:"equipment", id:3}
-
-// Init sidebar logo from data
-if(adminData.hero && adminData.hero.siteName) {
-  document.getElementById('sidebarLogo').textContent = adminData.hero.siteName;
-}
-
-/* ============================================================
-   NAVIGATION
-   ============================================================ */
-function switchPage(name, navEl) {
-  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
-  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});
-  document.getElementById('page-'+name).classList.add('active');
-  if(navEl) navEl.classList.add('active');
-  var titles = {dashboard:'📊 仪表盘',events:'🏆 赛事管理',rules:'📜 规则管理',equipment:'⚙️ 器材管理',videos:'🎬 视频管理',deploy:'🚀 发布管理',config:'🔧 配置',hero:'🏠 首页设置',forum:'💬 论坛管理',users:'👥 用户管理',visitors:'📈 浏览记录'};
-  document.getElementById('topbarTitle').textContent = titles[name] || name;
-  document.getElementById('sidebar').classList.remove('open');
-  if(name==='events') renderEvents();
-  if(name==='rules') renderRules();
-  if(name==='equipment') renderEquipment();
-  if(name==='videos') renderVideos();
-  if(name==='deploy') renderDeploy();
-  if(name==='config') loadConfigUI();
-  if(name==='dashboard') updateDashboard();
-  if(name==='hero') loadHeroSettings();
-  if(name==='forum') { loadTCBConfigUI(); loadForumStats(); }
-  if(name==='users') loadUsers();
-  if(name==='visitors') loadVisitors();
-}
-
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
-}
-
-/* ============================================================
-   TOAST
-   ============================================================ */
-function toast(msg, type) {
-  type = type || 'info';
-  var container = document.getElementById('toastContainer');
-  var el = document.createElement('div');
-  el.className = 'toast toast-' + type;
-  el.textContent = msg;
-  container.appendChild(el);
-  setTimeout(function(){ el.style.opacity='0'; el.style.transform='translateX(100%)'; el.style.transition='all .3s'; setTimeout(function(){el.remove();},300); }, 3000);
-}
-
-/* ============================================================
-   IMAGE UPLOAD HELPER
-   ============================================================ */
-function triggerImageUpload(type, id) {
-  _imgUploadTarget = {type:type, id:id};
-  document.getElementById('hiddenImgInput').click();
-}
-
-function handleImageUpload(e) {
-  try {
-    var file = e.target.files[0];
-    if(!file) return;
-    if(!file.type.startsWith('image/')) { toast('请选择图片文件','error'); e.target.value=''; return; }
-    if(file.size > 10*1024*1024) { toast('图片不能超过 10MB','error'); e.target.value=''; return; }
-    
-    // 用 Canvas 压缩图片再存储
-    var img = new Image();
-    var url = URL.createObjectURL(file);
-    img.onload = function() {
-      try {
-        var canvas = document.createElement('canvas');
-        var maxW = 800, maxH = 800;
-        var w = img.width, h = img.height;
-        if(w > maxW || h > maxH) {
-          var ratio = Math.min(maxW/w, maxH/h);
-          w = Math.round(w * ratio);
-          h = Math.round(h * ratio);
-        }
-        canvas.width = w;
-        canvas.height = h;
-        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        URL.revokeObjectURL(url);
-        
-        var base64 = canvas.toDataURL('image/jpeg', 0.7);
-        if(!_imgUploadTarget) return;
-        var t = _imgUploadTarget.type;
-        var id = _imgUploadTarget.id;
-        
-        // 存到独立图片存储
-        var imgs = loadImgs();
-        var imgKey = t + '_' + id;
-        imgs[imgKey] = base64;
-        try {
-          localStorage.setItem(IMGS_KEY, JSON.stringify(imgs));
-        } catch(quotaErr) {
-          // 存储满了，清理旧图再试
-          toast('图片存储空间不足，正在自动清理...','error');
-          var keys = Object.keys(imgs);
-          if(keys.length > 5) {
-            // 删除最早的一半
-            keys.slice(0, Math.floor(keys.length/2)).forEach(function(k){ delete imgs[k]; });
-            try {
-              localStorage.setItem(IMGS_KEY, JSON.stringify(imgs));
-              toast('已清理旧图片，请重新上传','info');
-            } catch(e2) {
-              toast('存储空间严重不足，请清理浏览器数据','error');
-              return;
-            }
-          }
-          return;
-        }
-        
-        // 业务数据只存标记
-        if(t==='equipment') {
-          adminData.equipment.forEach(function(eq){if(eq.id===id) eq.img="img:"+imgKey;});
-          saveData(adminData);
-          renderEquipment();
-        } else if(t==='event') {
-          adminData.events.forEach(function(ev){if(ev.id===id) ev.img="img:"+imgKey;});
-          saveData(adminData);
-          renderEvents();
-        } else if(t==='video') {
-          adminData.videos.forEach(function(vd){if(vd.id===id) vd.img="img:"+imgKey;});
-          saveData(adminData);
-          renderVideos();
-        } else if(t==='hero') {
-          adminData.hero.bgImg = "img:"+imgKey;
-          saveData(adminData);
-          loadHeroSettings();
-        }
-        toast('图片已上传','success');
-      } catch(err) {
-        console.error('保存图片失败:', err);
-        toast('图片保存失败: '+err.message,'error');
-      }
-    };
-    img.onerror = function() { toast('图片加载失败，请换一张试试','error'); URL.revokeObjectURL(url); };
+function setImgPreview(inputId, previewId, iconId) {
+  const url = document.getElementById(inputId)?.value;
+  const img = document.getElementById(previewId);
+  const icon = document.getElementById(iconId);
+  if (url && img) {
     img.src = url;
-  } catch(err) {
-    console.error('上传异常:', err);
-    toast('图片上传出错: '+err.message,'error');
+    img.style.display = 'block';
+    if (icon) icon.style.display = 'none';
   }
-  e.target.value = '';
 }
 
-function loadImgs() {
+function renderKpi(kpis) {
+  const grid = document.getElementById('kpi-grid');
+  grid.innerHTML = kpis.map((k, i) => `
+    <div class="kpi-card">
+      <label>KPI ${i+1} - 数值</label>
+      <input value="${esc(k.num)}" oninput="siteData.kpi[${i}].num=this.value" style="font-size:24px;font-weight:900;"/>
+      <label style="margin-top:8px;">说明文字</label>
+      <input value="${esc(k.label)}" oninput="siteData.kpi[${i}].label=this.value" style="font-size:13px;"/>
+    </div>`).join('');
+}
+
+function renderProducts(prods) {
+  const container = document.getElementById('prod-panels');
+  container.innerHTML = prods.map((p, i) => `
+    <div class="tab-panel ${i===0?'active':''}">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="form-row"><label>标签文字</label><input type="text" value="${esc(p.tag)}" oninput="siteData.products[${i}].tag=this.value"/></div>
+        <div class="form-row"><label>系列编号</label><input type="text" value="${esc(p.series)}" oninput="siteData.products[${i}].series=this.value"/></div>
+      </div>
+      <div class="form-row"><label>产品名称</label><input type="text" value="${esc(p.name)}" oninput="siteData.products[${i}].name=this.value"/></div>
+      <div class="form-row"><label>产品描述</label><textarea oninput="siteData.products[${i}].desc=this.value">${esc(p.desc)}</textarea></div>
+      <div class="form-row"><label>规格标签</label>
+        <div class="spec-list" id="spec-list-${i}">
+          ${(p.specs||[]).map((s,j) => `
+            <div class="spec-item">
+              <span contenteditable="true" onblur="siteData.products[${i}].specs[${j}]=this.textContent">${esc(s)}</span>
+              <button class="spec-del" onclick="delSpec(${i},${j})">×</button>
+            </div>`).join('')}
+        </div>
+        <button class="spec-add" onclick="addSpec(${i})">+ 添加规格</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="form-row"><label>价格</label><input type="text" value="${esc(p.price)}" oninput="siteData.products[${i}].price=this.value"/></div>
+        <div class="form-row"><label>价格备注</label><input type="text" value="${esc(p.priceNote)}" oninput="siteData.products[${i}].priceNote=this.value"/></div>
+      </div>
+      <div class="toggle-row">
+        <label>标记为主推爆款</label>
+        <label class="toggle"><input type="checkbox" ${p.hot?'checked':''} onchange="siteData.products[${i}].hot=this.checked"/><span class="toggle-slider"></span></label>
+      </div>
+      <hr class="divider"/>
+      <div class="form-row"><label>产品图片</label>
+        <div class="img-upload" style="margin-top:8px;">
+          <div class="img-preview" onclick="triggerUpload('prod-file-${i}','prod-img-input-${i}','prod-img-prev-${i}','prod-img-icon-${i}')">
+            ${p.img ? `<img id="prod-img-prev-${i}" src="${esc(p.img)}" alt="" style="width:100%;height:100%;object-fit:cover;"/>` : `<img id="prod-img-prev-${i}" src="" alt="" style="display:none;"/>`}
+            <span id="prod-img-icon-${i}" ${p.img?'style="display:none"':''}>📷</span>
+          </div>
+          <div>
+            <div class="img-preview-label" onclick="triggerUpload('prod-file-${i}','prod-img-input-${i}','prod-img-prev-${i}','prod-img-icon-${i}')">点击上传产品图</div>
+            <input id="prod-img-input-${i}" type="text" style="width:240px;margin-top:8px;" value="${esc(p.img)}" placeholder="或填写图片 URL" oninput="siteData.products[${i}].img=this.value"/>
+          </div>
+        </div>
+        <input type="file" id="prod-file-${i}" class="file-input" accept="image/*" onchange="uploadProdImg(this,${i})"/>
+      </div>
+    </div>`).join('');
+}
+
+function renderFeatures(feats) {
+  const container = document.getElementById('feat-rows');
+  container.innerHTML = feats.map((f, i) => `
+    <div class="feat-row">
+      <input type="text" value="${esc(f.icon)}" placeholder="🏗️" oninput="siteData.features[${i}].icon=this.value"/>
+      <input type="text" value="${esc(f.title)}" placeholder="标题" oninput="siteData.features[${i}].title=this.value"/>
+      <textarea placeholder="描述" oninput="siteData.features[${i}].desc=this.value">${esc(f.desc)}</textarea>
+    </div>`).join('');
+}
+
+// ===== 规格 =====
+function addSpec(prodIdx) {
+  if (!siteData.products[prodIdx].specs) siteData.products[prodIdx].specs = [];
+  siteData.products[prodIdx].specs.push('新规格');
+  renderProducts(siteData.products);
+  // 保持当前tab
+  document.querySelectorAll('.tab-panel')[prodIdx].classList.add('active');
+}
+function delSpec(prodIdx, specIdx) {
+  siteData.products[prodIdx].specs.splice(specIdx, 1);
+  renderProducts(siteData.products);
+  document.querySelectorAll('.tab-panel')[prodIdx].classList.add('active');
+}
+
+// ===== 保存 =====
+function collectData() {
+  const d = siteData;
+  ['brand','navBadge','heroEyebrow','heroLine1','heroLine2','heroDesc','heroBtn1','heroBtn2',
+   'featTitle','footerBrand','footerInfo','heroImg','featImg'].forEach(k => {
+    const el = document.getElementById('f-' + k);
+    if (el) d[k] = el.value;
+  });
+  return d;
+}
+
+async function saveAll(quiet) {
+  const d = collectData();
   try {
-    var raw = localStorage.getItem(IMGS_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch(e) { return {}; }
-}
-
-function getImgSrc(imgVal) {
-  if(!imgVal) return '';
-  if(imgVal.startsWith('data:')) return imgVal; // 兼容旧的 base64
-  if(imgVal.startsWith('img:')) {
-    var key = imgVal.substring(4);
-    var imgs = loadImgs();
-    return imgs[key] || '';
-  }
-  return imgVal;
-}
-
-function removeImage(type, id) {
-  if(type==='equipment') adminData.equipment.forEach(function(eq){if(eq.id===id) eq.img="";});
-  if(type==='event') adminData.events.forEach(function(ev){if(ev.id===id) ev.img="";});
-  if(type==='video') adminData.videos.forEach(function(vd){if(vd.id===id) vd.img="";});
-  saveData(adminData);
-  // 清理独立图片存储
-  var imgs = loadImgs();
-  var key = type + '_' + id;
-  if(imgs[key]) { delete imgs[key]; localStorage.setItem(IMGS_KEY, JSON.stringify(imgs)); }
-  if(type==='equipment') renderEquipment();
-  if(type==='event') renderEvents();
-  if(type==='video') renderVideos();
-  toast('图片已移除','info');
-}
-
-function renderImgUploadArea(type, id, imgData) {
-  var src = getImgSrc(imgData);
-  var hasImg = src && src.length > 10;
-  var cls = hasImg ? 'img-upload-area has-img' : 'img-upload-area';
-  var imgTag = hasImg ? '<img src="'+src+'" alt="preview">' : '';
-  return '<div class="'+cls+'" onclick="triggerImageUpload(\''+type+'\','+id+')">'+
-    '<span class="upload-hint"><span class="big">📷</span>点击上传图片<br><span style="font-size:10px;color:#555;">支持 JPG / PNG / GIF（自动压缩）</span></span>'+
-    imgTag+
-    '<button class="img-remove" onclick="event.stopPropagation();removeImage(\''+type+'\','+id+')">✕</button>'+
-    '</div>';
-}
-
-/* ============================================================
-   DASHBOARD
-   ============================================================ */
-function updateDashboard() {
-  document.getElementById('statEvents').textContent = adminData.events.length;
-  document.getElementById('statEquip').textContent = adminData.equipment.length;
-  document.getElementById('statVideos').textContent = adminData.videos.length;
-
-  var cfg = loadConfig();
-  var url = cfg.username && cfg.repo ? 'https://'+cfg.username+'.github.io/'+cfg.repo+'/' : '--';
-  document.getElementById('siteUrl').textContent = url;
-  document.getElementById('deployUrl').textContent = url;
-
-  if(cfg.username && cfg.repo) {
-    fetch('https://'+cfg.username+'.github.io/'+cfg.repo+'/', {mode:'no-cors',cache:'no-cache'}).then(function(){
-      document.getElementById('siteStatus').className = 'status-dot online';
-      document.getElementById('siteStatusText').textContent = '网站在线';
-    }).catch(function(){
-      document.getElementById('siteStatus').className = 'status-dot offline';
-      document.getElementById('siteStatusText').textContent = '无法访问';
+    const r = await fetch(API + '/save', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(d)
     });
-  } else {
-    document.getElementById('siteStatus').className = 'status-dot offline';
-    document.getElementById('siteStatusText').textContent = '未配置 GitHub';
-  }
-}
-
-/* ============================================================
-   HERO SETTINGS
-   ============================================================ */
-function loadHeroSettings() {
-  var sn = adminData.hero.siteName || '造悟社';
-  document.getElementById('heroSiteName').value = sn;
-  document.getElementById('sidebarLogo').textContent = sn;
-  document.getElementById('heroBadge').value = adminData.hero.badge || '';
-  document.getElementById('heroTitle').value = adminData.hero.title || '';
-  document.getElementById('heroSubtitle').value = adminData.hero.subtitle || '';
-  document.getElementById('footerText').value = adminData.footer || '';
-}
-
-function saveHeroSettings() {
-  adminData.hero.siteName = document.getElementById('heroSiteName').value;
-  document.getElementById('sidebarLogo').textContent = adminData.hero.siteName;
-  adminData.hero.badge = document.getElementById('heroBadge').value;
-  adminData.hero.title = document.getElementById('heroTitle').value;
-  adminData.hero.subtitle = document.getElementById('heroSubtitle').value;
-  saveData(adminData);
-  toast('首页设置已保存','success');
-}
-
-function saveFooterSettings() {
-  adminData.footer = document.getElementById('footerText').value;
-  saveData(adminData);
-  toast('页脚设置已保存','success');
-}
-
-/* ============================================================
-   EVENTS MANAGEMENT
-   ============================================================ */
-function renderEvents() {
-  var html = '';
-  adminData.events.forEach(function(ev) {
-    html += '<div class="item-card" style="margin-bottom:12px;">';
-    html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">';
-    html += '<div style="font-size:13px;color:#888;">ID: '+ev.id+'</div>';
-    html += '<button class="btn btn-danger btn-sm" onclick="removeEvent('+ev.id+')">删除</button>';
-    html += '</div>';
-    html += '<div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:12px;">';
-    html += '<div>'+renderImgUploadArea('event', ev.id, ev.img)+'</div>';
-    html += '<div style="flex:1;min-width:250px;">';
-    html += '<div class="grid-2">';
-    html += '<div class="form-group"><label class="form-label">赛事名称</label><input class="form-input" value="'+esc(ev.title)+'" onchange="updateEvent('+ev.id+',\'title\',this.value)"></div>';
-    html += '<div class="form-group"><label class="form-label">状态</label><select class="form-select" onchange="updateEvent('+ev.id+',\'status\',this.value)"><option value="upcoming"'+(ev.status==='upcoming'?' selected':'')+'>即将开始</option><option value="live"'+(ev.status==='live'?' selected':'')+'>进行中</option><option value="ended"'+(ev.status==='ended'?' selected':'')+'>已结束</option></select></div>';
-    html += '<div class="form-group"><label class="form-label">日期</label><input class="form-input" value="'+esc(ev.date)+'" onchange="updateEvent('+ev.id+',\'date\',this.value)"></div>';
-    html += '<div class="form-group"><label class="form-label">地点</label><input class="form-input" value="'+esc(ev.location)+'" onchange="updateEvent('+ev.id+',\'location\',this.value)"></div>';
-    html += '<div class="form-group"><label class="form-label">图标 Emoji</label><input class="form-input" value="'+esc(ev.emoji)+'" onchange="updateEvent('+ev.id+',\'emoji\',this.value)"></div>';
-    html += '</div>';
-    html += '</div>';
-    html += '</div>';
-    html += '</div>';
-  });
-  if(!adminData.events.length) html = '<div class="empty-state">暂无赛事，点击上方按钮添加</div>';
-  document.getElementById('eventsList').innerHTML = html;
-}
-
-function addEvent() {
-  nextId.events++;
-  adminData.events.push({id:nextId.events,title:"新赛事",date:"",location:"",status:"upcoming",emoji:"🤖",img:""});
-  saveData(adminData);
-  renderEvents();
-  toast('已添加新赛事','success');
-}
-
-function updateEvent(id, field, val) {
-  adminData.events.forEach(function(ev){if(ev.id===id) ev[field]=val;});
-  saveData(adminData);
-}
-
-function removeEvent(id) {
-  if(!confirm('确定删除这个赛事吗？')) return;
-  adminData.events = adminData.events.filter(function(ev){return ev.id!==id;});
-  saveData(adminData);
-  renderEvents();
-  toast('已删除','info');
-}
-
-/* ============================================================
-   RULES MANAGEMENT
-   ============================================================ */
-function renderRules() {
-  var html = '';
-  Object.keys(adminData.rules).forEach(function(key) {
-    var rule = adminData.rules[key];
-    html += '<div class="card" style="margin-bottom:16px;">';
-    html += '<div class="card-title"><span class="dot"></span> '+rule.icon+' '+esc(rule.title)+' ('+key+')</div>';
-    html += '<div class="grid-2">';
-    html += '<div class="form-group"><label class="form-label">标题</label><input class="form-input" value="'+esc(rule.title)+'" onchange="updateRule(\''+key+'\',\'title\',this.value)"></div>';
-    html += '<div class="form-group"><label class="form-label">图标 Emoji</label><input class="form-input" value="'+esc(rule.icon)+'" onchange="updateRule(\''+key+'\',\'icon\',this.value)" style="max-width:120px;"></div>';
-    html += '</div>';
-    html += '<div class="form-group"><label class="form-label">正文内容</label><textarea class="form-textarea" onchange="updateRule(\''+key+'\',\'content\',this.value)">'+esc(rule.content)+'</textarea></div>';
-    html += '<div style="font-size:12px;color:#888;margin:8px 0;">信息框 / 警告框：</div>';
-    rule.boxes.forEach(function(box, bi) {
-      html += '<div class="item-card" style="margin-bottom:8px;padding:12px;">';
-      html += '<div class="grid-2">';
-      html += '<div class="form-group"><label class="form-label">类型</label><select class="form-select" onchange="updateRuleBox(\''+key+'\','+bi+',\'type\',this.value)"><option value="info"'+(box.type==='info'?' selected':'')+'>信息框</option><option value="warn"'+(box.type==='warn'?' selected':'')+'>警告框</option></select></div>';
-      html += '<div class="form-group" style="text-align:right;"><button class="btn btn-danger btn-sm" onclick="removeRuleBox(\''+key+'\','+bi+')">删除此框</button></div>';
-      html += '</div>';
-      html += '<div class="form-group"><label class="form-label">小标题</label><input class="form-input" value="'+esc(box.title)+'" onchange="updateRuleBox(\''+key+'\','+bi+',\'title\',this.value)"></div>';
-      html += '<div class="form-group"><label class="form-label">内容 (支持 &lt;br&gt; 换行)</label><textarea class="form-textarea" onchange="updateRuleBox(\''+key+'\','+bi+',\'content\',this.value)">'+esc(box.content)+'</textarea></div>';
-      html += '</div>';
-    });
-    html += '<button class="btn btn-ghost btn-sm" onclick="addRuleBox(\''+key+'\')" style="margin-top:4px;">＋ 添加信息框</button>';
-    html += '</div>';
-  });
-  document.getElementById('rulesEditor').innerHTML = html;
-}
-
-function updateRule(key, field, val) {
-  adminData.rules[key][field] = val;
-  saveData(adminData);
-}
-function updateRuleBox(key, bi, field, val) {
-  adminData.rules[key].boxes[bi][field] = val;
-  saveData(adminData);
-}
-function addRuleBox(key) {
-  adminData.rules[key].boxes.push({type:"info",title:"新信息",content:"内容"});
-  saveData(adminData);
-  renderRules();
-  toast('已添加信息框','success');
-}
-function removeRuleBox(key, bi) {
-  adminData.rules[key].boxes.splice(bi,1);
-  saveData(adminData);
-  renderRules();
-}
-
-/* ============================================================
-   EQUIPMENT MANAGEMENT
-   ============================================================ */
-function renderEquipment() {
-  var html = '';
-  adminData.equipment.forEach(function(eq) {
-    html += '<div class="item-card" style="margin-bottom:12px;">';
-    html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">';
-    html += '<div style="font-size:13px;color:#888;">ID: '+eq.id+'</div>';
-    html += '<button class="btn btn-danger btn-sm" onclick="removeEquipment('+eq.id+')">删除</button>';
-    html += '</div>';
-    html += '<div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:12px;">';
-    html += '<div>'+renderImgUploadArea('equipment', eq.id, eq.img)+'</div>';
-    html += '<div style="flex:1;min-width:250px;">';
-    html += '<div class="grid-2">';
-    html += '<div class="form-group"><label class="form-label">名称</label><input class="form-input" value="'+esc(eq.name)+'" onchange="updateEquipment('+eq.id+',\'name\',this.value)"></div>';
-    html += '<div class="form-group"><label class="form-label">价格</label><input class="form-input" value="'+esc(eq.price)+'" onchange="updateEquipment('+eq.id+',\'price\',this.value)"></div>';
-    html += '<div class="form-group"><label class="form-label">描述</label><input class="form-input" value="'+esc(eq.desc)+'" onchange="updateEquipment('+eq.id+',\'desc\',this.value)"></div>';
-    html += '<div class="form-group"><label class="form-label">图标 Emoji (无图片时显示)</label><input class="form-input" value="'+esc(eq.emoji)+'" onchange="updateEquipment('+eq.id+',\'emoji\',this.value)"></div>';
-    html += '</div>';
-    html += '</div>';
-    html += '</div>';
-    html += '</div>';
-  });
-  if(!adminData.equipment.length) html = '<div class="empty-state">暂无器材，点击上方按钮添加</div>';
-  document.getElementById('equipmentList').innerHTML = html;
-}
-
-function addEquipment() {
-  nextId.equipment++;
-  adminData.equipment.push({id:nextId.equipment,name:"新器材",desc:"",price:"¥ --",emoji:"🤖",img:""});
-  saveData(adminData);
-  renderEquipment();
-  toast('已添加新器材','success');
-}
-
-function updateEquipment(id, field, val) {
-  adminData.equipment.forEach(function(eq){if(eq.id===id) eq[field]=val;});
-  saveData(adminData);
-}
-
-function removeEquipment(id) {
-  if(!confirm('确定删除这个器材吗？')) return;
-  adminData.equipment = adminData.equipment.filter(function(eq){return eq.id!==id;});
-  saveData(adminData);
-  renderEquipment();
-  toast('已删除','info');
-}
-
-/* ============================================================
-   VIDEOS MANAGEMENT
-   ============================================================ */
-function renderVideos() {
-  var html = '';
-  adminData.videos.forEach(function(vd) {
-    html += '<div class="item-card" style="margin-bottom:12px;">';
-    html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">';
-    html += '<div style="font-size:13px;color:#888;">ID: '+vd.id+'</div>';
-    html += '<button class="btn btn-danger btn-sm" onclick="removeVideo('+vd.id+')">删除</button>';
-    html += '</div>';
-    html += '<div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:12px;">';
-    html += '<div>'+renderImgUploadArea('video', vd.id, vd.img)+'</div>';
-    html += '<div style="flex:1;min-width:250px;">';
-    html += '<div class="grid-2">';
-    html += '<div class="form-group"><label class="form-label">视频标题</label><input class="form-input" value="'+esc(vd.title)+'" onchange="updateVideo('+vd.id+',\'title\',this.value)"></div>';
-    html += '<div class="form-group"><label class="form-label">观看量</label><input class="form-input" value="'+esc(vd.views)+'" onchange="updateVideo('+vd.id+',\'views\',this.value)"></div>';
-    html += '<div class="form-group"><label class="form-label">时长</label><input class="form-input" value="'+esc(vd.duration)+'" onchange="updateVideo('+vd.id+',\'duration\',this.value)"></div>';
-    html += '<div class="form-group"><label class="form-label">图标 Emoji (无图片时显示)</label><input class="form-input" value="'+esc(vd.emoji)+'" onchange="updateVideo('+vd.id+',\'emoji\',this.value)"></div>';
-    html += '</div>';
-    html += '</div>';
-    html += '</div>';
-    html += '</div>';
-  });
-  if(!adminData.videos.length) html = '<div class="empty-state">暂无视频，点击上方按钮添加</div>';
-  document.getElementById('videosList').innerHTML = html;
-}
-
-function addVideo() {
-  nextId.videos++;
-  adminData.videos.push({id:nextId.videos,title:"新视频",views:"",duration:"",emoji:"🎬",img:""});
-  saveData(adminData);
-  renderVideos();
-  toast('已添加新视频','success');
-}
-
-function updateVideo(id, field, val) {
-  adminData.videos.forEach(function(vd){if(vd.id===id) vd[field]=val;});
-  saveData(adminData);
-}
-
-function removeVideo(id) {
-  if(!confirm('确定删除这个视频吗？')) return;
-  adminData.videos = adminData.videos.filter(function(vd){return vd.id!==id;});
-  saveData(adminData);
-  renderVideos();
-  toast('已删除','info');
-}
-
-/* ============================================================
-   GENERATE FRONTEND HTML (完全独立，无 contenteditable)
-   ============================================================ */
-function generateFrontendHTML() {
-  var d = adminData;
-  // 加载独立图片存储，生成时把 img:xxx 替换回真实 base64
-  var imgs = loadImgs();
-  function resolveImg(val) {
-    if(!val) return '';
-    if(val.startsWith('img:')) return imgs[val.substring(4)] || '';
-    return val; // 兼容旧的直接 base64
-  }
-  var heroTitle = esc(d.hero.title).replace(/\n/g,'<br>');
-  var siteName = esc(d.hero.siteName || '造悟社');
-
-  // Build events
-  var eventsCards = '';
-  var statusMap = {live:'🔥 进行中',upcoming:'即将开始',ended:'已结束'};
-  var statusClass = {live:'status-live',upcoming:'status-upcoming',ended:'status-ended'};
-  d.events.forEach(function(ev) {
-    var realImg = resolveImg(ev.img);
-    var imgHTML = realImg
-      ? '<div class="event-img"><img src="'+realImg+'" alt="'+esc(ev.title)+'"></div>'
-      : '<div class="event-img">'+esc(ev.emoji)+'</div>';
-    eventsCards += '\n    <div class="event-card fade-in">\n      '+imgHTML+'\n      <div class="event-body">\n        <span class="event-status '+statusClass[ev.status]+'">'+esc(statusMap[ev.status])+'</span>\n        <h3 class="event-title">'+esc(ev.title)+'</h3>\n        <div class="event-meta">\n          <span>📅 '+esc(ev.date)+'</span>\n          <span>📍 '+esc(ev.location)+'</span>\n        </div>\n      </div>\n    </div>';
-  });
-
-  // Build equipment - 直接展示完整价格信息
-  var equipCards = '';
-  d.equipment.forEach(function(eq) {
-    var realImg = resolveImg(eq.img);
-    var imgHTML = realImg
-      ? '<div class="equip-card-img"><img src="'+realImg+'" alt="'+esc(eq.name)+'"></div>'
-      : '<div class="equip-card-img">'+esc(eq.emoji)+'</div>';
-    equipCards += '\n    <div class="equip-card fade-in">\n      '+imgHTML+'\n      <div class="equip-card-body">\n        <div class="equip-card-name">'+esc(eq.name)+'</div>\n        <div class="equip-card-desc">'+esc(eq.desc)+'</div>\n        <div class="equip-card-price">'+esc(eq.price)+'</div>\n      </div>\n    </div>';
-  });
-
-  // Build videos
-  var videoCards = '';
-  d.videos.forEach(function(vd) {
-    var realImg = resolveImg(vd.img);
-    var imgHTML = realImg
-      ? '<div class="video-thumb"><img src="'+realImg+'" alt="'+esc(vd.title)+'"><div class="video-play"></div></div>'
-      : '<div class="video-thumb">'+esc(vd.emoji)+'<div class="video-play"></div></div>';
-    videoCards += '\n    <div class="video-card fade-in">\n      '+imgHTML+'\n      <div class="video-body">\n        <h3 class="video-title">'+esc(vd.title)+'</h3>\n        <div class="video-meta">\n          <span>🔥 '+esc(vd.views)+'</span>\n          <span>'+esc(vd.duration)+'</span>\n        </div>\n      </div>\n    </div>';
-  });
-
-  // Build rules JS data
-  var rulesNavHTML = '';
-  var rulesDataJS = 'var ruleData = {';
-  var firstRule = true;
-  Object.keys(d.rules).forEach(function(key) {
-    var r = d.rules[key];
-    rulesNavHTML += '<a class="rules-nav-item active" onclick="showRule(this,\''+key+'\')">'+esc(r.title)+'</a>\n      ';
-    if(!firstRule) rulesDataJS += ',\n  ';
-    firstRule = false;
-    var boxesStr = '';
-    r.boxes.forEach(function(b) {
-      var bc = b.type==='warn'?' warn':'';
-      boxesStr += '<div class="rule-box'+bc+'"><h4>'+b.title+'</h4><p>'+b.content+'</p></div>';
-    });
-    rulesDataJS += key+':\'<h3><span class="rule-icon">'+esc(r.icon)+'</span> <span>'+esc(r.title)+'</span></h3><p>'+esc(r.content)+'</p>'+boxesStr.replace(/'/g,"\\'")+'\'';
-  });
-  rulesDataJS += '};';
-
-  // Generate first rule content for default display
-  var firstKey = Object.keys(d.rules)[0];
-  var fr = d.rules[firstKey];
-  var firstRuleContent = '';
-  fr.boxes.forEach(function(b) {
-    var bc = b.type==='warn'?' warn':'';
-    firstRuleContent += '<div class="rule-box'+bc+'"><h4>'+b.title+'</h4><p>'+b.content+'</p></div>';
-  });
-
-  return '<!DOCTYPE html>\n<html lang="zh-CN">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>'+siteName+' - 格斗机器人竞技平台</title>\n<style>\n*{margin:0;padding:0;box-sizing:border-box;}\nhtml{scroll-behavior:smooth;}\nbody{font-family:"Microsoft YaHei","微软雅黑","Orbitron",sans-serif;background:#0a0a0f;color:#e0e0e0;overflow-x:hidden;}\na{text-decoration:none;color:inherit;}\nbody::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(rgba(0,240,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,.03) 1px,transparent 1px);background-size:60px 60px;}\n.nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(10,10,15,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,240,255,.15);}\n.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;}\n.nav-logo{font-size:22px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#00f0ff,#ff0044,#00f0ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:glitch 3s infinite;}\n@keyframes glitch{0%,90%,100%{transform:translate(0);}92%{transform:translate(-2px,1px);}94%{transform:translate(2px,-1px);}96%{transform:translate(-1px,2px);}}\n.nav-links{display:flex;gap:6px;flex-wrap:wrap;}\n.nav-links a{padding:8px 18px;border-radius:4px;font-size:13px;font-weight:600;color:#aaa;transition:all .3s;letter-spacing:1px;border:1px solid transparent;}\n.nav-links a:hover,.nav-links a.active{color:#00f0ff;border-color:rgba(0,240,255,.3);background:rgba(0,240,255,.08);text-shadow:0 0 8px rgba(0,240,255,.5);}\n.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;}\n.nav-hamburger span{width:24px;height:2px;background:#00f0ff;transition:all .3s;border-radius:2px;}\n.nav-hamburger.open span:nth-child(1){transform:rotate(45deg) translateY(5px) translateX(5px);}\n.nav-hamburger.open span:nth-child(2){opacity:0;}\n.nav-hamburger.open span:nth-child(3){transform:rotate(-45deg) translateY(-5px) translateX(5px);}\n.hero{position:relative;min-height:80vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding:120px 20px 60px;}\n.hero-bg{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse at 20% 50%,rgba(255,0,68,.15) 0%,transparent 50%),radial-gradient(ellipse at 80% 50%,rgba(0,240,255,.12) 0%,transparent 50%),radial-gradient(ellipse at 50% 100%,rgba(128,0,255,.1) 0%,transparent 40%);}\n.hero-particles{position:absolute;inset:0;z-index:1;overflow:hidden;}\n.particle{position:absolute;border-radius:50%;animation:float linear infinite;opacity:0;}\n@keyframes float{0%{opacity:0;transform:translateY(100vh) scale(0);}10%{opacity:1;}90%{opacity:1;}100%{opacity:0;transform:translateY(-10vh) scale(1);}}\n.hero-content{position:relative;z-index:2;max-width:800px;}\n.hero-badge{display:inline-block;padding:6px 20px;border:1px solid rgba(255,0,68,.5);border-radius:20px;font-size:12px;color:#ff0044;letter-spacing:3px;text-transform:uppercase;margin-bottom:20px;animation:badge-pulse 2s infinite;}\n@keyframes badge-pulse{0%,100%{box-shadow:0 0 5px rgba(255,0,68,.3);}50%{box-shadow:0 0 20px rgba(255,0,68,.6);}}\n.hero h1{font-size:clamp(36px,7vw,72px);font-weight:900;line-height:1.1;letter-spacing:4px;margin-bottom:20px;background:linear-gradient(180deg,#fff 0%,#00f0ff 50%,#ff0044 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}\n.hero p{font-size:clamp(14px,2vw,18px);color:#888;line-height:1.8;max-width:600px;margin:0 auto 40px;}\n.hero-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}\n.btn-neon{padding:14px 36px;border-radius:6px;font-size:14px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .3s;text-transform:uppercase;position:relative;overflow:hidden;}\n.btn-neon-red{background:linear-gradient(135deg,#ff0044,#cc0033);color:#fff;border:1px solid #ff0044;box-shadow:0 0 15px rgba(255,0,68,.4);}\n.btn-neon-red:hover{box-shadow:0 0 30px rgba(255,0,68,.7),0 0 60px rgba(255,0,68,.3);transform:translateY(-2px);}\n.btn-neon-blue{background:transparent;color:#00f0ff;border:1px solid #00f0ff;box-shadow:0 0 10px rgba(0,240,255,.2);}\n.btn-neon-blue:hover{background:rgba(0,240,255,.1);box-shadow:0 0 25px rgba(0,240,255,.5);transform:translateY(-2px);}\n.scroll-hint{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;color:#555;font-size:11px;letter-spacing:2px;animation:bounce 2s infinite;}\n@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(8px);}}\n.scroll-hint .arrow{width:20px;height:20px;border-right:2px solid #555;border-bottom:2px solid #555;transform:rotate(45deg);}\n.section{position:relative;z-index:2;padding:80px 24px;max-width:1200px;margin:0 auto;}\n.section-header{text-align:center;margin-bottom:50px;}\n.section-tag{display:inline-block;padding:4px 14px;border:1px solid rgba(0,240,255,.3);border-radius:12px;font-size:11px;color:#00f0ff;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;}\n.section-title{font-size:clamp(24px,4vw,40px);font-weight:900;letter-spacing:2px;margin-bottom:12px;background:linear-gradient(90deg,#fff,#00f0ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}\n.section-desc{color:#666;font-size:14px;max-width:500px;margin:0 auto;line-height:1.8;}\n.neon-divider{width:80px;height:3px;margin:0 auto 40px;background:linear-gradient(90deg,#00f0ff,#ff0044);border-radius:2px;box-shadow:0 0 10px rgba(0,240,255,.5);}\n.events-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;}\n.event-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;overflow:hidden;transition:all .4s;cursor:pointer;position:relative;}\n.event-card::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,240,255,.05),rgba(255,0,68,.05));opacity:0;transition:opacity .4s;z-index:0;}\n.event-card:hover{transform:translateY(-6px);border-color:rgba(0,240,255,.2);box-shadow:0 10px 40px rgba(0,240,255,.1);}\n.event-card:hover::before{opacity:1;}\n.event-card *{position:relative;z-index:1;}\n.event-img{width:100%;height:180px;object-fit:cover;background:linear-gradient(135deg,#1a1a2e,#16213e);display:flex;align-items:center;justify-content:center;font-size:48px;color:#333;}\n.event-img img{width:100%;height:100%;object-fit:cover;}\n.event-body{padding:20px;}\n.event-status{display:inline-block;padding:3px 10px;border-radius:10px;font-size:10px;font-weight:700;letter-spacing:1px;margin-bottom:10px;}\n.status-upcoming{background:rgba(0,240,255,.15);color:#00f0ff;border:1px solid rgba(0,240,255,.3);}\n.status-live{background:rgba(255,0,68,.15);color:#ff0044;border:1px solid rgba(255,0,68,.3);animation:badge-pulse 2s infinite;}\n.status-ended{background:rgba(100,100,100,.15);color:#888;border:1px solid rgba(100,100,100,.3);}\n.event-title{font-size:18px;font-weight:700;color:#eee;margin-bottom:8px;}\n.event-meta{font-size:12px;color:#666;line-height:1.8;}\n.event-meta span{margin-right:16px;}\n.rules-container{display:grid;grid-template-columns:280px 1fr;gap:32px;}\n.rules-nav{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:8px;position:sticky;top:80px;align-self:start;}\n.rules-nav-item{display:block;padding:12px 16px;border-radius:6px;font-size:13px;color:#888;cursor:pointer;transition:all .3s;margin-bottom:4px;border:1px solid transparent;}\n.rules-nav-item:hover,.rules-nav-item.active{background:rgba(0,240,255,.08);color:#00f0ff;border-color:rgba(0,240,255,.15);}\n.rules-content{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:32px;}\n.rules-content h3{font-size:20px;color:#eee;margin-bottom:16px;display:flex;align-items:center;gap:8px;}\n.rules-content h3 .rule-icon{color:#00f0ff;}\n.rules-content p{color:#999;font-size:14px;line-height:2;margin-bottom:16px;}\n.rules-content .rule-box{background:rgba(0,240,255,.05);border-left:3px solid #00f0ff;padding:16px 20px;border-radius:0 8px 8px 0;margin-bottom:20px;}\n.rules-content .rule-box.warn{background:rgba(255,0,68,.05);border-left-color:#ff0044;}\n.rules-content .rule-box h4{color:#eee;font-size:14px;margin-bottom:6px;}\n.rules-content .rule-box p{margin:0;font-size:13px;}\n.equip-banner{background:linear-gradient(135deg,rgba(255,0,68,.1),rgba(0,240,255,.1));border:1px solid rgba(0,240,255,.15);border-radius:12px;padding:40px;text-align:center;margin-bottom:40px;position:relative;overflow:hidden;}\n.equip-banner::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 50%,rgba(255,0,68,.2) 0%,transparent 50%),radial-gradient(circle at 80% 50%,rgba(0,240,255,.2) 0%,transparent 50%);}\n.equip-banner *{position:relative;z-index:1;}\n.equip-banner h3{font-size:clamp(20px,3vw,28px);font-weight:900;color:#fff;margin-bottom:10px;}\n.equip-banner p{color:#888;font-size:14px;margin-bottom:20px;}\n.equip-banner .btn-neon-red{display:inline-block;}\n.equip-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;}\n.equip-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;overflow:hidden;transition:all .4s;text-align:center;}\n.equip-card:hover{transform:translateY(-6px);border-color:rgba(255,0,68,.3);box-shadow:0 12px 40px rgba(255,0,68,.15);}\n.equip-card-img{height:200px;background:linear-gradient(135deg,#111,#1a1a2e);display:flex;align-items:center;justify-content:center;font-size:56px;}\n.equip-card-img img{width:100%;height:100%;object-fit:cover;}\n.equip-card-body{padding:20px;}\n.equip-card-name{font-size:16px;font-weight:700;color:#eee;margin-bottom:8px;}\n.equip-card-desc{font-size:13px;color:#888;line-height:1.7;margin-bottom:12px;}\n.equip-card-price{display:inline-block;padding:6px 18px;border-radius:14px;font-size:15px;font-weight:700;background:linear-gradient(135deg,rgba(255,0,68,.2),rgba(0,240,255,.15));color:#ff6688;border:1px solid rgba(255,0,68,.25);}\n.video-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;}\n.video-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;overflow:hidden;transition:all .4s;cursor:pointer;}\n.video-card:hover{transform:translateY(-4px);border-color:rgba(255,0,68,.3);box-shadow:0 8px 30px rgba(255,0,68,.15);}\n.video-thumb{position:relative;height:200px;background:linear-gradient(135deg,#1a1a2e,#16213e);display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:48px;}\n.video-thumb img{width:100%;height:100%;object-fit:cover;}\n.video-play{position:absolute;width:56px;height:56px;background:rgba(255,0,68,.9);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .3s;box-shadow:0 0 20px rgba(255,0,68,.5);}\n.video-play::after{content:"";width:0;height:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-left:16px solid #fff;margin-left:4px;}\n.video-card:hover .video-play{transform:scale(1.15);box-shadow:0 0 40px rgba(255,0,68,.7);}\n.video-body{padding:16px;}\n.video-title{font-size:15px;font-weight:700;color:#eee;margin-bottom:6px;}\n.video-meta{font-size:11px;color:#666;}\n.video-meta span{margin-right:12px;}\n.footer{position:relative;z-index:2;border-top:1px solid rgba(255,255,255,.06);padding:40px 24px;margin-top:60px;text-align:center;}\n.footer-inner{max-width:1200px;margin:0 auto;}\n.footer-logo{font-size:18px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#00f0ff,#ff0044);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;}\n.footer-links{display:flex;gap:20px;justify-content:center;margin-bottom:16px;flex-wrap:wrap;}\n.footer-links a{font-size:12px;color:#555;transition:color .3s;}\n.footer-links a:hover{color:#00f0ff;}\n.footer-copy{font-size:11px;color:#333;}\n@media(max-width:768px){.nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:rgba(10,10,15,.98);border-bottom:1px solid rgba(0,240,255,.15);flex-direction:column;padding:16px;gap:4px;}.nav-links.open{display:flex;}.nav-links a{padding:12px 20px;width:100%;text-align:left;}.nav-hamburger{display:flex;}.rules-container{grid-template-columns:1fr;}.rules-nav{position:static;display:flex;flex-wrap:wrap;gap:0;padding:4px;}.rules-nav-item{margin-bottom:0;padding:8px 12px;font-size:12px;}.section{padding:50px 16px;}.hero{padding:100px 16px 60px;min-height:auto;}.hero-btns{flex-direction:column;align-items:center;}.video-grid{grid-template-columns:1fr;}}\n@media(max-width:480px){.events-grid{grid-template-columns:1fr;}.equip-grid{grid-template-columns:1fr 1fr;}}\n.fade-in{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease;}\n.fade-in.visible{opacity:1;transform:translateY(0);}\n<'+'/style>\n<'+'/head>\n<body>\n<nav class="nav">\n  <div class="nav-inner">\n    <div class="nav-logo">'+siteName+'</div>\n    <div class="nav-links" id="navLinks">\n      <a href="#events" class="active">赛事</a>\n      <a href="#rules">规则解读</a>\n      <a href="#equipment">比赛器材</a>\n      <a href="#videos">精彩视频</a>\n      <a href="forum.html" target="_blank" style="color:#ffd700;border-color:rgba(255,215,0,.3);">💬 论坛</a>\n    </div>\n    <div class="nav-hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>\n  </div>\n</nav>\n<section class="hero">\n  <div class="hero-bg"></div>\n  <div class="hero-particles" id="particles"></div>\n  <div class="hero-content">\n    <div class="hero-badge">'+esc(d.hero.badge)+'</div>\n    <h1>'+heroTitle+'</h1>\n    <p>'+esc(d.hero.subtitle)+'</p>\n    <div class="hero-btns">\n      <a href="#events" class="btn-neon btn-neon-red">探索赛事</a>\n      <a href="#equipment" class="btn-neon btn-neon-blue">器材报价</a>\n    </div>\n  </div>\n  <div class="scroll-hint"><span>SCROLL</span><div class="arrow"></div></div>\n</section>\n<section class="section" id="events">\n  <div class="section-header fade-in">\n    <div class="section-tag">EVENTS</div>\n    <h2 class="section-title">赛事动态</h2>\n    <div class="neon-divider"></div>\n    <p class="section-desc">获取最新格斗机器人赛事信息，了解赛程安排与报名方式</p>\n  </div>\n  <div class="events-grid">'+eventsCards+'\n  </div>\n</section>\n<section class="section" id="rules">\n  <div class="section-header fade-in">\n    <div class="section-tag">RULES</div>\n    <h2 class="section-title">规则解读</h2>\n    <div class="neon-divider"></div>\n    <p class="section-desc">深入了解格斗机器人竞赛规则，掌握取胜之道</p>\n  </div>\n  <div class="rules-container fade-in">\n    <div class="rules-nav">\n      '+rulesNavHTML+'\n    </div>\n    <div class="rules-content" id="rulesContent">\n      <h3><span class="rule-icon">'+esc(fr.icon)+'</span> <span>'+esc(fr.title)+'</span></h3>\n      <p>'+esc(fr.content)+'</p>\n      '+firstRuleContent+'\n    </div>\n  </div>\n</section>\n<section class="section" id="equipment">\n  <div class="section-header fade-in">\n    <div class="section-tag">EQUIPMENT</div>\n    <h2 class="section-title">比赛器材</h2>\n    <div class="neon-divider"></div>\n    <p class="section-desc">专业格斗机器人器材报价，一站式采购所需装备</p>\n  </div>\n  <div class="equip-grid">'+equipCards+'\n  </div>\n</section>\n<section class="section" id="videos">\n  <div class="section-header fade-in">\n    <div class="section-tag">HIGHLIGHTS</div>\n    <h2 class="section-title">精彩视频</h2>\n    <div class="neon-divider"></div>\n    <p class="section-desc">回顾赛场上的经典对决，感受钢铁碰撞的震撼</p>\n  </div>\n  <div class="video-grid">'+videoCards+'\n  </div>\n</section>\n<footer class="footer">\n  <div class="footer-inner">\n    <div class="footer-logo">'+siteName+'</div>\n    <div class="footer-links">\n      <a href="#events">赛事</a>\n      <a href="#rules">规则</a>\n      <a href="#equipment">器材</a>\n      <a href="#videos">视频</a>\n      <a href="forum.html">论坛</a>\n    </div>\n    <div class="footer-copy">'+esc(d.footer)+'</div>\n  </div>\n</footer>\n<'+'script>\n(function(){var c=document.getElementById("particles");var cols=["#00f0ff","#ff0044","#8000ff","#00ff88"];for(var i=0;i<30;i++){var p=document.createElement("div");p.className="particle";var s=Math.random()*4+1;p.style.cssText="width:"+s+"px;height:"+s+"px;left:"+Math.random()*100+"%;background:"+cols[Math.floor(Math.random()*cols.length)]+";box-shadow:0 0 "+(s*3)+"px "+cols[Math.floor(Math.random()*cols.length)]+";animation-duration:"+(Math.random()*8+6)+"s;animation-delay:"+(Math.random()*8)+"s;";c.appendChild(p);}})();\nfunction toggleMenu(){document.getElementById("navLinks").classList.toggle("open");document.getElementById("hamburger").classList.toggle("open");}\ndocument.querySelectorAll(".nav-links a").forEach(function(a){a.addEventListener("click",function(){document.getElementById("navLinks").classList.remove("open");document.getElementById("hamburger").classList.remove("open");});});\nvar sections=document.querySelectorAll("section[id]");\nwindow.addEventListener("scroll",function(){var sy=window.scrollY+120;sections.forEach(function(sec){var top=sec.offsetTop,h=sec.offsetHeight,id=sec.getAttribute("id"),lk=document.querySelector(\'.nav-links a[href="#\'+id+\'"]\');if(lk){if(sy>=top&&sy<top+h)lk.classList.add("active");else lk.classList.remove("active");}});});\n'+rulesDataJS+'\nfunction showRule(el,key){document.querySelectorAll(".rules-nav-item").forEach(function(n){n.classList.remove("active");});el.classList.add("active");document.getElementById("rulesContent").innerHTML=ruleData[key]||"<p>内容加载中...</p>";}\n(function(){var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add("visible");});},{threshold:0.1});document.querySelectorAll(".fade-in").forEach(function(el){obs.observe(el);});})();\n// Visitor tracking\n(function(){try{var tcbCfg=JSON.parse(localStorage.getItem("mecha_tcb_config")||"{}");if(!tcbCfg.envId)return;var s=document.createElement("script");s.src="//imgcache.qq.com/qcloud/tcbjs/2.9.4/tcb.js";s.onload=function(){var app=tcb.init({env:tcbCfg.envId});var db=app.database();var fp=localStorage.getItem("_vfp");if(!fp){fp=Math.random().toString(36).slice(2);localStorage.setItem("_vfp",fp);}db.collection("PageVisit").add({data:{page:location.pathname.split("/").pop()||"index.html",referrer:document.referrer?document.referrer.replace(/https?:\\/\\/[^/]+/,""):"直接访问",device:navigator.userAgent.length>80?navigator.userAgent.substring(0,80)+"…":navigator.userAgent,fingerprint:fp,createdAt:db.serverDate()}}).catch(function(){});};document.head.appendChild(s);}catch(e){}})();\n<'+'/body>\n<'+'/html>';
-}
-
-/* ============================================================
-   DEPLOY
-   ============================================================ */
-function renderDeploy() {
-  var cfg = loadConfig();
-  var url = cfg.username && cfg.repo ? 'https://'+cfg.username+'.github.io/'+cfg.repo+'/' : '未配置';
-  document.getElementById('deployUrl').textContent = url;
-}
-
-async function githubPut(path, content, message) {
-  var cfg = loadConfig();
-  if(!cfg.username||!cfg.token||!cfg.repo) {
-    toast('请先在「配置」页面填写 GitHub 信息','error');
-    return false;
-  }
-  var apiBase = 'https://api.github.com/repos/'+cfg.username+'/'+cfg.repo+'/contents/'+encodeURIComponent(path);
-  var headers = {
-    'Authorization': 'token '+cfg.token,
-    'Content-Type': 'application/json',
-    'User-Agent': 'MechaAdmin'
-  };
-
-  var sha = null;
-  try {
-    var res = await fetch(apiBase+'?ref='+cfg.branch, {headers:headers});
-    if(res.ok) {
-      var data = await res.json();
-      sha = data.sha;
+    if ((await r.json()).ok) {
+      if (!quiet) toast('✅ 保存成功！', 'success');
+      else toast('✅ 内容已保存', 'success');
     }
-  } catch(e) {}
-
-  var body = {
-    message: message || 'Update '+path,
-    content: btoa(unescape(encodeURIComponent(content))),
-    branch: cfg.branch
-  };
-  if(sha) body.sha = sha;
-
-  var putRes = await fetch(apiBase, {
-    method: 'PUT',
-    headers: headers,
-    body: JSON.stringify(body)
-  });
-
-  if(!putRes.ok) {
-    var err = await putRes.text();
-    logDeploy('❌ 上传 '+path+' 失败: '+err.substring(0,200));
-    toast('上传失败: '+putRes.status,'error');
-    return false;
-  }
-  logDeploy('✅ 上传 '+path+' 成功 ('+new Date().toLocaleTimeString()+')');
-  return true;
+  } catch(e) { toast('保存失败：' + e.message, 'error'); }
 }
 
-function logDeploy(msg) {
-  var log = document.getElementById('deployLog');
-  if(log.textContent.indexOf('暂无发布记录')>=0) log.textContent = '';
-  log.innerHTML = msg + '<br>' + log.innerHTML;
+// ===== 图片上传 =====
+function triggerUpload(fileInputId) {
+  document.getElementById(fileInputId)?.click();
 }
 
-async function deployAll() {
-  toast('开始发布全部内容...','info');
-  logDeploy('🔄 开始发布全部...');
-
-  // Generate and deploy index.html
-  var indexHTML = generateFrontendHTML();
-  logDeploy('⏳ 正在生成首页 HTML...');
-  var ok1 = await githubPut('index.html', indexHTML, 'Update index via admin');
-  if(ok1) toast('首页发布成功','success');
-
-  // Deploy quotation if possible
-  logDeploy('⏳ 正在上传报价单...');
+async function uploadImg(input, textInputId, previewId, iconId) {
+  if (!input.files?.[0]) return;
+  const fd = new FormData(); fd.append('file', input.files[0]);
   try {
-    var res = await fetch('格斗机器人报价单模板.html');
-    if(res.ok) {
-      var qhtml = await res.text();
-      await githubPut('格斗机器人报价单模板.html', qhtml, 'Update quotation via admin');
-    } else {
-      logDeploy('⚠️ 报价单文件无法读取（非 HTTP 服务）');
-    }
-  } catch(e) {
-    logDeploy('⚠️ 报价单文件无法读取（非 HTTP 服务）');
-  }
-
-  // Deploy forum.html
-  logDeploy('⏳ 正在上传论坛页面...');
-  try {
-    var fRes = await fetch('forum.html');
-    if(fRes.ok) {
-      var fhtml = await fRes.text();
-      await githubPut('forum.html', fhtml, 'Update forum via admin');
-    } else { logDeploy('⚠️ 论坛页面无法读取'); }
-  } catch(e) { logDeploy('⚠️ 论坛页面上传失败: '+e.message); }
-
-  logDeploy('🎉 发布流程完成！网站将在 1-2 分钟内更新');
-  toast('发布完成！','success');
+    toast('上传中...', 'info');
+    const r = await fetch(API + '/upload', { method:'POST', body:fd });
+    const { url } = await r.json();
+    document.getElementById(textInputId).value = url;
+    // 更新 siteData
+    if (textInputId === 'f-heroImg') siteData.heroImg = url;
+    if (textInputId === 'f-featImg') siteData.featImg = url;
+    const img = document.getElementById(previewId);
+    img.src = 'http://localhost:8080' + url;
+    img.style.display = 'block';
+    const icon = document.getElementById(iconId);
+    if (icon) icon.style.display = 'none';
+    toast('✅ 图片上传成功', 'success');
+  } catch(e) { toast('上传失败：' + e.message, 'error'); }
 }
 
-async function deployIndex() {
-  toast('正在发布首页...','info');
-  var indexHTML = generateFrontendHTML();
-  var ok = await githubPut('index.html', indexHTML, 'Update index via admin');
-  if(ok) {
-    toast('首页发布成功！','success');
-    logDeploy('🎉 首页发布完成');
-  }
+async function uploadProdImg(input, prodIdx) {
+  if (!input.files?.[0]) return;
+  const fd = new FormData(); fd.append('file', input.files[0]);
+  try {
+    toast('上传中...', 'info');
+    const r = await fetch(API + '/upload', { method:'POST', body:fd });
+    const { url } = await r.json();
+    siteData.products[prodIdx].img = url;
+    document.getElementById('prod-img-input-' + prodIdx).value = url;
+    const prev = document.getElementById('prod-img-prev-' + prodIdx);
+    prev.src = 'http://localhost:8080' + url;
+    prev.style.display = 'block';
+    const icon = document.getElementById('prod-img-icon-' + prodIdx);
+    if (icon) icon.style.display = 'none';
+    toast('✅ 图片上传成功', 'success');
+  } catch(e) { toast('上传失败：' + e.message, 'error'); }
 }
 
-async function deployQuotation() {
-  toast('正在获取报价单...','info');
+// ===== 生成静态页 =====
+async function buildStatic() {
+  await saveAll(true);
   try {
-    var res = await fetch('格斗机器人报价单模板.html');
-    if(res.ok) {
-      var html = await res.text();
-      var ok = await githubPut('格斗机器人报价单模板.html', html, 'Update quotation via admin');
-      if(ok) {
-        toast('报价单发布成功！','success');
-        logDeploy('🎉 报价单发布完成');
+    const r = await fetch(API + '/publish', { method:'POST' });
+    const d = await r.json();
+    if (d.ok) toast('✅ 静态页面已生成到 dist/index.html', 'success');
+    else toast('生成失败', 'error');
+  } catch(e) { toast('生成失败：' + e.message, 'error'); }
+}
+
+// ===== 发布公网 =====
+let tunnelUrl = '';
+async function startTunnel() {
+  const btn = document.getElementById('btn-tunnel');
+  btn.disabled = true;
+  btn.textContent = '⏳ 连接中...';
+  const box = document.getElementById('tunnel-result');
+  const urlEl = document.getElementById('tunnel-url');
+  const logEl = document.getElementById('tunnel-log');
+  box.style.display = 'block';
+  urlEl.textContent = '正在建立隧道，请稍候...';
+  logEl.textContent = '';
+
+  try {
+    const es = new EventSource(API + '/tunnel?port=8090');
+    es.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      if (data.url) {
+        tunnelUrl = data.url;
+        urlEl.textContent = tunnelUrl;
+        document.getElementById('tunnel-open').href = tunnelUrl;
+        btn.disabled = false;
+        btn.textContent = '🔄 重新发布';
+        toast('🌐 公网链接已生成！', 'success');
       }
-    } else {
-      toast('无法读取报价单文件','error');
-    }
-  } catch(e) {
-    toast('无法读取报价单: '+e.message,'error');
-  }
-}
-
-/* ============================================================
-   PREVIEW
-   ============================================================ */
-function previewFrontend() {
-  var html = generateFrontendHTML();
-  var blob = new Blob([html],{type:'text/html'});
-  var url = URL.createObjectURL(blob);
-  window.open(url,'_blank');
-  toast('前台预览已打开','success');
-}
-
-/* ============================================================
-   CONFIG
-   ============================================================ */
-function loadConfigUI() {
-  var cfg = loadConfig();
-  document.getElementById('cfgUsername').value = cfg.username || '';
-  document.getElementById('cfgToken').value = cfg.token || '';
-  document.getElementById('cfgRepo').value = cfg.repo || '';
-  document.getElementById('cfgBranch').value = cfg.branch || 'main';
-}
-
-function saveConfig() {
-  var cfg = {
-    username: document.getElementById('cfgUsername').value.trim(),
-    token: document.getElementById('cfgToken').value.trim(),
-    repo: document.getElementById('cfgRepo').value.trim(),
-    branch: document.getElementById('cfgBranch').value.trim() || 'main'
-  };
-  saveConfigData(cfg);
-  toast('配置已保存','success');
-}
-
-async function testConnection() {
-  var cfg = loadConfig();
-  if(!cfg.username||!cfg.token) { toast('请先填写用户名和 Token','error'); return; }
-  toast('正在测试连接...','info');
-  try {
-    var res = await fetch('https://api.github.com/user', {
-      headers:{'Authorization':'token '+cfg.token,'User-Agent':'MechaAdmin'}
-    });
-    if(res.ok) {
-      var user = await res.json();
-      toast('连接成功！用户: '+user.login,'success');
-    } else {
-      toast('连接失败: '+res.status,'error');
-    }
-  } catch(e) {
-    toast('网络错误: '+e.message,'error');
-  }
-}
-
-/* ============================================================
-   DATA EXPORT / IMPORT / RESET
-   ============================================================ */
-function exportData() {
-  var blob = new Blob([JSON.stringify(adminData, null, 2)], {type:'application/json'});
-  var a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'mecha_data_'+new Date().toISOString().slice(0,10)+'.json';
-  a.click();
-  URL.revokeObjectURL(a.href);
-  toast('数据已导出','success');
-}
-
-function importData(e) {
-  var file = e.target.files[0];
-  if(!file) return;
-  var reader = new FileReader();
-  reader.onload = function(ev) {
-    try {
-      var data = JSON.parse(ev.target.result);
-      if(data.events && data.equipment && data.videos) {
-        adminData = data;
-        saveData(adminData);
-        toast('数据导入成功！','success');
-        switchPage('dashboard',document.querySelector('.nav-item'));
-      } else {
-        toast('数据格式不正确','error');
-      }
-    } catch(err) {
-      toast('解析失败: '+err.message,'error');
-    }
-  };
-  reader.readAsText(file);
-  e.target.value = '';
-}
-
-function resetData() {
-  if(!confirm('确定要重置所有数据为默认值吗？此操作不可撤销！')) return;
-  adminData = JSON.parse(JSON.stringify(defaultData));
-  saveData(adminData);
-  toast('数据已重置','info');
-  switchPage('dashboard',document.querySelector('.nav-item'));
-}
-
-/* ============================================================
-   UTILS
-   ============================================================ */
-function esc(str) {
-  if(!str) return '';
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-/* ============================================================
-   INIT
-   ============================================================ */
-updateDashboard();
-
-/* ============================================================
-   CLOUDBASE CONFIG (for forum)
-   ============================================================ */
-var TCB_CONFIG_KEY = 'mecha_tcb_config';
-var tcbSDKLoaded = false;
-var tcbApp_admin = null;
-var tcbDb_admin = null;
-var tcbAuth_admin = null;
-var tcbCmd_admin = null;
-
-function getTCBConfig(){
-  try{ return JSON.parse(localStorage.getItem(TCB_CONFIG_KEY)||'{}'); }catch(e){ return {}; }
-}
-function saveTCBConfig(){
-  var envId = document.getElementById('tcbEnvId').value.trim();
-  if(!envId){ toast('请填写环境 ID','error'); return; }
-  var wxAppId = document.getElementById('tcbWxAppId').value.trim();
-  var wxAppSecret = document.getElementById('tcbWxAppSecret').value.trim();
-  var cfg = { envId: envId };
-  if(wxAppId) cfg.wxAppId = wxAppId;
-  if(wxAppSecret) cfg.wxAppSecret = wxAppSecret;
-  localStorage.setItem(TCB_CONFIG_KEY, JSON.stringify(cfg));
-  toast('腾讯云开发配置已保存','success');
-  loadTCBSDK(cfg, function(){ toast('连接成功！','success'); loadForumStats(); });
-}
-function loadTCBConfigUI(){
-  var cfg = getTCBConfig();
-  document.getElementById('tcbEnvId').value = cfg.envId||'';
-  document.getElementById('tcbWxAppId').value = cfg.wxAppId||'';
-  document.getElementById('tcbWxAppSecret').value = cfg.wxAppSecret||'';
-}
-function testTCBConfig(){
-  var r = document.getElementById('tcbTestResult');
-  r.style.color='#888'; r.textContent='测试中…';
-  var cfg = getTCBConfig();
-  if(!cfg.envId){ r.style.color='#ff6b6b'; r.textContent='❌ 未配置，请先保存配置'; return; }
-  if(!tcbApp_admin){ loadTCBSDK(cfg, function(){ r.style.color='#4ade80'; r.textContent='✅ 连接成功！SDK 加载正常'; }); return; }
-  tcbDb_admin.collection('ForumPost').count().then(function(res){
-    r.style.color='#4ade80'; r.textContent='✅ 连接成功！当前帖子数：'+res.total;
-  }).catch(function(e){ r.style.color='#ff6b6b'; r.textContent='❌ 连接失败：'+(e.message||e); });
-}
-function loadTCBSDK(cfg, cb){
-  if(tcbApp_admin){ if(cb) cb(); return; }
-  if(typeof cloudbase === 'undefined'){
-    // Load CloudBase JS SDK (full version includes auth + database)
-    var s = document.createElement('script');
-    s.src = 'https://static.cloudbase.net/cloudbase-js-sdk/latest/cloudbase.full.js';
-    s.onload = function(){
-      if(typeof window.cloudbase !== 'undefined'){
-        window.tcb = window.cloudbase;
-        initTCBAdmin(cfg, cb);
-      } else {
-        toast('SDK 加载异常，请检查网络','error');
+      if (data.log) {
+        logEl.textContent += data.log;
+        logEl.scrollTop = logEl.scrollHeight;
       }
     };
-    s.onerror = function(){ toast('SDK 加载失败，请检查网络连接','error'); };
-    document.head.appendChild(s);
-  } else {
-    window.tcb = window.cloudbase;
-    initTCBAdmin(cfg, cb);
-  }
-}
-function initTCBAdmin(cfg, cb){
-  try {
-    tcbApp_admin = tcb.init({ env: cfg.envId });
-    tcbDb_admin = tcbApp_admin.database();
-    tcbAuth_admin = tcbApp_admin.auth();
-    tcbCmd_admin = tcbDb_admin.command;
-    tcbSDKLoaded = true;
-    if(cb) cb();
-  } catch(e){
-    toast('SDK 初始化失败：'+(e.message||e),'error');
+    es.onerror = () => {
+      btn.disabled = false;
+      btn.textContent = '🌐 发布到公网';
+    };
+  } catch(e) {
+    toast('发布失败：' + e.message, 'error');
+    btn.disabled = false;
+    btn.textContent = '🌐 发布到公网';
   }
 }
 
-/* ============================================================
-   FORUM STATS
-   ============================================================ */
-function loadForumStats(){
-  var cfg = getTCBConfig();
-  if(!cfg.envId){ setForumStatsPlaceholder(); return; }
-  if(!tcbApp_admin){ loadTCBSDK(cfg, loadForumStats); return; }
-  tcbDb_admin.collection('ForumPost').count().then(function(res){ document.getElementById('fsTotalPosts').textContent=res.total; }).catch(function(){});
-  tcbDb_admin.collection('users').count().then(function(res){ document.getElementById('fsTotalUsers').textContent=res.total; }).catch(function(){});
-  tcbDb_admin.collection('ForumReply').count().then(function(res){ document.getElementById('fsTotalReplies').textContent=res.total; }).catch(function(){});
-  var today = new Date(); today.setHours(0,0,0,0);
-  tcbDb_admin.collection('ForumPost').where({ createdAt: tcbCmd_admin.gte(today) }).count().then(function(res){ document.getElementById('fsTodayPosts').textContent=res.total; }).catch(function(){});
-}
-function setForumStatsPlaceholder(){
-  ['fsTotalPosts','fsTotalUsers','fsTotalReplies','fsTodayPosts'].forEach(function(id){
-    document.getElementById(id).textContent='—';
-  });
+function copyUrl() {
+  if (!tunnelUrl) return toast('尚未获取到链接', 'error');
+  navigator.clipboard.writeText(tunnelUrl).then(() => toast('✅ 链接已复制', 'success'));
 }
 
-/* ============================================================
-   USER MANAGEMENT
-   ============================================================ */
-var userPage = 1, USER_PAGE_SIZE = 20;
-function loadUsers(){
-  var el = document.getElementById('usersTable');
-  var cfg = getTCBConfig();
-  if(!cfg.envId){
-    el.innerHTML='<div style="text-align:center;padding:32px;color:#555;">请先在「论坛管理」页面配置腾讯云开发</div>'; return;
-  }
-  if(!tcbApp_admin){ loadTCBSDK(cfg, loadUsers); return; }
-  el.innerHTML='<div style="text-align:center;padding:32px;color:#555;"><span style="font-size:20px;">⏳</span> 加载中…</div>';
-  var where = {};
-  var kw = document.getElementById('userSearch').value.trim();
-  if(kw){
-    where = tcbCmd_admin.or([
-      { username: tcbCmd_admin.regex(kw, 'i') },
-      { nickname: tcbCmd_admin.regex(kw, 'i') }
-    ]);
-  }
-  tcbDb_admin.collection('users').where(where).orderBy('createdAt','desc')
-    .skip((userPage-1)*USER_PAGE_SIZE).limit(USER_PAGE_SIZE).get().then(function(res){
-    var users = res.data || [];
-    return tcbDb_admin.collection('users').where(where).count().then(function(cnt){
-      document.getElementById('usersTotal').textContent = cnt.total;
-      renderUsersTable(users, cnt.total);
-    });
-  }).catch(function(e){ el.innerHTML='<div style="color:#ff6b6b;padding:20px;">加载失败：'+(e.message||e)+'</div>'; });
-}
-function renderUsersTable(users, total){
-  if(!users.length){
-    document.getElementById('usersTable').innerHTML='<div style="text-align:center;padding:40px;color:#555;">暂无用户数据</div>';
-    document.getElementById('usersPagination').innerHTML=''; return;
-  }
-  var html='<table style="width:100%;border-collapse:collapse;font-size:13px;">';
-  html+='<thead><tr style="border-bottom:1px solid rgba(0,240,255,.15);">';
-  ['用户名','昵称','注册时间','帖子','状态','操作'].forEach(function(h){
-    html+='<th style="text-align:left;padding:10px 8px;color:#00f0ff;font-size:11px;letter-spacing:1px;">'+h+'</th>';
-  });
-  html+='</tr></thead><tbody>';
-  users.forEach(function(u){
-    var uid = u._id || u.id;
-    var banned = u.banned || false;
-    html+='<tr style="border-bottom:1px solid rgba(255,255,255,.04);">';
-    html+='<td style="padding:10px 8px;font-weight:600;">'+escAdmin(u.username)+'</td>';
-    html+='<td style="padding:10px 8px;color:#888;">'+escAdmin(u.nickname||'—')+'</td>';
-    html+='<td style="padding:10px 8px;color:#555;font-size:11px;">'+formatAdminDate(u.createdAt)+'</td>';
-    html+='<td style="padding:10px 8px;" id="upc-'+uid+'">—</td>';
-    html+='<td style="padding:10px 8px;"><span style="font-size:11px;padding:2px 8px;border-radius:4px;'+(banned?'background:rgba(255,0,68,.15);color:#ff6b6b;':'background:rgba(34,197,94,.1);color:#4ade80;')+'">'+(banned?'封禁':'正常')+'</span></td>';
-    html+='<td style="padding:10px 8px;">';
-    if(banned){
-      html+='<button style="font-size:11px;padding:3px 8px;cursor:pointer;background:rgba(34,197,94,.1);color:#4ade80;border:1px solid rgba(34,197,94,.3);border-radius:4px;" onclick="toggleBanUser(\''+uid+'\',false)">解封</button>';
-    } else {
-      html+='<button style="font-size:11px;padding:3px 8px;cursor:pointer;background:rgba(255,0,68,.1);color:#ff6b6b;border:1px solid rgba(255,0,68,.3);border-radius:4px;" onclick="toggleBanUser(\''+uid+'\',true)">封禁</button>';
-    }
-    html+='</td>';
-    html+='</tr>';
-    (function(authorId, cellId){
-      tcbDb_admin.collection('ForumPost').where({ authorId: authorId }).count().then(function(res){
-        var cell=document.getElementById(cellId); if(cell) cell.textContent=res.total;
-      }).catch(function(){});
-    })(uid, 'upc-'+uid);
-  });
-  html+='</tbody></table>';
-  document.getElementById('usersTable').innerHTML=html;
-  var pages = Math.ceil(total/USER_PAGE_SIZE);
-  var pHtml='';
-  for(var i=1;i<=pages&&i<=10;i++){
-    pHtml+='<button style="padding:5px 10px;border-radius:5px;font-size:12px;cursor:pointer;border:1px solid rgba(0,240,255,.2);background:'+(i===userPage?'rgba(0,240,255,.15)':'rgba(255,255,255,.03)')+';color:'+(i===userPage?'#00f0ff':'#666')+'" onclick="userPage='+i+';loadUsers()">'+i+'</button>';
-  }
-  document.getElementById('usersPagination').innerHTML=pHtml;
-}
-function toggleBanUser(uid, ban){
-  if(!tcbDb_admin) return;
-  tcbDb_admin.collection('users').doc(uid).update({ data: { banned: ban } }).then(function(){
-    toast(ban?'已封禁用户':'已解封用户','success'); loadUsers();
-  }).catch(function(e){ toast('操作失败：'+(e.message||e),'error'); });
-}
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-/* ============================================================
-   VISITOR RECORDS
-   ============================================================ */
-var visitPage = 1, VISIT_PAGE_SIZE = 30;
-function loadVisitors(){
-  var el = document.getElementById('visitTable');
-  var cfg = getTCBConfig();
-  if(!cfg.envId){
-    el.innerHTML='<div style="text-align:center;padding:32px;color:#555;">请先配置腾讯云开发，并确保前台页面已嵌入访客统计代码</div>';
-    showVisitSummaryPlaceholder(); return;
-  }
-  if(!tcbApp_admin){ loadTCBSDK(cfg, loadVisitors); return; }
-  el.innerHTML='<div style="text-align:center;padding:32px;color:#555;"><span style="font-size:20px;">⏳</span> 加载中…</div>';
-  var days = parseInt(document.getElementById('visitRange').value)||0;
-  var where = {};
-  if(days>0){ where.createdAt = tcbCmd_admin.gte(new Date(Date.now()-days*86400000)); }
-  tcbDb_admin.collection('PageVisit').where(where).orderBy('createdAt','desc')
-    .skip((visitPage-1)*VISIT_PAGE_SIZE).limit(VISIT_PAGE_SIZE).get().then(function(res){
-    var records = res.data || [];
-    return tcbDb_admin.collection('PageVisit').where(where).count().then(function(cnt){
-      document.getElementById('visitorsTotal').textContent = cnt.total;
-      renderVisitTable(records, cnt.total);
-      loadVisitSummary(days);
-    });
-  }).catch(function(e){ el.innerHTML='<div style="color:#ff6b6b;padding:20px;">加载失败：'+(e.message||e)+'</div>'; showVisitSummaryPlaceholder(); });
-}
-
-function loadVisitSummary(days){
-  if(!tcbDb_admin) return;
-  var where = {};
-  if(days>0){ where.createdAt = tcbCmd_admin.gte(new Date(Date.now()-days*86400000)); }
-  tcbDb_admin.collection('PageVisit').where(where).limit(1000).get().then(function(res){
-    var records = res.data || [];
-    document.getElementById('vstPV').textContent = records.length;
-    var uvSet = new Set(records.map(function(r){ return r.fingerprint||r.ip||Math.random(); }));
-    document.getElementById('vstUV').textContent = uvSet.size;
-    var today = new Date(); today.setHours(0,0,0,0);
-    var todayCount = records.filter(function(r){ return r.createdAt && new Date(r.createdAt)>=today; }).length;
-    document.getElementById('vstToday').textContent = todayCount;
-    var actualDays = days>0 ? days : (records.length?Math.max(1,Math.ceil((Date.now()-new Date(records[records.length-1].createdAt).getTime())/86400000)):1);
-    document.getElementById('vstAvg').textContent = Math.round(records.length/actualDays);
-    var pageCount = {};
-    records.forEach(function(r){
-      var p = r.page||'未知';
-      pageCount[p] = (pageCount[p]||0)+1;
-    });
-    var sorted = Object.keys(pageCount).sort(function(a,b){ return pageCount[b]-pageCount[a]; });
-    var bHtml='';
-    sorted.slice(0,8).forEach(function(p){
-      var pct = records.length?Math.round(pageCount[p]/records.length*100):0;
-      bHtml+='<div style="display:flex;align-items:center;gap:10px;font-size:12px;">';
-      bHtml+='<span style="color:#888;width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+escAdmin(p)+'">'+escAdmin(p)+'</span>';
-      bHtml+='<div style="flex:1;background:rgba(255,255,255,.06);border-radius:3px;height:6px;overflow:hidden;">';
-      bHtml+='<div style="height:100%;background:#00f0ff;border-radius:3px;width:'+pct+'%;transition:width .5s;"></div></div>';
-      bHtml+='<span style="color:#00f0ff;font-weight:700;width:40px;text-align:right;">'+pageCount[p]+'</span>';
-      bHtml+='</div>';
-    });
-    document.getElementById('pageBreakdown').innerHTML=bHtml||'<div style="color:#555;font-size:12px;">暂无数据</div>';
-  });
-}
-
-function showVisitSummaryPlaceholder(){
-  ['vstPV','vstUV','vstToday','vstAvg'].forEach(function(id){ document.getElementById(id).textContent='—'; });
-  document.getElementById('pageBreakdown').innerHTML='<div style="color:#555;font-size:12px;">配置腾讯云开发后可用</div>';
-}
-
-function renderVisitTable(records, total){
-  if(!records.length){
-    document.getElementById('visitTable').innerHTML='<div style="text-align:center;padding:40px;color:#555;">暂无访问记录<br><small style="color:#444;margin-top:6px;display:block;">确保前台 index.html 已嵌入访客统计代码并已发布</small></div>';
-    document.getElementById('visitPagination').innerHTML=''; return;
-  }
-  var html='<table style="width:100%;border-collapse:collapse;font-size:12px;">';
-  html+='<thead><tr style="border-bottom:1px solid rgba(0,240,255,.15);">';
-  ['时间','页面','来源','地区','设备'].forEach(function(h){
-    html+='<th style="text-align:left;padding:8px 6px;color:#00f0ff;font-size:10px;letter-spacing:1px;">'+h+'</th>';
-  });
-  html+='</tr></thead><tbody>';
-  records.forEach(function(r){
-    html+='<tr style="border-bottom:1px solid rgba(255,255,255,.03);">';
-    html+='<td style="padding:8px 6px;color:#555;">'+formatAdminDate(r.createdAt)+'</td>';
-    html+='<td style="padding:8px 6px;color:#bbb;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+escAdmin(r.page||'')+'">'+escAdmin(r.page||'—')+'</td>';
-    html+='<td style="padding:8px 6px;color:#666;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+escAdmin(r.referrer||'直接访问')+'</td>';
-    html+='<td style="padding:8px 6px;color:#666;">'+escAdmin(r.region||'—')+'</td>';
-    html+='<td style="padding:8px 6px;color:#666;font-size:10px;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+escAdmin(r.device||'—')+'</td>';
-    html+='</tr>';
-  });
-  html+='</tbody></table>';
-  document.getElementById('visitTable').innerHTML=html;
-  // Pagination
-  var pages = Math.ceil(total/VISIT_PAGE_SIZE);
-  var pHtml='';
-  for(var i=1;i<=pages&&i<=10;i++){
-    pHtml+='<button style="padding:5px 10px;border-radius:5px;font-size:12px;cursor:pointer;border:1px solid rgba(0,240,255,.2);background:'+(i===visitPage?'rgba(0,240,255,.15)':'rgba(255,255,255,.03)')+';color:'+(i===visitPage?'#00f0ff':'#666')+'" onclick="visitPage='+i+';loadVisitors()">'+i+'</button>';
-  }
-  document.getElementById('visitPagination').innerHTML=pHtml;
-}
-
-/* ============================================================
-   UTILS for new features
-   ============================================================ */
-function escAdmin(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function formatAdminDate(d){
-  if(!d) return '—';
-  var dt = new Date(d);
-  return dt.getFullYear()+'-'+(dt.getMonth()+1)+'-'+dt.getDate()+' '+dt.getHours()+':'+(dt.getMinutes()<10?'0':'')+dt.getMinutes();
-}
+// 初始加载
+loadData();
 </script>
 </body>
 </html>
