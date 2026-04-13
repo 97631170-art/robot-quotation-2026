@@ -1,692 +1,883 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<meta name="description" content="造悟社格斗机器人 · 2026竞技系列 · BoxBot赛事官方器材供应商"/>
-<title>⚡中国格斗机甲联盟-造悟社 · 格斗机器人产品展示</title>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --red:#e8242a;--red-dark:#b01a1f;--red-glow:rgba(232,36,42,.35);
-  --bg:#080810;--bg2:#0d0d1a;--surface:rgba(255,255,255,.04);
-  --border:rgba(255,255,255,.08);--muted:rgba(255,255,255,.5);
-  --gold:#f5a623;--green:#22c55e;--blue:#3b82f6;
-}
-html{scroll-behavior:smooth}
-body{font-family:'PingFang SC','Microsoft YaHei','Helvetica Neue',sans-serif;background:var(--bg);color:#fff;overflow-x:hidden}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>格斗机器人报价单</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; }
 
-/* ===== 滚动动画 ===== */
-.reveal{opacity:0;transform:translateY(40px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
-.reveal.visible{opacity:1;transform:translateY(0)}
-.reveal-delay-1{transition-delay:.1s}
-.reveal-delay-2{transition-delay:.2s}
-.reveal-delay-3{transition-delay:.3s}
-.reveal-delay-4{transition-delay:.4s}
-.reveal-delay-5{transition-delay:.5s}
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: #f0f2f5;
+      color: #333;
+      font-size: 14px;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
 
-/* ===== 导航 ===== */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 60px;height:64px;background:rgba(8,8,16,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:background .3s}
-nav.scrolled{background:rgba(8,8,16,.98);box-shadow:0 4px 30px rgba(0,0,0,.4)}
-.nav-logo{font-size:17px;font-weight:900;letter-spacing:3px;cursor:pointer}.nav-logo em{color:var(--red);font-style:normal}
-.nav-badge{display:inline-block;background:rgba(232,36,42,.15);border:1px solid rgba(232,36,42,.3);color:var(--red);font-size:9px;font-weight:700;letter-spacing:2px;padding:2px 8px;border-radius:10px;margin-left:10px;text-transform:uppercase;vertical-align:middle}
-.nav-menu{display:flex;gap:28px;list-style:none;align-items:center}
-.nav-menu a{color:var(--muted);text-decoration:none;font-size:13px;letter-spacing:1px;transition:color .2s;position:relative}
-.nav-menu a:hover{color:#fff}
-.nav-menu a.active{color:#fff}
-.nav-menu a::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:var(--red);transform:scaleX(0);transition:transform .25s cubic-bezier(.16,1,.3,1)}
-.nav-menu a:hover::after,.nav-menu a.active::after{transform:scaleX(1)}
-.nav-cta{background:linear-gradient(135deg,var(--red),var(--red-dark))!important;color:#fff!important;padding:8px 22px!important;border-radius:5px!important;font-weight:700!important;box-shadow:0 4px 16px rgba(232,36,42,.3);transition:all .2s!important}
-.nav-cta:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(232,36,42,.45)!important}
-.nav-cta::after{display:none!important}
-.nav-mobile{display:none}
-@media(max-width:768px){
-  nav{padding:0 20px}
-  .nav-menu{display:none}
-  .nav-mobile{display:flex;gap:8px;align-items:center}
-  .mobile-menu-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#fff;padding:8px 14px;border-radius:5px;font-size:12px;cursor:pointer}
-}
+    /* ===== 头部 ===== */
+    .header {
+      background: linear-gradient(135deg, #1a237e, #283593);
+      color: #fff;
+      padding: 18px 16px 14px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(26,35,126,0.35);
+    }
+    .header h1 { font-size: 17px; font-weight: 700; margin-bottom: 2px; letter-spacing: 1px; }
+    .header p { font-size: 11px; opacity: 0.75; letter-spacing: 0.5px; }
 
-/* ===== 英雄区 ===== */
-.hero{position:relative;min-height:100vh;display:flex;align-items:center;padding:100px 60px 60px;overflow:hidden}
-.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 70% 60%,rgba(232,36,42,.1) 0%,transparent 70%),radial-gradient(ellipse 40% 40% at 20% 80%,rgba(59,130,246,.05) 0%,transparent 60%),linear-gradient(135deg,#0d0d1a 0%,#080810 100%)}
-.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%)}
-.hero-vline{position:absolute;left:56px;top:20%;bottom:20%;width:2px;background:linear-gradient(180deg,transparent,var(--red) 40%,var(--red) 60%,transparent)}
-.hero-content{position:relative;z-index:2;max-width:640px}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:10px;margin-bottom:28px}
-.eyebrow-dot{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 12px var(--red);animation:pulse 2s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.8)}}
-.eyebrow-text{font-size:11px;letter-spacing:4px;color:var(--red);text-transform:uppercase;font-weight:600}
-.hero-h1{font-size:clamp(44px,6vw,82px);font-weight:900;line-height:1.05;letter-spacing:-1px;margin-bottom:24px}
-.hero-h1 .line2{color:var(--red);display:block;text-shadow:0 0 60px rgba(232,36,42,.4)}
-.hero-desc{font-size:15px;color:var(--muted);line-height:1.9;margin-bottom:44px;max-width:500px}
-.hero-actions{display:flex;gap:14px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 32px;border-radius:5px;font-size:14px;font-weight:700;letter-spacing:2px;cursor:pointer;border:none;transition:all .22s;text-decoration:none}
-.btn-red{background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff;box-shadow:0 6px 28px var(--red-glow)}
-.btn-red:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(232,36,42,.5)}
-.btn-outline{background:transparent;color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.2)}
-.btn-outline:hover{border-color:rgba(255,255,255,.5);color:#fff;transform:translateY(-2px)}
-.hero-visual{position:absolute;right:0;top:64px;bottom:0;width:52%;overflow:hidden;border-radius:0 0 0 24px}
-.hero-visual::before{content:'';position:absolute;left:0;top:0;bottom:0;width:50%;background:linear-gradient(90deg,var(--bg),transparent);z-index:1;pointer-events:none}
-.hero-visual::after{content:'';position:absolute;left:0;right:0;bottom:0;height:40%;background:linear-gradient(0deg,var(--bg),transparent);z-index:1;pointer-events:none}
-.hero-visual-inner{width:100%;height:100%}
-.hero-kpis{position:absolute;bottom:60px;left:60px;z-index:3;display:flex;gap:0}
-.kpi{padding:0 36px 0 0;margin-right:36px;border-right:1px solid rgba(255,255,255,.1)}.kpi:last-child{border-right:none;margin-right:0}
-.kpi-num{font-size:36px;font-weight:900;color:var(--red);line-height:1}.kpi-label{font-size:11px;color:var(--muted);letter-spacing:2px;margin-top:4px}
+    /* ===== 分组标签 ===== */
+    .tabs {
+      display: flex;
+      background: #fff;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      border-bottom: 1px solid #e0e0e0;
+      position: sticky;
+      top: 76px;
+      z-index: 99;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      flex-shrink: 0;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #666;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .tab-btn.active {
+      color: #1a237e;
+      font-weight: 600;
+      border-bottom-color: #1a237e;
+    }
 
-/* ===== 通用区块 ===== */
-.section{padding:100px 60px}
-.section-dark{background:rgba(255,255,255,.015);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.section-red{background:linear-gradient(135deg,rgba(232,36,42,.08),rgba(8,8,16,1))}
-.section-head{text-align:center;margin-bottom:64px}
-.section-kicker{display:inline-flex;align-items:center;gap:12px;margin-bottom:16px}
-.kicker-line{width:32px;height:2px;background:var(--red)}.kicker-text{font-size:11px;letter-spacing:4px;color:var(--red);text-transform:uppercase;font-weight:600}
-.section-h2{font-size:clamp(26px,3vw,42px);font-weight:800;letter-spacing:1px;margin-bottom:14px}
-.section-sub{margin-top:0;color:var(--muted);font-size:14px;line-height:1.8}
+    /* ===== 主内容 ===== */
+    .main {
+      padding: 10px 10px 90px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
 
-/* ===== 产品卡片 ===== */
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-@media(max-width:1000px){.cards{grid-template-columns:1fr;max-width:500px;margin:0 auto}}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s,border-color .35s}
-.card:hover{transform:translateY(-10px);box-shadow:0 32px 72px rgba(0,0,0,.5),0 0 0 1px rgba(232,36,42,.25);border-color:rgba(232,36,42,.35)}
-.card.hot{border-color:rgba(232,36,42,.3);background:linear-gradient(160deg,rgba(232,36,42,.07) 0%,rgba(232,36,42,.02) 100%)}
-.card-ribbon{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;min-height:40px}
-.ribbon-tag{background:rgba(232,36,42,.18);border:1px solid rgba(232,36,42,.35);color:#ff6b6b;font-size:10px;font-weight:700;letter-spacing:2.5px;padding:4px 12px;border-radius:20px;text-transform:uppercase}
-.ribbon-tag.hot-tag{background:linear-gradient(90deg,rgba(232,36,42,.3),rgba(232,36,42,.15));border-color:var(--red);color:#fff}
-.card-img-wrap{width:100%;height:240px;background:#0a0a14;overflow:hidden;display:flex;align-items:center;justify-content:center}
-.card-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.16,1,.3,1)}
-.card:hover .card-img-wrap img{transform:scale(1.08)}
-.card-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;font-size:64px}
-.p1{background:linear-gradient(135deg,#0e1525,#1a243a)}.p2{background:linear-gradient(135deg,#100a0a,#1e1010)}.p3{background:linear-gradient(135deg,#0a0e0a,#0e1a0e)}
-.card-body{padding:22px 22px 26px}
-.card-series{font-size:10px;letter-spacing:3.5px;color:var(--red);text-transform:uppercase;margin-bottom:6px}
-.card-title{font-size:22px;font-weight:800;letter-spacing:1px;margin-bottom:12px}
-.card-desc{font-size:13px;color:var(--muted);line-height:1.85;margin-bottom:18px}
-.card-tags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:22px}
-.tag{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);font-size:11px;padding:4px 11px;border-radius:3px}
-.card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:18px;border-top:1px solid rgba(255,255,255,.06)}
-.price-val{font-size:28px;font-weight:900;color:var(--red)}.price-note{font-size:12px;color:var(--muted);margin-top:2px}
-.card-btn{background:var(--surface);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);padding:9px 20px;border-radius:5px;font-size:12px;font-weight:600;letter-spacing:1.5px;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block}
-.card-btn:hover{border-color:var(--red);color:var(--red);background:rgba(232,36,42,.06)}
+    /* ===== 客户信息 ===== */
+    .customer-info {
+      background: #fff;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    .customer-info h3 { font-size: 13px; color: #1a237e; margin-bottom: 8px; font-weight: 600; }
+    .customer-info .row { display: flex; align-items: center; margin-bottom: 6px; }
+    .customer-info label { font-size: 12px; color: #888; width: 56px; flex-shrink: 0; }
+    .customer-info input {
+      flex: 1;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 7px 10px;
+      font-size: 13px;
+      background: #fafafa;
+      color: #333;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .customer-info input:focus { border-color: #1a237e; background: #fff; }
 
-/* ===== 赛事介绍 ===== */
-.comp-header{text-align:center;margin-bottom:60px}
-.comp-classes{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:60px}
-@media(max-width:900px){.comp-classes{grid-template-columns:1fr;max-width:400px;margin:0 auto}}
-.comp-class-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px 28px;text-align:center;transition:transform .3s,border-color .3s,box-shadow .3s}
-.comp-class-card:hover{transform:translateY(-6px);border-color:rgba(232,36,42,.3);box-shadow:0 20px 50px rgba(0,0,0,.4)}
-.comp-icon{font-size:48px;margin-bottom:16px}
-.comp-weight{font-size:40px;font-weight:900;color:var(--red);line-height:1;margin-bottom:6px}
-.comp-name{font-size:18px;font-weight:700;letter-spacing:1px;margin-bottom:4px}
-.comp-group{font-size:12px;color:var(--gold);letter-spacing:2px;margin-bottom:14px;text-transform:uppercase}
-.comp-desc{font-size:13px;color:var(--muted);line-height:1.75}
-.comp-cta{display:flex;align-items:center;justify-content:center;gap:40px;padding:36px;background:linear-gradient(135deg,rgba(232,36,42,.06),rgba(232,36,42,.02));border:1px solid rgba(232,36,42,.2);border-radius:16px;text-align:center;flex-wrap:wrap}
-.comp-cta-text{font-size:18px;font-weight:700;letter-spacing:1px}
-.comp-cta-text em{color:var(--red);font-style:normal}
-.comp-cta-phone{font-size:24px;font-weight:900;color:var(--red);letter-spacing:2px}
+    /* ===== 产品卡片 ===== */
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 4px 6px;
+    }
+    .section-title h3 { font-size: 14px; color: #444; font-weight: 600; }
+    .add-row-btn {
+      background: #e8eaf6;
+      color: #1a237e;
+      border: none;
+      border-radius: 16px;
+      padding: 4px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .add-row-btn:active { background: #c5cae9; }
 
-/* 时间线 */
-.timeline{display:flex;align-items:center;justify-content:center;gap:0;margin-top:60px;position:relative;flex-wrap:wrap}
-.timeline::before{content:'';position:absolute;top:16px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,rgba(232,36,42,.4),rgba(232,36,42,.4),transparent)}
-.timeline-item{text-align:center;position:relative;z-index:1;flex:1;min-width:120px}
-.timeline-dot{width:12px;height:12px;border-radius:50%;background:var(--red);margin:10px auto 16px;box-shadow:0 0 12px var(--red)}
-.timeline-month{font-size:14px;font-weight:700;color:var(--red);margin-bottom:4px}
-.timeline-event{font-size:12px;color:var(--muted);letter-spacing:1px}
+    /* 产品行 */
+    .product-row {
+      background: #fff;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      position: relative;
+      transition: box-shadow 0.2s;
+    }
+    .product-row:active { box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
 
-/* ===== 器材配件 ===== */
-.acc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-@media(max-width:900px){.acc-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:600px){.acc-grid{grid-template-columns:1fr}}
-.acc-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px 24px;transition:transform .3s,border-color .3s,box-shadow .3s;cursor:default}
-.acc-card:hover{transform:translateY(-6px);border-color:rgba(232,36,42,.25);box-shadow:0 16px 40px rgba(0,0,0,.35)}
-.acc-icon{font-size:36px;margin-bottom:16px}
-.acc-name{font-size:16px;font-weight:700;letter-spacing:.5px;margin-bottom:8px}
-.acc-desc{font-size:12px;color:var(--muted);line-height:1.75;margin-bottom:16px}
-.acc-price{font-size:20px;font-weight:900;color:var(--red)}
+    .product-row .top {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
 
-/* ===== 特性区 ===== */
-.features-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
-@media(max-width:900px){.features-inner{grid-template-columns:1fr;gap:40px}}
-.features-visual{position:relative;border-radius:18px;overflow:hidden}
-.features-visual img{width:100%;display:block;border-radius:18px}
-.features-visual::after{content:'';position:absolute;inset:0;border-radius:18px;border:1px solid rgba(232,36,42,.2);pointer-events:none}
-.features-visual::before{content:'';position:absolute;top:-1px;left:-1px;width:50px;height:50px;border-top:2px solid var(--red);border-left:2px solid var(--red);pointer-events:none;z-index:2}
-.feat-ph{width:100%;height:360px;background:linear-gradient(135deg,#0d0d1a,#1a0808);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;border-radius:18px;font-size:60px}
-.feat-list{list-style:none}
-.feat-item{display:flex;gap:18px;align-items:flex-start;padding:22px 0;border-bottom:1px solid rgba(255,255,255,.05);transition:padding-left .3s}
-.feat-item:first-child{padding-top:0}.feat-item:last-child{border-bottom:none;padding-bottom:0}
-.feat-item:hover{padding-left:8px}
-.feat-icon{flex-shrink:0;width:44px;height:44px;border-radius:10px;background:rgba(232,36,42,.1);border:1px solid rgba(232,36,42,.2);display:flex;align-items:center;justify-content:center;font-size:20px}
-.feat-info h4{font-size:15px;font-weight:700;margin-bottom:6px}.feat-info p{font-size:13px;color:var(--muted);line-height:1.75}
+    /* 图片区 */
+    .img-box {
+      width: 64px;
+      height: 64px;
+      border-radius: 8px;
+      border: 1.5px dashed #ccc;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: pointer;
+      background: #f8f9fa;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+    .img-box:hover { border-color: #1a237e; }
+    .img-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .img-box .placeholder {
+      font-size: 26px;
+      color: #ccc;
+      line-height: 1;
+      text-align: center;
+    }
+    .img-box .img-del {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      width: 18px;
+      height: 18px;
+      background: #f44336;
+      color: #fff;
+      border-radius: 50%;
+      border: none;
+      font-size: 12px;
+      line-height: 18px;
+      text-align: center;
+      cursor: pointer;
+      display: none;
+      z-index: 2;
+    }
+    .img-box.has-img .img-del { display: block; }
 
-/* ===== 联系区 ===== */
-.contact-inner{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
-@media(max-width:900px){.contact-inner{grid-template-columns:1fr;gap:40px}}
-.contact-info-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:40px}
-.contact-item{display:flex;gap:16px;align-items:flex-start;padding:20px 0;border-bottom:1px solid rgba(255,255,255,.05)}
-.contact-item:first-child{padding-top:0}
-.contact-item:last-child{border-bottom:none}
-.contact-icon{font-size:24px;flex-shrink:0;width:48px;height:48px;border-radius:12px;background:rgba(232,36,42,.1);border:1px solid rgba(232,36,42,.2);display:flex;align-items:center;justify-content:center}
-.contact-label{font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
-.contact-value{font-size:16px;font-weight:700}
-.contact-value a{color:#fff;text-decoration:none;transition:color .2s}
-.contact-value a:hover{color:var(--red)}
-.qr-area{text-align:center;margin-top:28px;padding:24px;background:rgba(255,255,255,.03);border-radius:12px;border:1px solid rgba(255,255,255,.06)}
-.qr-placeholder{width:120px;height:120px;background:linear-gradient(135deg,#1a1a2e,#1e1e3a);border-radius:12px;margin:0 auto 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:40px;gap:6px}
-.qr-hint{font-size:12px;color:var(--muted);letter-spacing:1px}
-.form-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:40px}
-.form-title{font-size:18px;font-weight:800;letter-spacing:1px;margin-bottom:24px}
-.form-group{margin-bottom:18px}
-.form-group label{display:block;font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.form-group input,.form-group textarea{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#fff;padding:12px 16px;border-radius:8px;font-size:14px;font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
-.form-group input::placeholder,.form-group textarea::placeholder{color:rgba(255,255,255,.25)}
-.form-group input:focus,.form-group textarea:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(232,36,42,.1)}
-.form-group textarea{resize:vertical;min-height:80px}
-.form-submit{width:100%;padding:14px;background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(232,36,42,.3)}
-.form-submit:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(232,36,42,.45)}
+    /* 产品名称+备注 */
+    .product-fields { flex: 1; min-width: 0; }
+    .product-fields input.product-name {
+      width: 100%;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 7px 10px;
+      font-size: 13px;
+      background: #fafafa;
+      color: #1a237e;
+      font-weight: 600;
+      outline: none;
+      margin-bottom: 5px;
+      transition: border-color 0.2s;
+    }
+    .product-fields input.product-name:focus { border-color: #1a237e; background: #fff; }
+    .product-fields textarea.product-note {
+      width: 100%;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 11px;
+      background: #fafafa;
+      color: #666;
+      outline: none;
+      resize: none;
+      height: 30px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    .product-fields textarea.product-note:focus { border-color: #1a237e; background: #fff; }
 
-/* ===== 页脚 ===== */
-footer{padding:48px 60px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
-.footer-brand{font-size:14px;font-weight:700;letter-spacing:2px}.footer-brand em{color:var(--red);font-style:normal}
-.footer-info{font-size:12px;color:var(--muted)}
-.footer-links{display:flex;gap:24px}
-.footer-links a{color:var(--muted);text-decoration:none;font-size:12px;letter-spacing:1px;transition:color .2s}
-.footer-links a:hover{color:#fff}
+    /* 删除行按钮 */
+    .del-row-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: none;
+      border: none;
+      color: #ccc;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+    .del-row-btn:hover { color: #f44336; }
 
-/* ===== 响应式 ===== */
-@media(max-width:768px){
-  .hero{padding:80px 20px 40px;min-height:auto}
-  .hero-visual{display:none}
-  .hero-kpis{left:20px;bottom:30px;gap:0;flex-wrap:wrap}
-  .kpi{padding:0 20px 0 0;margin-right:20px}
-  .section{padding:60px 20px}
-  nav{padding:0 20px}
-  .hero-actions{flex-direction:column;align-items:flex-start}
-  footer{padding:30px 20px;flex-direction:column;text-align:center}
-  .footer-links{justify-content:center}
-  .contact-inner{grid-template-columns:1fr}
-  .contact-info-card,.form-card{padding:24px}
-  .timeline{flex-direction:column;gap:24px}
-  .timeline::before{display:none}
-}
+    /* 价格行 */
+    .price-row {
+      display: flex;
+      gap: 8px;
+      padding: 0 2px;
+    }
+    .price-item { flex: 1; text-align: center; }
+    .price-item label { display: block; font-size: 10px; color: #aaa; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .price-item input {
+      width: 100%;
+      text-align: center;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 6px 4px;
+      font-size: 13px;
+      color: #333;
+      background: #fafafa;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .price-item input:focus { border-color: #1a237e; background: #fff; }
+    .price-item.price-retail input { color: #e53935; font-weight: 600; }
+    .price-item.price-wholesale input { color: #1a237e; font-weight: 600; }
 
-/* ===== 导航滚动进度条 ===== */
-.nav-progress{position:fixed;top:64px;left:0;height:2px;background:linear-gradient(90deg,var(--red),var(--gold));z-index:199;transition:width .1s}
+    /* ===== 底部工具栏 ===== */
+    .toolbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: center;
+      padding: 10px 16px;
+      padding-bottom: max(10px, env(safe-area-inset-bottom));
+      gap: 12px;
+      z-index: 200;
+      box-shadow: 0 -2px 12px rgba(0,0,0,0.1);
+    }
+    .toolbar button {
+      flex: 1;
+      max-width: 180px;
+      padding: 11px 0;
+      border: none;
+      border-radius: 24px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-save {
+      background: #e8eaf6;
+      color: #1a237e;
+    }
+    .btn-save:active { background: #c5cae9; transform: scale(0.97); }
+    .btn-preview {
+      background: #1a237e;
+      color: #fff;
+    }
+    .btn-preview:active { background: #283593; transform: scale(0.97); }
 
-/* ===== 浮动联系按钮 ===== */
-.float-cta{position:fixed;bottom:32px;right:32px;z-index:180;display:flex;flex-direction:column;gap:10px;align-items:flex-end}
-.float-cta a{background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff;padding:12px 20px;border-radius:50px;font-size:13px;font-weight:700;letter-spacing:1px;text-decoration:none;box-shadow:0 6px 24px rgba(232,36,42,.4);transition:all .25s;display:flex;align-items:center;gap:8px}
-.float-cta a:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(232,36,42,.55)}
-</style>
+    /* ===== 预览弹窗 ===== */
+    .preview-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 500;
+      flex-direction: column;
+      align-items: center;
+    }
+    .preview-overlay.show { display: flex; }
+    .preview-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: rgba(0,0,0,0.6);
+      position: relative;
+      z-index: 501;
+    }
+    .preview-close {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 4px;
+      line-height: 1;
+    }
+    .preview-actions { display: flex; gap: 10px; }
+    .preview-action-btn {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.4);
+      color: #fff;
+      border-radius: 16px;
+      padding: 5px 14px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .preview-action-btn:active { background: rgba(255,255,255,0.35); }
+
+    .preview-content {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      width: 100%;
+      padding: 16px 0;
+    }
+    .preview-page {
+      background: #fff;
+      width: 100%;
+      max-width: 375px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+      min-height: 100%;
+    }
+
+    /* 预览页内容 */
+    .preview-title {
+      text-align: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #1a237e;
+    }
+    .preview-title h1 { font-size: 18px; color: #1a237e; font-weight: 700; margin-bottom: 2px; }
+    .preview-title p { font-size: 11px; color: #888; }
+    .preview-customer {
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 16px;
+      font-size: 12px;
+      color: #555;
+    }
+    .preview-customer div { margin-bottom: 3px; }
+    .preview-customer strong { color: #333; }
+    .preview-section { margin-bottom: 16px; }
+    .preview-section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1a237e;
+      padding: 4px 0 6px;
+      border-bottom: 1px solid #e0e0e0;
+      margin-bottom: 6px;
+    }
+    .preview-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+    .preview-table th {
+      background: #e8eaf6;
+      color: #1a237e;
+      padding: 6px 4px;
+      text-align: center;
+      font-size: 10px;
+      font-weight: 600;
+      border: 1px solid #c5cae9;
+    }
+    .preview-table td {
+      padding: 5px 4px;
+      text-align: center;
+      border: 1px solid #e0e0e0;
+      vertical-align: middle;
+      color: #444;
+    }
+    .preview-table .td-name { text-align: left; color: #1a237e; font-weight: 600; }
+    .preview-table .td-note { text-align: left; color: #888; font-size: 9px; }
+    .preview-table .td-retail { color: #e53935; font-weight: 600; }
+    .preview-table .td-wholesale { color: #1a237e; font-weight: 600; }
+    .preview-table img { width: 36px; height: 36px; object-fit: cover; border-radius: 4px; }
+    .preview-footer {
+      text-align: center;
+      font-size: 10px;
+      color: #aaa;
+      padding-top: 10px;
+      border-top: 1px solid #eee;
+      margin-top: 8px;
+    }
+
+    /* ===== Toast ===== */
+    .toast {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      background: rgba(0,0,0,0.75);
+      color: #fff;
+      padding: 10px 24px;
+      border-radius: 20px;
+      font-size: 13px;
+      z-index: 600;
+      opacity: 0;
+      transition: all 0.25s;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+    /* 隐藏 file input */
+    .hidden-input { display: none; }
+
+    /* 截图时的滚动区域 */
+    .scroll-hint {
+      text-align: center;
+      padding: 6px;
+      font-size: 11px;
+      color: #aaa;
+      background: #fafafa;
+      border-radius: 20px;
+      width: 120px;
+      margin: 0 auto 8px;
+    }
+  </style>
 </head>
 <body>
 
-<!-- 导航进度条 -->
-<div class="nav-progress" id="navProgress"></div>
-
-<!-- 导航 -->
-<nav id="navbar">
-  <div class="nav-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">⚡ BATTLE<em>BOT</em></div>
-  <ul class="nav-menu">
-    <li><a href="#products">产品系列</a></li>
-    <li><a href="#competition">赛事规则</a></li>
-    <li><a href="#accessories">设备器材</a></li>
-    <li><a href="#features">技术规格</a></li>
-    <li><a href="#contact" class="nav-cta">联系采购</a></li>
-  </ul>
-  <div class="nav-mobile">
-    <button class="mobile-menu-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">⚡</button>
-    <a href="#contact" class="btn btn-red" style="padding:8px 16px;font-size:12px;">联系采购</a>
-  </div>
-</nav>
-
-<!-- 英雄区 -->
-<section class="hero" id="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-grid"></div>
-  <div class="hero-vline"></div>
-  <div class="hero-content">
-    <div class="hero-eyebrow">
-      <div class="eyebrow-dot"></div>
-      <div class="eyebrow-text">格斗机器人 · 2026 竞技系列</div>
-    </div>
-    <h1 class="hero-h1">
-      <span>极速突破</span>
-      <span class="line2">铸造冠军</span>
-    </h1>
-    <p class="hero-desc">专为竞技格斗设计的高性能机器人系列，采用高强度ABS+ 3D 打印结构，搭载精准电控系统。多款型号——推铲型、垂直旋转型、双头型，满足不同战术风格，一键入场，决战巅峰。</p>
-    <div class="hero-actions">
-      <a href="#competition" class="btn btn-red">赛事规则 →</a>
-      <a href="#accessories" class="btn btn-outline">设备器材 →</a>
-    </div>
-  </div>
-  <div class="hero-visual">
-    <div class="hero-visual-inner">
-      <img src="/images/cf406fc1-289e-4b4c-ab9d-0cc858c8033d.jpg" style="width:100%;height:100%;object-fit:cover;object-position:center 60%;filter:brightness(.65) saturate(1.1);" alt="格斗机器人"/>
-    </div>
-  </div>
-  <div class="hero-kpis">
-    <div class="kpi"><div class="kpi-num">7</div><div class="kpi-label">产品型号</div></div>
-    <div class="kpi"><div class="kpi-num">320g</div><div class="kpi-label">竞技重量级</div></div>
-    <div class="kpi"><div class="kpi-num">8V</div><div class="kpi-label">额定电压</div></div>
-    <div class="kpi"><div class="kpi-num">5ms</div><div class="kpi-label">控制响应</div></div></div>
-</section>
-
-<!-- 产品系列 -->
-<section class="section" id="products">
-  <div class="section-head reveal">
-    <div class="section-kicker"><div class="kicker-line"></div><div class="kicker-text">Product Series</div><div class="kicker-line"></div></div>
-    <h2 class="section-h2">三款竞技型号</h2>
-    <p class="section-sub">模块化设计，快速拆装，适配多种竞技场景</p>
-  </div>
-  <div class="cards">
-    <div class="card" id="product-0">
-      <div class="card-ribbon">
-        <span class="ribbon-tag">竖转</span>
-        
-      </div>
-      <div class="card-img-wrap">
-        <img src="/images/43c4a798-c5a8-4cbc-9a11-cc09e243f9af.jpg" alt="123123" style="width:100%;height:100%;object-fit:cover;" loading="lazy"/>
-      </div>
-      <div class="card-body">
-        <div class="card-series">SERIES-A</div>
-        <div class="card-title">123123</div>
-        <p class="card-desc">低重心楔形推铲设计，正面强攻利器。红蓝双色高辨识配色，前置坡面铲头可轻松翻转对手，攻防兼备，适合初入竞技场的选手。</p>
-        <div class="card-tags"><span class="tag">重量: 320g</span><span class="tag">材质: ABS+</span><span class="tag">驱动: 四轮</span><span class="tag">武器: 推铲</span></div>
-        <div class="card-footer">
-          <div>
-            <div class="price-val">¥1,280</div>
-            <div class="price-note">整机含遥控器</div>
-          </div>
-          <a href="#contact" class="card-btn">立即咨询</a>
-        </div>
-      </div>
-    </div>
-    <div class="card hot" id="product-1">
-      <div class="card-ribbon">
-        <span class="ribbon-tag hot-tag">横传</span>
-        <span class="ribbon-tag hot-tag">🔥 主推</span>
-      </div>
-      <div class="card-img-wrap">
-        <img src="/images/440f055d-ada9-4864-b753-636a37f68d5d.jpg" alt="黑曜 VX-02" style="width:100%;height:100%;object-fit:cover;" loading="lazy"/>
-      </div>
-      <div class="card-body">
-        <div class="card-series">SERIES-B</div>
-        <div class="card-title">黑曜 VX-02</div>
-        <p class="card-desc">搭载垂直高速旋转武器，全黑战术涂装，极具压迫感。8000rpm 超高转速冲击力强，可在极短时间内击穿对手防御结构，是竞技首选。</p>
-        <div class="card-tags"><span class="tag">重量: 320g</span><span class="tag">武器: 8000rpm</span><span class="tag">材质: ABS+</span><span class="tag">电机: 有刷</span></div>
-        <div class="card-footer">
-          <div>
-            <div class="price-val">¥1,680</div>
-            <div class="price-note">整机含遥控器</div>
-          </div>
-          <a href="#contact" class="card-btn">立即咨询</a>
-        </div>
-      </div>
-    </div>
-    <div class="card" id="product-2">
-      <div class="card-ribbon">
-        <span class="ribbon-tag">弹射</span>
-        
-      </div>
-      <div class="card-img-wrap">
-        <img src="/images/1d547b55-403a-4d8c-bd72-3e70057f0306.png" alt="猛禽 DX-03" style="width:100%;height:100%;object-fit:cover;" loading="lazy"/>
-      </div>
-      <div class="card-body">
-        <div class="card-series">SERIES-C</div>
-        <div class="card-title">猛禽 DX-03</div>
-        <p class="card-desc">前后双铲对称设计，无需调头即可攻击，结合红白蓝三色竞技涂装，灵活性最强，适合经验丰富的竞技选手，战术多变难以预判。</p>
-        <div class="card-tags"><span class="tag">重量: 320g</span><span class="tag">材质: ABS+</span><span class="tag">高速舵机</span><span class="tag">防翻设计</span></div>
-        <div class="card-footer">
-          <div>
-            <div class="price-val">¥1,480</div>
-            <div class="price-note">整机含遥控器</div>
-          </div>
-          <a href="#contact" class="card-btn">立即咨询</a>
-        </div>
-      </div>
-    </div>
-    <div class="card" id="product-3">
-      <div class="card-ribbon">
-        <span class="ribbon-tag">横转</span>
-        
-      </div>
-      <div class="card-img-wrap">
-        <img src="/images/1775790736879.png" alt="铁甲 HX-04" style="width:100%;height:100%;object-fit:cover;" loading="lazy"/>
-      </div>
-      <div class="card-body">
-        <div class="card-series">SERIES-D</div>
-        <div class="card-title">铁甲 HX-04</div>
-        <p class="card-desc">水平高速转鼓武器，侧面攻击角度独特，可从侧翼击穿对手装甲。深灰色战斗涂装，低重心宽体设计，稳定性极佳，适合技巧型选手。</p>
-        <div class="card-tags"><span class="tag">重量: 320g</span><span class="tag">武器: 水平转鼓</span><span class="tag">材质: ABS+</span><span class="tag">高速电机</span></div>
-        <div class="card-footer">
-          <div>
-            <div class="price-val">¥1,580</div>
-            <div class="price-note">整机含遥控器</div>
-          </div>
-          <a href="#contact" class="card-btn">立即咨询</a>
-        </div>
-      </div>
-    </div>
-    <div class="card hot" id="product-4">
-      <div class="card-ribbon">
-        <span class="ribbon-tag hot-tag">横旋</span>
-        <span class="ribbon-tag hot-tag">🔥 主推</span>
-      </div>
-      <div class="card-img-wrap">
-        <img src="/images/1775790736879.png" alt="雷霆 LX-05" style="width:100%;height:100%;object-fit:cover;" loading="lazy"/>
-      </div>
-      <div class="card-body">
-        <div class="card-series">SERIES-E</div>
-        <div class="card-title">雷霆 LX-05</div>
-        <p class="card-desc">双刃水平旋转武器，超大攻击半径，一击可对对手造成广泛伤害。紫银双色闪电涂装，极具视觉冲击力，是赛场上最吸睛的型号之一。</p>
-        <div class="card-tags"><span class="tag">重量: 320g</span><span class="tag">武器: 双刃横旋</span><span class="tag">材质: ABS+</span><span class="tag">双电机驱动</span></div>
-        <div class="card-footer">
-          <div>
-            <div class="price-val">¥1,680</div>
-            <div class="price-note">整机含遥控器</div>
-          </div>
-          <a href="#contact" class="card-btn">立即咨询</a>
-        </div>
-      </div>
-    </div>
-    <div class="card" id="product-5">
-      <div class="card-ribbon">
-        <span class="ribbon-tag">抓举</span>
-        
-      </div>
-      <div class="card-img-wrap">
-        <img src="/images/1775790699904.jpg" alt="风暴 GX-06" style="width:100%;height:100%;object-fit:cover;" loading="lazy"/>
-      </div>
-      <div class="card-body">
-        <div class="card-series">SERIES-F</div>
-        <div class="card-title">风暴 GX-06</div>
-        <p class="card-desc">液压模拟抓举臂，可将对手提起并推入场地陷阱。前置钳爪开合速度快，支持连续夹持，是控制型选手的最爱。</p>
-        <div class="card-tags"><span class="tag">重量: 320g</span><span class="tag">武器: 抓举臂</span><span class="tag">材质: ABS+</span><span class="tag">高速舵机</span></div>
-        <div class="card-footer">
-          <div>
-            <div class="price-val">¥1,380</div>
-            <div class="price-note">整机含遥控器</div>
-          </div>
-          <a href="#contact" class="card-btn">立即咨询</a>
-        </div>
-      </div>
-    </div>
-    <div class="card" id="product-6">
-      <div class="card-ribbon">
-        <span class="ribbon-tag">锤击</span>
-        
-      </div>
-      <div class="card-img-wrap">
-        <img src="/images/1775790786057.png" alt="霸王 HM-07" style="width:100%;height:100%;object-fit:cover;" loading="lazy"/>
-      </div>
-      <div class="card-body">
-        <div class="card-series">SERIES-G</div>
-        <div class="card-title">霸王 HM-07</div>
-        <p class="card-desc">高速锤击武器，从上方垂直砸击对手，造成震荡伤害的同时可破坏内部结构。沉稳黑金配色，重心偏上，专为暴力美学而生。</p>
-        <div class="card-tags"><span class="tag">重量: 320g</span><span class="tag">武器: 高速锤</span><span class="tag">材质: ABS+</span><span class="tag">强力舵机</span></div>
-        <div class="card-footer">
-          <div>
-            <div class="price-val">¥1,520</div>
-            <div class="price-note">整机含遥控器</div>
-          </div>
-          <a href="#contact" class="card-btn">立即咨询</a>
-        </div>
-      </div>
-    </div></div>
-</section>
-
-<!-- 赛事介绍 -->
-<section class="section section-dark" id="competition">
-  <div class="section-head reveal">
-    <div class="section-kicker"><div class="kicker-line"></div><div class="kicker-text">BoxBot Tournament</div><div class="kicker-line"></div></div>
-    <h2 class="section-h2">BoxBot 格斗机器人大赛</h2>
-    <p class="section-sub">2026 全国青少年格斗机器人联赛</p>
-    <p class="section-sub" style="margin-top:12px;max-width:680px;margin-left:auto;margin-right:auto">BoxBot 是国内最具影响力的青少年格斗机器人竞技赛事，涵盖小学、初中、高中三个组别，旨在培养青少年的工程思维、动手能力与竞技精神。</p>
-  </div>
-  <div class="comp-classes reveal reveal-delay-1">
-    <div class="comp-class-card">
-      <div class="comp-icon">🎯</div>
-      <div class="comp-weight">150g</div>
-      <div class="comp-name">迷你级</div>
-      <div class="comp-group">小学组</div>
-      <p class="comp-desc">入门级赛事，使用小型格斗机器人，适合初次接触竞技机器人领域的学生。</p>
-    </div>
-    <div class="comp-class-card">
-      <div class="comp-icon">⚔️</div>
-      <div class="comp-weight">320g</div>
-      <div class="comp-name">轻量级</div>
-      <div class="comp-group">中小学组</div>
-      <p class="comp-desc">主流竞技级别，考验选手的操控技巧与战术策略，竞争最为激烈。</p>
-    </div>
-    <div class="comp-class-card">
-      <div class="comp-icon">💥</div>
-      <div class="comp-weight">1.5kg</div>
-      <div class="comp-name">重量级</div>
-      <div class="comp-group">初高中组</div>
-      <p class="comp-desc">高端竞技赛事，装备更强武器系统，观赏性与技术含量最高。</p>
-    </div></div>
-  <div class="comp-cta reveal reveal-delay-2">
-    <div>
-      <div class="comp-cta-text">想报名参赛？咨询赛事规则</div>
-    </div>
-    <div>
-      <div class="comp-cta-phone">📞 15970070712</div>
-    </div>
-    <a href="#contact" class="btn btn-red">立即咨询</a>
-  </div>
-  <div class="timeline reveal reveal-delay-3">
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-month">3月</div>
-      <div class="timeline-event">报名开启</div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-month">5月</div>
-      <div class="timeline-event">城市海选赛</div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-month">7月</div>
-      <div class="timeline-event">区域晋级赛</div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-month">8月</div>
-      <div class="timeline-event">全国总决赛</div>
-    </div></div>
-</section>
-
-<!-- 器材配件 -->
-<section class="section" id="accessories">
-  <div class="section-head reveal">
-    <div class="section-kicker"><div class="kicker-line"></div><div class="kicker-text">Equipment</div><div class="kicker-line"></div></div>
-    <h2 class="section-h2">配件器材</h2>
-    <p class="section-sub">模块化设计 · 快速更换 · 赛场无忧</p>
-  </div>
-  <div class="acc-grid">
-    <div class="acc-card">
-      <div class="acc-icon">⚙️</div>
-      <div class="acc-name">武器模块</div>
-      <div class="acc-desc">推铲/转鼓/弹射等多种武器模块，支持10分钟快拆更换</div>
-      <div class="acc-price">¥280起</div>
-    </div>
-    <div class="acc-card">
-      <div class="acc-icon">🚗</div>
-      <div class="acc-name">驱动底盘</div>
-      <div class="acc-desc">四轮独立悬挂底盘，高强度ABS材质，损坏可单独更换</div>
-      <div class="acc-price">¥380</div>
-    </div>
-    <div class="acc-card">
-      <div class="acc-icon">📡</div>
-      <div class="acc-name">遥控器</div>
-      <div class="acc-desc">2.4GHz抗干扰遥控，响应延迟&lt;5ms，支持多机同场竞技</div>
-      <div class="acc-price">¥220</div>
-    </div>
-    <div class="acc-card">
-      <div class="acc-icon">🔋</div>
-      <div class="acc-name">锂电池组</div>
-      <div class="acc-desc">7.4V 1000mAh 动力锂电池，高倍率放电，支持快速充电</div>
-      <div class="acc-price">¥120</div>
-    </div>
-    <div class="acc-card">
-      <div class="acc-icon">🔩</div>
-      <div class="acc-name">易损配件包</div>
-      <div class="acc-desc">轮毂/轴承/螺丝等常用易损件套餐，赛场必备备件</div>
-      <div class="acc-price">¥68</div>
-    </div>
-    <div class="acc-card">
-      <div class="acc-icon">🛡️</div>
-      <div class="acc-name">装甲护板</div>
-      <div class="acc-desc">高强度尼龙护板，有效抵御旋转武器冲击，可重复安装</div>
-      <div class="acc-price">¥88</div>
-    </div></div>
-</section>
-
-<!-- 核心特性 -->
-<section class="section section-dark" id="features">
-  <div class="features-inner">
-    <div class="features-visual reveal">
-      <img src="/images/19469469-e139-4bc7-a635-8419760f617f.jpg" alt="产品细节"/>
-    </div>
-    <div class="reveal reveal-delay-2">
-      <div class="section-kicker" style="margin-bottom:20px;"><div class="kicker-line"></div><div class="kicker-text">Core Features</div></div>
-      <h2 class="section-h2" style="margin-bottom:36px;">为竞技而生</h2>
-      <ul class="feat-list">
-    <li class="feat-item">
-      <div class="feat-icon">🏗️</div>
-      <div class="feat-info"><h4>高强度 3D 打印结构</h4><p>全机身ABS+ 材料，层厚 0.2mm 精细打印，强度媲美注塑件，抗冲击性卓越，损坏后可快速补件更换。</p></div>
-    </li>
-    <li class="feat-item">
-      <div class="feat-icon">⚡</div>
-      <div class="feat-info"><h4>精准电控系统</h4><p>竞技级电调，响应延迟低至 5ms，支持 2.4GHz 抗干扰遥控，在高密度干扰环境中稳定运行。</p></div>
-    </li>
-    <li class="feat-item">
-      <div class="feat-icon">🔧</div>
-      <div class="feat-info"><h4>模块化快拆设计</h4><p>武器模块、驱动模块可 10 分钟内完成更换，赛间快速维修不误场，零部件独立出售方便备件储备。</p></div>
-    </li>
-    <li class="feat-item">
-      <div class="feat-icon">🏆</div>
-      <div class="feat-info"><h4>符合主流赛事规格</h4><p>满足 500g 量级主流竞技规则，适配国内外各大机器人格斗联赛标准场地与评分体系。</p></div>
-    </li></ul>
-    </div>
-  </div>
-</section>
-
-<!-- 联系咨询 -->
-<section class="section section-red" id="contact">
-  <div class="section-head reveal">
-    <div class="section-kicker"><div class="kicker-line"></div><div class="kicker-text">Contact Us</div><div class="kicker-line"></div></div>
-    <h2 class="section-h2">联系我们</h2>
-    <p class="section-sub">造悟社 · 专注格斗机器人教育与竞技</p>
-  </div>
-  <div class="contact-inner">
-    <div class="contact-info-card reveal">
-      <div class="contact-item">
-        <div class="contact-icon">📞</div>
-        <div>
-          <div class="contact-label">咨询热线</div>
-          <div class="contact-value"><a href="tel:15970070712">15970070712</a></div>
-        </div>
-      </div>
-      <div class="contact-item">
-        <div class="contact-icon">✉️</div>
-        <div>
-          <div class="contact-label">电子邮箱</div>
-          <div class="contact-value"><a href="mailto:97631170@qq.com">97631170@qq.com</a></div>
-        </div>
-      </div>
-      <div class="contact-item">
-        <div class="contact-icon">🕘</div>
-        <div>
-          <div class="contact-label">营业时间</div>
-          <div class="contact-value">周一至周六 9:00 - 18:00</div>
-        </div>
-      </div>
-      <div class="contact-item">
-        <div class="contact-icon">📍</div>
-        <div>
-          <div class="contact-label">地址</div>
-          <div class="contact-value">中国 · 造悟社机器人工作室</div>
-        </div>
-      </div>
-      <div class="qr-area">
-        <div class="qr-placeholder">
-          <div>📱</div>
-          <div style="font-size:10px;color:var(--muted);letter-spacing:1px">微信</div>
-        </div>
-        <div class="qr-hint">扫码咨询 · 添加客服微信</div>
-      </div>
-    </div>
-    <div class="form-card reveal reveal-delay-2">
-      <div class="form-title">在线询价</div>
-      
-    <div class="form-group">
-      <label>您的姓名</label>
-      <input type="text" placeholder="请输入姓名"/>
-    </div>
-    <div class="form-group">
-      <label>联系电话</label>
-      <input type="text" placeholder="请输入手机号"/>
-    </div>
-    <div class="form-group">
-      <label>咨询内容</label>
-      <textarea rows="3" placeholder="我想咨询产品报价 / 赛事报名 / 器材采购..."></textarea>
-    </div>
-      <button class="form-submit" onclick="alert('感谢咨询！我们将在24小时内联系您。')">提交咨询</button>
-    </div>
-  </div>
-</section>
-
-<!-- 页脚 -->
-<footer>
-  <div class="footer-brand">⚡ 造悟社 · 格斗机器人</div>
-  <div class="footer-links">
-    <a href="#products">产品系列</a>
-    <a href="#competition">赛事介绍</a>
-    <a href="#accessories">器材配件</a>
-    <a href="#contact">联系我们</a>
-  </div>
-  <div class="footer-info">咨询热线：15970070712 · 邮箱：97631170@qq.com · © 2026 造悟社 版权所有</div>
-</footer>
-
-<!-- 浮动联系按钮 -->
-<div class="float-cta">
-  <a href="#contact">📞 立即咨询</a>
+<!-- 头部 -->
+<div class="header">
+  <h1>🤖 2026 格斗机器人报价单</h1>
+  <p>山东 BoxBot 机器人格斗赛 · 代理价格表</p>
 </div>
 
+<!-- 分组标签 -->
+<div class="tabs" id="tabs"></div>
+
+<!-- 主内容 -->
+<div class="main" id="main"></div>
+
+<!-- 底部工具栏 -->
+<div class="toolbar">
+  <button class="btn-save" id="btnSave">
+    💾 保存
+  </button>
+  <button class="btn-preview" id="btnPreview">
+    🖨️ 打印预览
+  </button>
+</div>
+
+<!-- 预览弹窗 -->
+<div class="preview-overlay" id="previewOverlay">
+  <div class="preview-header">
+    <button class="preview-close" id="previewClose">×</button>
+    <div class="preview-actions">
+      <button class="preview-action-btn" id="btnShare">📤 截图保存</button>
+    </div>
+  </div>
+  <div class="preview-content" id="previewContent">
+    <div class="scroll-hint">👆 下滑查看完整报价</div>
+    <div class="preview-page" id="previewPage"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- 隐藏的文件输入 -->
+<input type="file" class="hidden-input" id="hiddenImgInput" accept="image/*">
+
 <script>
-// ===== 滚动动画 =====
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.classList.add('visible');
-      observer.unobserve(e.target);
+// ===== 产品数据配置 =====
+const DEFAULT_SECTIONS = [
+  {
+    id: 'qjlxx',
+    name: '轻量级·小学组',
+    products: [
+      { name: 'BoxBot 轻量级主机', retail: 829, wholesale: 400, note: '含双电机驱动板', img: '' },
+      { name: '锂电池 11.1V 1500mAh', retail: 65, wholesale: 49, note: '3S1P 钴酸锂', img: '' },
+      { name: '遥控器+接收机', retail: 138, wholesale: 99, note: '4通道', img: '' },
+      { name: '充电器', retail: 88, wholesale: 65, note: '平衡充', img: '' },
+      { name: '备用车轴', retail: 15, wholesale: 10, note: '2根/套', img: '' },
+    ]
+  },
+  {
+    id: 'qjlz',
+    name: '轻量级·中学组',
+    products: [
+      { name: 'BoxBot 轻量级主机', retail: 829, wholesale: 400, note: '含双电机驱动板', img: '' },
+      { name: '锂电池 11.1V 1500mAh', retail: 65, wholesale: 49, note: '3S1P 钴酸锂', img: '' },
+      { name: '遥控器+接收机', retail: 138, wholesale: 99, note: '4通道', img: '' },
+      { name: '充电器', retail: 88, wholesale: 65, note: '平衡充', img: '' },
+      { name: '备用车轴', retail: 15, wholesale: 10, note: '2根/套', img: '' },
+    ]
+  },
+  {
+    id: 'mzj',
+    name: '迷你级',
+    products: [
+      { name: 'BoxBot 迷你级主机', retail: 429, wholesale: 220, note: '含驱动板', img: '' },
+      { name: '锂电池 7.4V 800mAh', retail: 38, wholesale: 28, note: '2S 钴酸锂', img: '' },
+      { name: '遥控器+接收机', retail: 138, wholesale: 99, note: '4通道', img: '' },
+      { name: '备用车轴', retail: 10, wholesale: 7, note: '2根/套', img: '' },
+    ]
+  },
+  {
+    id: 'gdc',
+    name: '格斗仓',
+    products: [
+      { name: '格斗仓（标准版）', retail: 999, wholesale: 599, note: '含安装螺丝', img: '' },
+      { name: '格斗仓（加强版）', retail: 1299, wholesale: 799, note: '加厚壁厚', img: '' },
+      { name: '格斗仓备件包', retail: 88, wholesale: 58, note: '螺栓+螺母', img: '' },
+    ]
+  },
+  {
+    id: 'ylj',
+    name: '羽量级',
+    products: [
+      { name: 'BoxBot 羽量级主机', retail: 629, wholesale: 310, note: '含驱动板', img: '' },
+      { name: '锂电池 7.4V 1000mAh', retail: 45, wholesale: 33, note: '2S 钴酸锂', img: '' },
+      { name: '遥控器+接收机', retail: 138, wholesale: 99, note: '4通道', img: '' },
+      { name: '充电器', retail: 88, wholesale: 65, note: '平衡充', img: '' },
+      { name: '备用车轴', retail: 12, wholesale: 8, note: '2根/套', img: '' },
+    ]
+  }
+];
+
+// ===== 状态 =====
+let sections = [];
+let activeTab = 0;
+let currentEditingRow = -1; // 当前上传图片的行索引
+
+// ===== 工具函数 =====
+function deepClone(obj) { return JSON.parse(JSON.stringify(obj)); }
+
+function saveData() {
+  localStorage.setItem('robot_quotation_v2', JSON.stringify({
+    sections: sections,
+    customer: window._customer || { name: '', contact: '', phone: '' }
+  }));
+}
+
+function loadData() {
+  const raw = localStorage.getItem('robot_quotation_v2');
+  if (raw) {
+    try {
+      const data = JSON.parse(raw);
+      sections = data.sections;
+      window._customer = data.customer || { name: '', contact: '', phone: '' };
+      return;
+    } catch(e) {}
+  }
+  sections = deepClone(DEFAULT_SECTIONS);
+  window._customer = { name: '', contact: '', phone: '' };
+}
+
+function toast(msg, duration) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), duration || 1800);
+}
+
+function getBase64(file, callback) {
+  const reader = new FileReader();
+  reader.onload = function(e) { callback(e.target.result); };
+  reader.readAsDataURL(file);
+}
+
+// ===== 渲染标签 =====
+function renderTabs() {
+  const el = document.getElementById('tabs');
+  el.innerHTML = sections.map((s, i) =>
+    `<button class="tab-btn${i === activeTab ? ' active' : ''}" data-idx="${i}">${s.name}</button>`
+  ).join('');
+
+  el.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeTab = parseInt(btn.dataset.idx);
+      renderTabs();
+      renderMain();
+    });
+  });
+}
+
+// ===== 渲染主内容 =====
+function renderMain() {
+  const sec = sections[activeTab];
+  const container = document.getElementById('main');
+
+  let html = '';
+
+  // 客户信息
+  html += `
+  <div class="customer-info">
+    <h3>👤 客户信息</h3>
+    <div class="row">
+      <label>客户名</label>
+      <input type="text" placeholder="请输入客户名称" id="custName" value="${escHtml(window._customer.name)}">
+    </div>
+    <div class="row">
+      <label>联系人</label>
+      <input type="text" placeholder="请输入联系人" id="custContact" value="${escHtml(window._customer.contact)}">
+    </div>
+    <div class="row">
+      <label>电话</label>
+      <input type="tel" placeholder="请输入联系电话" id="custPhone" value="${escHtml(window._customer.phone)}">
+    </div>
+  </div>`;
+
+  // 分组标题 + 添加行按钮
+  html += `
+  <div class="section-title">
+    <h3>📦 ${sec.name}</h3>
+    <button class="add-row-btn" id="addRowBtn">+ 添加行</button>
+  </div>`;
+
+  // 产品列表
+  sec.products.forEach((p, idx) => {
+    const imgHtml = p.img
+      ? `<img src="${p.img}" alt="产品图">`
+      : `<span class="placeholder">📷</span>`;
+    const imgClass = p.img ? 'img-box has-img' : 'img-box';
+
+    html += `
+  <div class="product-row" data-sec="${activeTab}" data-row="${idx}">
+    <button class="del-row-btn" data-del="${idx}">×</button>
+    <div class="top">
+      <div class="${imgClass}" data-img="${idx}">
+        ${imgHtml}
+        <button class="img-del" data-img-del="${idx}">×</button>
+      </div>
+      <div class="product-fields">
+        <input type="text" class="product-name" data-field="name" data-row="${idx}"
+          value="${escHtml(p.name)}" placeholder="产品名称">
+        <textarea class="product-note" data-field="note" data-row="${idx}"
+          placeholder="备注信息（如规格、特点）">${escHtml(p.note)}</textarea>
+      </div>
+    </div>
+    <div class="price-row">
+      <div class="price-item price-retail">
+        <label>零售价(¥)</label>
+        <input type="number" data-field="retail" data-row="${idx}"
+          value="${p.retail}" placeholder="0">
+      </div>
+      <div class="price-item price-wholesale">
+        <label>提货价(¥)</label>
+        <input type="number" data-field="wholesale" data-row="${idx}"
+          value="${p.wholesale}" placeholder="0">
+      </div>
+    </div>
+  </div>`;
+  });
+
+  container.innerHTML = html;
+
+  // 绑定事件
+  bindMainEvents();
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function bindMainEvents() {
+  // 客户信息变化
+  ['custName', 'custContact', 'custPhone'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      if (id === 'custName') window._customer.name = el.value;
+      if (id === 'custContact') window._customer.contact = el.value;
+      if (id === 'custPhone') window._customer.phone = el.value;
+    });
+  });
+
+  // 添加行
+  const addBtn = document.getElementById('addRowBtn');
+  if (addBtn) {
+    addBtn.addEventListener('click', () => {
+      sections[activeTab].products.push({ name: '', retail: 0, wholesale: 0, note: '', img: '' });
+      saveData();
+      renderMain();
+    });
+  }
+
+  // 产品行内事件代理
+  const main = document.getElementById('main');
+  main.addEventListener('click', e => {
+    const target = e.target;
+
+    // 删除行
+    if (target.dataset.del !== undefined) {
+      const idx = parseInt(target.dataset.del);
+      if (sections[activeTab].products.length > 1) {
+        sections[activeTab].products.splice(idx, 1);
+        saveData();
+        renderMain();
+      } else {
+        toast('至少保留一行！');
+      }
+      return;
+    }
+
+    // 上传图片
+    if (target.dataset.img !== undefined || target.parentElement && target.parentElement.dataset.img !== undefined) {
+      const idx = parseInt(target.dataset.img ?? target.parentElement.dataset.img);
+      currentEditingRow = idx;
+      document.getElementById('hiddenImgInput').click();
+      return;
+    }
+
+    // 删除图片
+    if (target.dataset.imgDel !== undefined) {
+      const idx = parseInt(target.dataset.imgDel);
+      sections[activeTab].products[idx].img = '';
+      saveData();
+      renderMain();
+      return;
     }
   });
-}, { threshold: .1 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-// ===== 导航高亮 =====
-const sections = document.querySelectorAll('section[id]');
-const navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
-window.addEventListener('scroll', () => {
-  let current = '';
+  // 输入变化
+  main.addEventListener('input', e => {
+    const row = parseInt(e.target.dataset.row);
+    const field = e.target.dataset.field;
+    if (isNaN(row) || !field) return;
+
+    if (field === 'name') {
+      sections[activeTab].products[row].name = e.target.value;
+    } else if (field === 'note') {
+      sections[activeTab].products[row].note = e.target.value;
+    } else if (field === 'retail') {
+      sections[activeTab].products[row].retail = parseFloat(e.target.value) || 0;
+    } else if (field === 'wholesale') {
+      sections[activeTab].products[row].wholesale = parseFloat(e.target.value) || 0;
+    }
+  });
+
+  // 图片上传
+  document.getElementById('hiddenImgInput').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file || currentEditingRow < 0) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast('图片不能超过2MB');
+      return;
+    }
+
+    getBase64(file, base64 => {
+      sections[activeTab].products[currentEditingRow].img = base64;
+      saveData();
+      renderMain();
+    });
+    e.target.value = '';
+  });
+}
+
+// ===== 预览 =====
+function generatePreviewHTML() {
+  const c = window._customer;
+  let html = `
+  <div class="preview-title">
+    <h1>🤖 2026 格斗机器人报价单</h1>
+    <p>山东 BoxBot 机器人格斗赛 · 代理价格表</p>
+  </div>`;
+
+  if (c.name || c.contact || c.phone) {
+    html += `
+  <div class="preview-customer">
+    ${c.name ? `<div><strong>客户：</strong>${escHtml(c.name)}</div>` : ''}
+    ${c.contact ? `<div><strong>联系人：</strong>${escHtml(c.contact)}</div>` : ''}
+    ${c.phone ? `<div><strong>电话：</strong>${escHtml(c.phone)}</div>` : ''}
+  </div>`;
+  }
+
   sections.forEach(sec => {
-    if (sec.getBoundingClientRect().top <= 100) current = sec.id;
+    html += `<div class="preview-section">
+      <div class="preview-section-title">📦 ${sec.name}</div>
+      <table class="preview-table">
+        <thead>
+          <tr>
+            <th style="width:12%">序</th>
+            <th style="width:18%">图片</th>
+            <th>名称/备注</th>
+            <th style="width:16%">零售价</th>
+            <th style="width:16%">提货价</th>
+          </tr>
+        </thead>
+        <tbody>`;
+
+    sec.products.forEach((p, i) => {
+      const imgTag = p.img ? `<img src="${p.img}" alt="产品图">` : '—';
+      html += `
+          <tr>
+            <td>${i + 1}</td>
+            <td>${imgTag}</td>
+            <td class="td-name">${escHtml(p.name) || '—'}</td>
+            <td class="td-retail">¥${p.retail}</td>
+            <td class="td-wholesale">¥${p.wholesale}</td>
+          </tr>`;
+      if (p.note) {
+        html += `
+          <tr>
+            <td></td>
+            <td colspan="4" class="td-note" style="text-align:left;padding-left:6px;">${escHtml(p.note)}</td>
+          </tr>`;
+      }
+    });
+
+    html += `</tbody></table></div>`;
   });
-  navLinks.forEach(a => {
-    a.classList.remove('active');
-    if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+
+  html += `
+  <div class="preview-footer">
+    <p>本报价单有效期至 2026年12月31日 · 最终解释权归主办方所有</p>
+  </div>`;
+
+  return html;
+}
+
+function showPreview() {
+  const overlay = document.getElementById('previewOverlay');
+  const page = document.getElementById('previewPage');
+  page.innerHTML = generatePreviewHTML();
+  overlay.classList.add('show');
+  document.getElementById('previewContent').scrollTop = 0;
+}
+
+function hidePreview() {
+  document.getElementById('previewOverlay').classList.remove('show');
+}
+
+// ===== 初始化 =====
+function init() {
+  loadData();
+  renderTabs();
+  renderMain();
+
+  document.getElementById('btnSave').addEventListener('click', () => {
+    saveData();
+    toast('✅ 已保存');
   });
-  // 导航背景
-  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
-  // 进度条
-  const max = document.body.scrollHeight - window.innerHeight;
-  const prog = max > 0 ? (window.scrollY / max * 100) : 0;
-  document.getElementById('navProgress').style.width = prog + '%';
-}, { passive: true });
+
+  document.getElementById('btnPreview').addEventListener('click', showPreview);
+  document.getElementById('previewClose').addEventListener('click', hidePreview);
+
+  // 点击遮罩关闭
+  document.getElementById('previewOverlay').addEventListener('click', e => {
+    if (e.target.id === 'previewOverlay') hidePreview();
+  });
+
+  // 截图提示
+  document.getElementById('btnShare').addEventListener('click', () => {
+    toast('📱 请截图保存预览页面');
+  });
+}
+
+document.addEventListener('DOMContentLoaded', init);
 </script>
+
 </body>
 </html>
