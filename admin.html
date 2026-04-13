@@ -655,7 +655,7 @@ async function uploadImg(input, textInputId, previewId, iconId) {
     if (textInputId === 'f-heroImg') siteData.heroImg = url;
     if (textInputId === 'f-featImg') siteData.featImg = url;
     const img = document.getElementById(previewId);
-    img.src = 'http://localhost:8080' + url;
+    img.src = 'http://localhost:7788' + url;
     img.style.display = 'block';
     const icon = document.getElementById(iconId);
     if (icon) icon.style.display = 'none';
