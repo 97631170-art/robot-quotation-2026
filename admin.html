@@ -363,6 +363,7 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:20px 0}
 
 <script>
 const API = 'http://localhost:7788/api';
+const BASE_PATH = '/robot-quotation-2026';
 let siteData = {};
 
 // ===== 页面切换 =====
@@ -487,7 +488,7 @@ function setImgPreview(inputId, previewId, iconId) {
   const img = document.getElementById(previewId);
   const icon = document.getElementById(iconId);
   if (url && img) {
-    img.src = url;
+    img.src = url.startsWith('/') ? (BASE_PATH + url) : url;
     img.style.display = 'block';
     if (icon) icon.style.display = 'none';
   }
@@ -511,7 +512,7 @@ function renderProducts(prods) {
       <div class="form-row"><label>产品图片</label>
         <div class="img-upload" style="margin-top:8px;">
           <div class="img-preview" onclick="triggerUpload('prod-file-${i}','prod-img-input-${i}','prod-img-prev-${i}','prod-img-icon-${i}')">
-            ${p.img ? `<img id="prod-img-prev-${i}" src="${esc(p.img)}" alt="" style="width:100%;height:100%;object-fit:cover;"/>` : `<img id="prod-img-prev-${i}" src="" alt="" style="display:none;"/>`}
+            ${p.img ? `<img id="prod-img-prev-${i}" src="${p.img.startsWith('/') ? BASE_PATH + p.img : p.img}" alt="" style="width:100%;height:100%;object-fit:cover;"/>` : `<img id="prod-img-prev-${i}" src="" alt="" style="display:none;"/>`}
             <span id="prod-img-icon-${i}" ${p.img?'style="display:none"':''}>📷</span>
           </div>
           <div>
