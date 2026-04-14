@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>BattleBot CMS · 后台管理</title>
+<title>⚡ 中国格斗机甲联盟-造悟社 · 后台管理</title>
 <script>
 // 登录验证
 (function(){
@@ -163,7 +163,7 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:20px 0}
 
   <!-- 侧边栏 -->
   <aside class="sidebar">
-    <div class="sidebar-logo">⚡ BATTLE<em>BOT</em><br/><span style="font-size:10px;color:var(--muted);font-weight:400;letter-spacing:1px;">后台管理系统</span></div>
+    <div class="sidebar-logo">⚡ 中国格斗机甲联盟<br/><span style="font-size:10px;color:var(--muted);font-weight:400;letter-spacing:1px;">造悟社</span></div>
 
     <div class="sidebar-section">内容管理</div>
     <div class="nav-item active" onclick="showPage('page-hero',this)">
@@ -327,7 +327,13 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:20px 0}
       <div class="panel">
         <div class="panel-head"><h3>微信二维码</h3></div>
         <div class="panel-body">
-          <div class="form-row"><label>二维码说明文字</label><input type="text" id="f-contact-qrNote" placeholder="扫码咨询 · 添加客服微信"/></div>
+          <div class="img-preview" onclick="triggerUpload('qr-img-input','f-contact-wechatQr','qr-img-preview')">
+            <div id="qr-img-preview" class="img-preview-icon">📱</div>
+            <div class="img-preview-label">点击上传微信二维码图片</div>
+          </div>
+          <input type="file" id="qr-img-input" class="file-input" accept="image/*" onchange="uploadImg(this,'f-contact-wechatQr','qr-img-preview','qr-img-icon')"/>
+          <input type="text" id="f-contact-wechatQr" style="width:240px;margin-top:8px;" placeholder="或填写图片 URL"/>
+          <div class="form-row" style="margin-top:12px;"><label>二维码说明文字</label><input type="text" id="f-contact-qrNote" placeholder="扫码咨询 · 添加客服微信"/></div>
         </div>
       </div>
     </div>
@@ -530,6 +536,8 @@ function renderAll() {
   renderFeatures(d.features || []);
   // 导航
   renderNavItems();
+  // 微信二维码预览
+  setImgPreview('f-contact-wechatQr', 'qr-img-preview', 'qr-img-icon');
 }
 
 // ===== 导航菜单管理 =====
@@ -671,7 +679,7 @@ function collectData() {
   });
   // 联系信息
   if (!d.contact) d.contact = {};
-  ['title','subtitle','phone','email','hours','address','qrNote'].forEach(k => {
+  ['title','subtitle','phone','email','hours','address','qrNote','wechatQr'].forEach(k => {
     const el = document.getElementById('f-contact-' + k);
     if (el) d.contact[k] = el.value;
   });
