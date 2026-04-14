@@ -181,6 +181,9 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:20px 0}
     <div class="nav-item" onclick="showPage('page-contact',this)">
       <span class="icon">📞</span> 联系咨询
     </div>
+    <div class="nav-item" onclick="showPage('page-nav',this)">
+      <span class="icon">🔗</span> 导航菜单
+    </div>
 
     <div class="sidebar-section">发布</div>
     <div class="nav-item" onclick="showPage('page-publish',this)">
@@ -329,6 +332,19 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:20px 0}
       </div>
     </div>
 
+    <!-- 导航菜单页 -->
+    <div class="page" id="page-nav">
+      <div class="panel">
+        <div class="panel-head"><h3>导航菜单设置</h3></div>
+        <div class="panel-body" id="nav-items-container">
+          <!-- 导航项将通过 JS 动态渲染 -->
+        </div>
+        <div style="padding:16px;margin-top:8px;">
+          <button class="btn btn-secondary" onclick="addNavItem()">+ 添加导航项</button>
+        </div>
+      </div>
+    </div>
+
     <!-- 发布页 -->
     <div class="page" id="page-publish">
       <div class="publish-box">
@@ -399,7 +415,7 @@ function showPage(id, el) {
   const titles = {
     'page-hero':'首屏 / 品牌信息','page-products':'产品系列',
     'page-features':'核心特性','page-footer':'页脚信息',
-    'page-contact':'联系咨询',
+    'page-contact':'联系咨询','page-nav':'导航菜单',
     'page-publish':'发布到网上','page-preview':'预览前台'
   };
   document.getElementById('pageTitle').textContent = titles[id] || '';
@@ -512,6 +528,46 @@ function renderAll() {
   renderProducts(d.products || []);
   // 特性
   renderFeatures(d.features || []);
+  // 导航
+  renderNavItems();
+}
+
+// ===== 导航菜单管理 =====
+function renderNavItems() {
+  const container = document.getElementById('nav-items-container');
+  const nav = siteData.nav || [];
+  container.innerHTML = nav.map((n, i) => `
+    <div style="background:var(--input-bg);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <span style="font-weight:700;color:var(--primary)">导航项 ${i+1}</span>
+        <button class="btn btn-danger btn-sm" onclick="removeNavItem(${i})">删除</button>
+      </div>
+      <div class="form-row">
+        <label>链接文本</label>
+        <input type="text" value="${esc(n.text)}" oninput="siteData.nav[${i}].text=this.value" placeholder="产品系列"/>
+      </div>
+      <div class="form-row">
+        <label>跳转链接（#开头）</label>
+        <input type="text" value="${esc(n.href)}" oninput="siteData.nav[${i}].href=this.value" placeholder="#products"/>
+      </div>
+      <div class="form-row">
+        <label><input type="checkbox" ${n.cta ? 'checked' : ''} onchange="siteData.nav[${i}].cta=this.checked"/> 高亮按钮（CTA）</label>
+      </div>
+    </div>`).join('');
+  if (nav.length === 0) {
+    container.innerHTML = '<p style="color:var(--muted);text-align:center;padding:20px;">暂无导航项，点击下方按钮添加</p>';
+  }
+}
+
+function addNavItem() {
+  if (!siteData.nav) siteData.nav = [];
+  siteData.nav.push({ text: '新导航', href: '#products', cta: false });
+  renderNavItems();
+}
+
+function removeNavItem(index) {
+  siteData.nav.splice(index, 1);
+  renderNavItems();
 }
 
 function setImgPreview(inputId, previewId, iconId) {
