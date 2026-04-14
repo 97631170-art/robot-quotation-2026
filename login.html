@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>BattleBot CMS · 登录</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:#080810;
+  font-family:'PingFang SC','Microsoft YaHei',sans-serif;
+}
+.login-box{
+  width:360px;padding:48px 40px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:20px;
+  box-shadow:0 32px 80px rgba(0,0,0,.6);
+}
+.logo{font-size:24px;font-weight:900;letter-spacing:2px;text-align:center;margin-bottom:8px}
+.logo em{color:#e8242a;font-style:normal}
+.sub{font-size:12px;color:rgba(255,255,255,.4);text-align:center;letter-spacing:3px;margin-bottom:40px}
+.form-group{margin-bottom:20px}
+label{display:block;font-size:11px;color:rgba(255,255,255,.4);letter-spacing:2px;margin-bottom:8px;text-transform:uppercase}
+input{
+  width:100%;padding:14px 18px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:10px;color:#fff;font-size:15px;outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+input:focus{border-color:#e8242a;box-shadow:0 0 0 3px rgba(232,36,42,.1)}
+input::placeholder{color:rgba(255,255,255,.2)}
+.btn{
+  width:100%;padding:15px;
+  background:linear-gradient(135deg,#e8242a,#b01a1f);
+  color:#fff;border:none;border-radius:10px;
+  font-size:14px;font-weight:700;letter-spacing:3px;
+  cursor:pointer;margin-top:8px;
+  box-shadow:0 6px 24px rgba(232,36,42,.3);
+  transition:all .2s;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(232,36,42,.45)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.err{color:#ff6b6b;font-size:12px;margin-top:12px;text-align:center;min-height:18px}
+.hint{
+  margin-top:32px;padding:16px;
+  background:rgba(59,130,246,.06);
+  border:1px solid rgba(59,130,246,.15);
+  border-radius:10px;font-size:11px;
+  color:rgba(255,255,255,.35);line-height:1.8;
+}
+</style>
+</head>
+<body>
+<div class="login-box">
+  <div class="logo">⚡ BATTLE<em>BOT</em></div>
+  <div class="sub">后台管理登录</div>
+
+  <div class="form-group">
+    <label>登录密码</label>
+    <input type="password" id="pwd" placeholder="请输入管理密码" onkeydown="if(event.key==='Enter')doLogin()"/>
+  </div>
+
+  <div class="form-group">
+    <label>GitHub Token</label>
+    <input type="password" id="token" placeholder="ghp_xxx（发布用）" onkeydown="if(event.key==='Enter')doLogin()"/>
+  </div>
+
+  <button class="btn" id="submitBtn" onclick="doLogin()">登 录</button>
+  <div class="err" id="err"></div>
+
+  <div class="hint">
+    💡 首次使用请设置密码并填入 GitHub Token<br/>
+    Token 仅本地存储，不会发送到任何第三方
+  </div>
+</div>
+
+<script>
+// 已存储的密码/Token 预填
+const storedPwd = localStorage.getItem('cms_pwd');
+const storedToken = localStorage.getItem('cms_token');
+if (storedPwd) document.getElementById('pwd').value = storedPwd;
+if (storedToken) document.getElementById('token').value = storedToken;
+
+async function doLogin() {
+  const err = document.getElementById('err');
+  const btn = document.getElementById('submitBtn');
+  const pwd = document.getElementById('pwd').value.trim();
+  const token = document.getElementById('token').value.trim();
+
+  if (!pwd) { err.textContent = '请输入密码'; return; }
+  if (!token) { err.textContent = '请输入 GitHub Token'; return; }
+
+  // 简单验证：密码至少 4 位，Token 格式 ghp_ 开头
+  if (pwd.length < 4) { err.textContent = '密码至少 4 位'; return; }
+  if (!token.startsWith('ghp_') && !token.startsWith('github_pat_')) {
+    err.textContent = 'Token 格式错误，应以 ghp_ 或 github_pat_ 开头';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '验证中...';
+  err.textContent = '';
+
+  // 验证 Token 有效性（查用户信息）
+  try {
+    const res = await fetch('https://api.github.com/user', {
+      headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (res.status !== 200) throw new Error('Token 无效');
+  } catch(e) {
+    err.textContent = 'GitHub Token 验证失败，请检查';
+    btn.disabled = false; btn.textContent = '登 录';
+    return;
+  }
+
+  // 存储
+  localStorage.setItem('cms_pwd', pwd);
+  localStorage.setItem('cms_token', token);
+
+  // 跳转到后台
+  window.location.href = 'admin.html';
+}
+</script>
+</body>
+</html>
