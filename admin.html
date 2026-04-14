@@ -178,6 +178,9 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:20px 0}
     <div class="nav-item" onclick="showPage('page-footer',this)">
       <span class="icon">📄</span> 页脚信息
     </div>
+    <div class="nav-item" onclick="showPage('page-contact',this)">
+      <span class="icon">📞</span> 联系咨询
+    </div>
 
     <div class="sidebar-section">发布</div>
     <div class="nav-item" onclick="showPage('page-publish',this)">
@@ -305,6 +308,27 @@ hr.divider{border:none;border-top:1px solid var(--border);margin:20px 0}
       </div>
     </div>
 
+    <!-- 联系咨询页 -->
+    <div class="page" id="page-contact">
+      <div class="panel">
+        <div class="panel-head"><h3>联系信息</h3></div>
+        <div class="panel-body">
+          <div class="form-row"><label>标题</label><input type="text" id="f-contact-title" placeholder="联系我们"/></div>
+          <div class="form-row"><label>副标题</label><input type="text" id="f-contact-subtitle" placeholder="造悟社 · 专注格斗机器人教育与竞技"/></div>
+          <div class="form-row"><label>咨询热线</label><input type="text" id="f-contact-phone" placeholder="15970070712"/></div>
+          <div class="form-row"><label>电子邮箱</label><input type="text" id="f-contact-email" placeholder="contact@example.com"/></div>
+          <div class="form-row"><label>营业时间</label><input type="text" id="f-contact-hours" placeholder="周一至周五 9:00-18:00"/></div>
+          <div class="form-row"><label>地址</label><input type="text" id="f-contact-address" placeholder="江西省赣州市章贡区..."/></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h3>微信二维码</h3></div>
+        <div class="panel-body">
+          <div class="form-row"><label>二维码说明文字</label><input type="text" id="f-contact-qrNote" placeholder="扫码咨询 · 添加客服微信"/></div>
+        </div>
+      </div>
+    </div>
+
     <!-- 发布页 -->
     <div class="page" id="page-publish">
       <div class="publish-box">
@@ -375,6 +399,7 @@ function showPage(id, el) {
   const titles = {
     'page-hero':'首屏 / 品牌信息','page-products':'产品系列',
     'page-features':'核心特性','page-footer':'页脚信息',
+    'page-contact':'联系咨询',
     'page-publish':'发布到网上','page-preview':'预览前台'
   };
   document.getElementById('pageTitle').textContent = titles[id] || '';
@@ -469,6 +494,12 @@ function renderAll() {
    'featTitle','footerBrand','footerInfo','heroImg','featImg'].forEach(k => {
     const el = document.getElementById('f-' + k);
     if (el) el.value = d[k] || '';
+  });
+  // 联系信息
+  const ct = d.contact || {};
+  ['title','subtitle','phone','email','hours','address','qrNote'].forEach(k => {
+    const el = document.getElementById('f-contact-' + k);
+    if (el) el.value = ct[k] || '';
   });
   // 图片预览
   setImgPreview('f-heroImg', 'hero-img-preview', 'hero-img-icon');
@@ -581,6 +612,12 @@ function collectData() {
    'featTitle','footerBrand','footerInfo','heroImg','featImg'].forEach(k => {
     const el = document.getElementById('f-' + k);
     if (el) d[k] = el.value;
+  });
+  // 联系信息
+  if (!d.contact) d.contact = {};
+  ['title','subtitle','phone','email','hours','address','qrNote'].forEach(k => {
+    const el = document.getElementById('f-contact-' + k);
+    if (el) d.contact[k] = el.value;
   });
   return d;
 }
