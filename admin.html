@@ -517,10 +517,19 @@ async function loadData() {
   if (saved) {
     try {
       siteData = JSON.parse(saved);
+      // 检查数据完整性
+      if (!siteData.products || siteData.products.length === 0) {
+        console.warn('localStorage 数据为空，使用默认数据');
+        localStorage.removeItem('siteData');
+        siteData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+      }
       renderAll();
       toast('数据加载成功', 'success');
       return;
-    } catch(e) {}
+    } catch(e) {
+      console.error('localStorage 解析失败，使用默认数据', e);
+      localStorage.removeItem('siteData');
+    }
   }
   // 使用默认数据
   siteData = JSON.parse(JSON.stringify(DEFAULT_DATA));
