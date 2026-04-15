@@ -1,131 +1,355 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>造悟社 CMS 管理后台</title>
+<title>后台管理 - 造悟社格斗机器人</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'PingFang SC', sans-serif; background: #0a0a14; color: #fff; }
-.admin-layout { display: flex; min-height: 100vh; }
-.sidebar { width: 220px; background: #111; border-right: 1px solid #333; padding: 20px 0; }
-.sidebar h1 { font-size: 16px; padding: 0 20px 20px; color: #e8242a; }
-.nav-item { padding: 12px 20px; cursor: pointer; border-left: 3px solid transparent; transition: all 0.2s; }
-.nav-item:hover, .nav-item.active { background: rgba(232,36,42,0.1); border-left-color: #e8242a; }
-.page { display: none; padding: 30px; }
-.page.active { display: block; }
-.form-group { margin-bottom: 16px; }
-.form-group label { display: block; margin-bottom: 6px; font-size: 12px; color: #888; }
-.form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; background: #1a1a24; border: 1px solid #333; color: #fff; border-radius: 6px; }
-.form-group textarea { min-height: 80px; resize: vertical; }
-.prod-card { background: #1a1a24; border: 1px solid #333; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
-.btn { padding: 10px 20px; background: linear-gradient(135deg, #e8242a, #b01a1f); color: #fff; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px; }
-.btn:hover { opacity: 0.9; }
-.btn-save { background: #22c55e; }
-#prod-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--red:#e8242a;--red-dark:#b01a1f;--bg:#0a0a14;--surface:rgba(255,255,255,.05);--border:rgba(255,255,255,.1);--muted:rgba(255,255,255,.5)}
+body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+.layout{display:flex;min-height:100vh}
+
+/* 左侧导航 */
+.sidebar{width:220px;background:#0d0d1a;border-right:1px solid var(--border);padding:24px 0;flex-shrink:0}
+.sidebar h1{font-size:14px;font-weight:700;padding:0 20px 20px;border-bottom:1px solid var(--border);margin-bottom:20px;letter-spacing:2px}
+.nav-item{padding:14px 20px;cursor:pointer;font-size:13px;color:var(--muted);transition:all .2s;border-left:3px solid transparent}
+.nav-item:hover{color:#fff;background:rgba(255,255,255,.05)}
+.nav-item.active{color:#fff;border-left-color:var(--red);background:rgba(232,36,42,.1)}
+
+/* 主内容区 */
+.main{flex:1;padding:32px 40px;overflow-y:auto}
+.page{display:none}
+.page.active{display:block}
+.page-title{font-size:20px;font-weight:700;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+
+/* 表单 */
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:12px;color:var(--muted);margin-bottom:8px;letter-spacing:1px}
+.form-group input,.form-group textarea{width:100%;background:var(--surface);border:1px solid var(--border);color:#fff;padding:12px 16px;border-radius:8px;font-size:14px;font-family:inherit;outline:none;transition:border-color .2s}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--red)}
+.form-group textarea{min-height:100px;resize:vertical}
+
+/* 按钮 */
+.btn{padding:10px 24px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+.btn-red{background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff}
+.btn-red:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(232,36,42,.4)}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.btn-outline:hover{border-color:var(--red);color:var(--red)}
+
+/* 产品卡片 */
+.prod-list{display:flex;flex-direction:column;gap:16px}
+.prod-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.prod-panel.active{border-color:var(--red)}
+.panel-header{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:rgba(255,255,255,.03);border-bottom:1px solid var(--border);cursor:pointer}
+.prod-series{font-size:12px;color:var(--red);letter-spacing:2px;font-weight:600}
+.panel-body{padding:20px;display:none}
+.prod-panel.active .panel-body{display:block}
+.btn-del{background:rgba(232,36,42,.15);border:1px solid rgba(232,36,42,.3);color:var(--red);padding:6px 14px;border-radius:4px;font-size:12px;cursor:pointer}
+
+/* 保存提示 */
+.toast{position:fixed;bottom:24px;right:24px;background:#1a1a2e;border:1px solid var(--border);padding:12px 24px;border-radius:8px;font-size:14px;opacity:0;transition:opacity .3s;z-index:1000}
+.toast.show{opacity:1}
+.toast.success{border-color:#22c55e;color:#22c55e}
+.toast.error{border-color:var(--red);color:var(--red)}
 </style>
 </head>
 <body>
-<div class="admin-layout">
+<div class="layout">
   <div class="sidebar">
-    <h1>⚡ CMS 后台</h1>
-    <div class="nav-item active" onclick="showPage('page-products', this)">产品系列</div>
-    <div class="nav-item" onclick="showPage('page-contact', this)">联系信息</div>
-    <div class="nav-item" onclick="showPage('page-publish', this)">发布网站</div>
+    <h1>⚡ 后台管理</h1>
+    <div class="nav-item active" onclick="showPage('products',this)">产品系列</div>
+    <div class="nav-item" onclick="showPage('hero',this)">首屏信息</div>
+    <div class="nav-item" onclick="showPage('contact',this)">联系信息</div>
+    <div class="nav-item" onclick="showPage('nav',this)">导航菜单</div>
+    <div class="nav-item" onclick="showPage('publish',this)">发布网站</div>
   </div>
-  <div style="flex: 1; overflow: auto;">
-    <div id="page-products" class="page active">
-      <h2>产品系列</h2>
-      <div id="prod-list"></div>
-      <button class="btn" onclick="addProduct()">+ 添加产品</button>
-      <button class="btn btn-save" onclick="saveProducts()">💾 保存</button>
+  
+  <div class="main">
+    <!-- 产品系列 -->
+    <div class="page active" id="page-products">
+      <div class="page-title">产品系列</div>
+      <button class="btn btn-red" onclick="addProd()" style="margin-bottom:20px">+ 添加产品</button>
+      <div class="prod-list" id="prod-list">
+    <div class="prod-panel active" data-index="0">
+      <div class="panel-header">
+        <span class="prod-series">SERIES-A</span>
+        <button class="btn-del" onclick="delProd(0)">删除</button>
+      </div>
+      <div class="panel-body">
+        <label>产品名称</label><input type="text" value="竖转格斗机器人" onchange="updProd(0,'name',this.value)">
+        <label>标签</label><input type="text" value="320克竖转类格斗机器人" onchange="updProd(0,'tag',this.value)">
+        <label>描述</label><textarea onchange="updProd(0,'desc',this.value)">低重心楔形推铲设计，正面强攻利器。红蓝双色高辨识配色，前置坡面铲头可轻松翻转对手，攻防兼备，适合初入竞技场的选手。</textarea>
+        <label>价格</label><input type="text" value="" onchange="updProd(0,'price',this.value)">
+        <label>图片路径</label><input type="text" value="/images/43c4a798-c5a8-4cbc-9a11-cc09e243f9af.jpg" onchange="updProd(0,'img',this.value)">
+        <label>规格（每行一个）</label><textarea onchange="updProd(0,'specs',this.value.split('\n'))">重量: 320g\n材质: ABS+\n驱动: 四轮\n武器: 推铲</textarea>
+      </div>
     </div>
-    <div id="page-contact" class="page">
-      <h2>联系信息</h2>
-      <div class="form-group"><label>电话</label><input id="contact-phone"></div>
-      <div class="form-group"><label>邮箱</label><input id="contact-email"></div>
-      <button class="btn btn-save" onclick="saveContact()">💾 保存</button>
+
+    <div class="prod-panel" data-index="1">
+      <div class="panel-header">
+        <span class="prod-series">SERIES-D</span>
+        <button class="btn-del" onclick="delProd(1)">删除</button>
+      </div>
+      <div class="panel-body">
+        <label>产品名称</label><input type="text" value="横传格斗机器人" onchange="updProd(1,'name',this.value)">
+        <label>标签</label><input type="text" value="320克横转类格斗机器人" onchange="updProd(1,'tag',this.value)">
+        <label>描述</label><textarea onchange="updProd(1,'desc',this.value)">水平高速转鼓武器，侧面攻击角度独特，可从侧翼击穿对手装甲。深灰色战斗涂装，低重心宽体设计，稳定性极佳，适合技巧型选手。</textarea>
+        <label>价格</label><input type="text" value="0" onchange="updProd(1,'price',this.value)">
+        <label>图片路径</label><input type="text" value="/images/1775790736879.png" onchange="updProd(1,'img',this.value)">
+        <label>规格（每行一个）</label><textarea onchange="updProd(1,'specs',this.value.split('\n'))">重量: 320g\n武器: 水平横转\n材质: ABS+\n高速电机\n新规格</textarea>
+      </div>
     </div>
-    <div id="page-publish" class="page">
-      <h2>发布网站</h2>
-      <p>点击下方按钮将网站发布到 GitHub Pages</p>
-      <button class="btn" onclick="publishSite()">🚀 发布网站</button>
+
+    <div class="prod-panel" data-index="2">
+      <div class="panel-header">
+        <span class="prod-series">SERIES-F</span>
+        <button class="btn-del" onclick="delProd(2)">删除</button>
+      </div>
+      <div class="panel-body">
+        <label>产品名称</label><input type="text" value="风暴 GX-06" onchange="updProd(2,'name',this.value)">
+        <label>标签</label><input type="text" value="抓举" onchange="updProd(2,'tag',this.value)">
+        <label>描述</label><textarea onchange="updProd(2,'desc',this.value)">液压模拟抓举臂，可将对手提起并推入场地陷阱。前置钳爪开合速度快，支持连续夹持，是控制型选手的最爱。</textarea>
+        <label>价格</label><input type="text" value="¥1,380" onchange="updProd(2,'price',this.value)">
+        <label>图片路径</label><input type="text" value="/images/1775790699904.jpg" onchange="updProd(2,'img',this.value)">
+        <label>规格（每行一个）</label><textarea onchange="updProd(2,'specs',this.value.split('\n'))">重量: 320g\n武器: 抓举臂\n材质: ABS+\n高速舵机</textarea>
+      </div>
+    </div>
+
+    <div class="prod-panel" data-index="3">
+      <div class="panel-header">
+        <span class="prod-series">SERIES-G</span>
+        <button class="btn-del" onclick="delProd(3)">删除</button>
+      </div>
+      <div class="panel-body">
+        <label>产品名称</label><input type="text" value="弹射格斗机器人" onchange="updProd(3,'name',this.value)">
+        <label>标签</label><input type="text" value="320克弹射类格斗机器人" onchange="updProd(3,'tag',this.value)">
+        <label>描述</label><textarea onchange="updProd(3,'desc',this.value)">高速舵机</textarea>
+        <label>价格</label><input type="text" value="¥1,520" onchange="updProd(3,'price',this.value)">
+        <label>图片路径</label><input type="text" value="/images/aabb4b3a-9dd0-472d-9976-f3f546b2224d.jpg" onchange="updProd(3,'img',this.value)">
+        <label>规格（每行一个）</label><textarea onchange="updProd(3,'specs',this.value.split('\n'))">重量: 320g\n武器: 高速锤\n材质: ABS+\n强力舵机</textarea>
+      </div>
+    </div>
+
+    <div class="prod-panel" data-index="4">
+      <div class="panel-header">
+        <span class="prod-series">SERIES-X</span>
+        <button class="btn-del" onclick="delProd(4)">删除</button>
+      </div>
+      <div class="panel-body">
+        <label>产品名称</label><input type="text" value="新机器人" onchange="updProd(4,'name',this.value)">
+        <label>标签</label><input type="text" value="新品" onchange="updProd(4,'tag',this.value)">
+        <label>描述</label><textarea onchange="updProd(4,'desc',this.value)">请编辑产品描述...</textarea>
+        <label>价格</label><input type="text" value="¥1,000" onchange="updProd(4,'price',this.value)">
+        <label>图片路径</label><input type="text" value="/images/微信图片_20260116120809_11_81.jpg" onchange="updProd(4,'img',this.value)">
+        <label>规格（每行一个）</label><textarea onchange="updProd(4,'specs',this.value.split('\n'))">重量: 320g\n材质: ABS+</textarea>
+      </div>
+    </div>
+</div>
+    </div>
+    
+    <!-- 首屏信息 -->
+    <div class="page" id="page-hero">
+      <div class="page-title">首屏信息</div>
+      <div class="form-group"><label>品牌名称</label><input type="text" id="f-brand" value="⚡中国格斗机甲联盟-造悟社"></div>
+      <div class="form-group"><label>副标题</label><input type="text" id="f-heroEyebrow" value="格斗机器人 · 2026 竞技系列"></div>
+      <div class="form-group"><label>主标题第一行</label><input type="text" id="f-heroLine1" value="极速突破"></div>
+      <div class="form-group"><label>主标题第二行</label><input type="text" id="f-heroLine2" value="铸造冠军"></div>
+      <div class="form-group"><label>描述</label><textarea id="f-heroDesc">专为竞技格斗设计的高性能机器人系列，采用高强度ABS+ 3D 打印结构，搭载精准电控系统。多款型号——推铲型、垂直旋转型、双头型，满足不同战术风格，一键入场，决战巅峰。</textarea></div>
+      <button class="btn btn-red" onclick="saveField('hero')">保存首屏</button>
+    </div>
+    
+    <!-- 联系信息 -->
+    <div class="page" id="page-contact">
+      <div class="page-title">联系信息</div>
+      <div class="form-group"><label>电话</label><input type="text" id="f-phone" value="15970070712"></div>
+      <div class="form-group"><label>邮箱</label><input type="text" id="f-email" value="97631170@qq.com"></div>
+      <div class="form-group"><label>工作时间</label><input type="text" id="f-hours" value="周一至周六 9:00 - 18:00"></div>
+      <div class="form-group"><label>地址</label><input type="text" id="f-address" value="中国 · 造悟社机器人工作室"></div>
+      <button class="btn btn-red" onclick="saveField('contact')">保存联系信息</button>
+    </div>
+    
+    <!-- 导航菜单 -->
+    <div class="page" id="page-nav">
+      <div class="page-title">导航菜单</div>
+      <div id="nav-list" style="margin-bottom:20px">
+    <div class="nav-row">
+      <input type="text" placeholder="文字" value="产品系列" onchange="updNav(0,'text',this.value)">
+      <input type="text" placeholder="链接" value="#products" onchange="updNav(0,'href',this.value)">
+      <label><input type="checkbox"  onchange="updNav(0,'cta',this.checked)"> CTA</label>
+    </div>
+
+    <div class="nav-row">
+      <input type="text" placeholder="文字" value="赛事规则" onchange="updNav(1,'text',this.value)">
+      <input type="text" placeholder="链接" value="#competition" onchange="updNav(1,'href',this.value)">
+      <label><input type="checkbox"  onchange="updNav(1,'cta',this.checked)"> CTA</label>
+    </div>
+
+    <div class="nav-row">
+      <input type="text" placeholder="文字" value="设备器材" onchange="updNav(2,'text',this.value)">
+      <input type="text" placeholder="链接" value="#accessories" onchange="updNav(2,'href',this.value)">
+      <label><input type="checkbox"  onchange="updNav(2,'cta',this.checked)"> CTA</label>
+    </div>
+
+    <div class="nav-row">
+      <input type="text" placeholder="文字" value="技术规格" onchange="updNav(3,'text',this.value)">
+      <input type="text" placeholder="链接" value="#features" onchange="updNav(3,'href',this.value)">
+      <label><input type="checkbox"  onchange="updNav(3,'cta',this.checked)"> CTA</label>
+    </div>
+
+    <div class="nav-row">
+      <input type="text" placeholder="文字" value="联系采购" onchange="updNav(4,'text',this.value)">
+      <input type="text" placeholder="链接" value="#contact" onchange="updNav(4,'href',this.value)">
+      <label><input type="checkbox" checked onchange="updNav(4,'cta',this.checked)"> CTA</label>
+    </div>
+</div>
+      <button class="btn btn-outline" onclick="addNav()">+ 添加导航项</button>
+      <button class="btn btn-red" onclick="saveField('nav')" style="margin-top:20px">保存导航</button>
+    </div>
+    
+    <!-- 发布网站 -->
+    <div class="page" id="page-publish">
+      <div class="page-title">发布网站</div>
+      <p style="color:var(--muted);margin-bottom:20px">点击下方按钮将网站发布到 GitHub Pages</p>
+      <button class="btn btn-red" onclick="publishSite()">🚀 立即发布</button>
     </div>
   </div>
 </div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-const API = 'http://localhost:7788/api';
 let siteData = {"brand":"⚡中国格斗机甲联盟-造悟社","navBadge":"2026 新品","heroEyebrow":"格斗机器人 · 2026 竞技系列","heroLine1":"极速突破","heroLine2":"铸造冠军","heroDesc":"专为竞技格斗设计的高性能机器人系列，采用高强度ABS+ 3D 打印结构，搭载精准电控系统。多款型号——推铲型、垂直旋转型、双头型，满足不同战术风格，一键入场，决战巅峰。","heroBtn1":"赛事规则","heroBtn2":"设备器材","kpi":[{"num":"7","label":"产品型号"},{"num":"320g","label":"竞技重量级"},{"num":"8V","label":"额定电压"},{"num":"5ms","label":"控制响应"}],"products":[{"tag":"320克竖转类格斗机器人","series":"SERIES-A","name":"竖转格斗机器人","desc":"低重心楔形推铲设计，正面强攻利器。红蓝双色高辨识配色，前置坡面铲头可轻松翻转对手，攻防兼备，适合初入竞技场的选手。","specs":["重量: 320g","材质: ABS+","驱动: 四轮","武器: 推铲"],"price":"","priceNote":"整机含遥控器","hot":false,"img":"/images/43c4a798-c5a8-4cbc-9a11-cc09e243f9af.jpg"},{"tag":"320克横转类格斗机器人","series":"SERIES-D","name":"横传格斗机器人","desc":"水平高速转鼓武器，侧面攻击角度独特，可从侧翼击穿对手装甲。深灰色战斗涂装，低重心宽体设计，稳定性极佳，适合技巧型选手。","specs":["重量: 320g","武器: 水平横转","材质: ABS+","高速电机","新规格"],"price":"0","priceNote":"整机含遥控器","hot":false,"img":"/images/1775790736879.png"},{"tag":"抓举","series":"SERIES-F","name":"风暴 GX-06","desc":"液压模拟抓举臂，可将对手提起并推入场地陷阱。前置钳爪开合速度快，支持连续夹持，是控制型选手的最爱。","specs":["重量: 320g","武器: 抓举臂","材质: ABS+","高速舵机"],"price":"¥1,380","priceNote":"整机含遥控器","hot":false,"img":"/images/1775790699904.jpg"},{"tag":"320克弹射类格斗机器人","series":"SERIES-G","name":"弹射格斗机器人","desc":"高速舵机","specs":["重量: 320g","武器: 高速锤","材质: ABS+","强力舵机"],"price":"¥1,520","priceNote":"整机含遥控器","hot":false,"img":"/images/aabb4b3a-9dd0-472d-9976-f3f546b2224d.jpg"},{"tag":"新品","series":"SERIES-X","name":"新机器人","desc":"请编辑产品描述...","specs":["重量: 320g","材质: ABS+"],"price":"¥1,000","priceNote":"整机含遥控器","hot":false,"img":"/images/微信图片_20260116120809_11_81.jpg"}],"featTitle":"为竞技而生","features":[{"icon":"🏗️","title":"高强度 3D 打印结构","desc":"全机身ABS+ 材料，层厚 0.2mm 精细打印，强度媲美注塑件，抗冲击性卓越，损坏后可快速补件更换。"},{"icon":"⚡","title":"精准电控系统","desc":"竞技级电调，响应延迟低至 5ms，支持 2.4GHz 抗干扰遥控，在高密度干扰环境中稳定运行。"},{"icon":"🔧","title":"模块化快拆设计","desc":"武器模块、驱动模块可 10 分钟内完成更换，赛间快速维修不误场，零部件独立出售方便备件储备。"},{"icon":"🏆","title":"符合主流赛事规格","desc":"满足 500g 量级主流竞技规则，适配国内外各大机器人格斗联赛标准场地与评分体系。"}],"heroImg":"/images/5f2929ee-5969-4077-b525-68ce90ff207e.JPG","featImg":"/images/01ed2520-0525-4a8e-b578-fadb72265cb2.JPG","competition":{"show":true,"title":"BoxBot 格斗机器人大赛","subtitle":"2026 全国青少年格斗机器人联赛","desc":"BoxBot 是国内最具影响力的青少年格斗机器人竞技赛事，涵盖小学、初中、高中三个组别，旨在培养青少年的工程思维、动手能力与竞技精神。","classes":[{"name":"迷你级","weight":"150g","group":"小学组","desc":"入门级赛事，使用小型格斗机器人，适合初次接触竞技机器人领域的学生。","icon":"🎯"},{"name":"轻量级","weight":"320g","group":"中小学组","desc":"主流竞技级别，考验选手的操控技巧与战术策略，竞争最为激烈。","icon":"⚔️"},{"name":"重量级","weight":"1.5kg","group":"初高中组","desc":"高端竞技赛事，装备更强武器系统，观赏性与技术含量最高。","icon":"💥"}],"timeline":[{"month":"3月","event":"报名开启"},{"month":"5月","event":"城市海选赛"},{"month":"7月","event":"区域晋级赛"},{"month":"8月","event":"全国总决赛"}],"contact":"15970070712","registerUrl":"#contact"},"accessories":{"show":true,"title":"配件器材","subtitle":"模块化设计 · 快速更换 · 赛场无忧","items":[{"icon":"⚙️","name":"武器模块","desc":"推铲/转鼓/弹射等多种武器模块，支持10分钟快拆更换","price":"¥280起"},{"icon":"🚗","name":"驱动底盘","desc":"四轮独立悬挂底盘，高强度ABS材质，损坏可单独更换","price":"¥380"},{"icon":"📡","name":"遥控器","desc":"2.4GHz抗干扰遥控，响应延迟<5ms，支持多机同场竞技","price":"¥220"},{"icon":"🔋","name":"锂电池组","desc":"7.4V 1000mAh 动力锂电池，高倍率放电，支持快速充电","price":"¥120"},{"icon":"🔩","name":"易损配件包","desc":"轮毂/轴承/螺丝等常用易损件套餐，赛场必备备件","price":"¥68"},{"icon":"🛡️","name":"装甲护板","desc":"高强度尼龙护板，有效抵御旋转武器冲击，可重复安装","price":"¥88"}]},"contact":{"show":true,"title":"联系我们","subtitle":"造悟社 · 专注格斗机器人教育与竞技","phone":"15970070712","email":"97631170@qq.com","hours":"周一至周六 9:00 - 18:00","address":"中国 · 造悟社机器人工作室","qrNote":"扫码咨询 · 添加客服微信","formTitle":"在线询价","formFields":[{"label":"您的姓名","placeholder":"请输入姓名"},{"label":"联系电话","placeholder":"请输入手机号"},{"label":"咨询内容","placeholder":"我想咨询产品报价 / 赛事报名 / 器材采购..."}]},"footerBrand":"造悟社 · 格斗机器人","footerInfo":"咨询热线：15970070712 · 邮箱：97631170@qq.com · © 2026 造悟社 版权所有","published":true,"publishUrl":"","nav":[{"text":"产品系列","href":"#products"},{"text":"赛事规则","href":"#competition"},{"text":"设备器材","href":"#accessories"},{"text":"技术规格","href":"#features"},{"text":"联系采购","href":"#contact","cta":true}]};
+const DEFAULT_DATA = {"brand":"⚡中国格斗机甲联盟-造悟社","navBadge":"2026 新品","heroEyebrow":"格斗机器人 · 2026 竞技系列","heroLine1":"极速突破","heroLine2":"铸造冠军","heroDesc":"专为竞技格斗设计的高性能机器人系列，采用高强度ABS+ 3D 打印结构，搭载精准电控系统。多款型号——推铲型、垂直旋转型、双头型，满足不同战术风格，一键入场，决战巅峰。","heroBtn1":"赛事规则","heroBtn2":"设备器材","kpi":[{"num":"7","label":"产品型号"},{"num":"320g","label":"竞技重量级"},{"num":"8V","label":"额定电压"},{"num":"5ms","label":"控制响应"}],"products":[{"tag":"320克竖转类格斗机器人","series":"SERIES-A","name":"竖转格斗机器人","desc":"低重心楔形推铲设计，正面强攻利器。红蓝双色高辨识配色，前置坡面铲头可轻松翻转对手，攻防兼备，适合初入竞技场的选手。","specs":["重量: 320g","材质: ABS+","驱动: 四轮","武器: 推铲"],"price":"","priceNote":"整机含遥控器","hot":false,"img":"/images/43c4a798-c5a8-4cbc-9a11-cc09e243f9af.jpg"},{"tag":"320克横转类格斗机器人","series":"SERIES-D","name":"横传格斗机器人","desc":"水平高速转鼓武器，侧面攻击角度独特，可从侧翼击穿对手装甲。深灰色战斗涂装，低重心宽体设计，稳定性极佳，适合技巧型选手。","specs":["重量: 320g","武器: 水平横转","材质: ABS+","高速电机","新规格"],"price":"0","priceNote":"整机含遥控器","hot":false,"img":"/images/1775790736879.png"},{"tag":"抓举","series":"SERIES-F","name":"风暴 GX-06","desc":"液压模拟抓举臂，可将对手提起并推入场地陷阱。前置钳爪开合速度快，支持连续夹持，是控制型选手的最爱。","specs":["重量: 320g","武器: 抓举臂","材质: ABS+","高速舵机"],"price":"¥1,380","priceNote":"整机含遥控器","hot":false,"img":"/images/1775790699904.jpg"},{"tag":"320克弹射类格斗机器人","series":"SERIES-G","name":"弹射格斗机器人","desc":"高速舵机","specs":["重量: 320g","武器: 高速锤","材质: ABS+","强力舵机"],"price":"¥1,520","priceNote":"整机含遥控器","hot":false,"img":"/images/aabb4b3a-9dd0-472d-9976-f3f546b2224d.jpg"},{"tag":"新品","series":"SERIES-X","name":"新机器人","desc":"请编辑产品描述...","specs":["重量: 320g","材质: ABS+"],"price":"¥1,000","priceNote":"整机含遥控器","hot":false,"img":"/images/微信图片_20260116120809_11_81.jpg"}],"featTitle":"为竞技而生","features":[{"icon":"🏗️","title":"高强度 3D 打印结构","desc":"全机身ABS+ 材料，层厚 0.2mm 精细打印，强度媲美注塑件，抗冲击性卓越，损坏后可快速补件更换。"},{"icon":"⚡","title":"精准电控系统","desc":"竞技级电调，响应延迟低至 5ms，支持 2.4GHz 抗干扰遥控，在高密度干扰环境中稳定运行。"},{"icon":"🔧","title":"模块化快拆设计","desc":"武器模块、驱动模块可 10 分钟内完成更换，赛间快速维修不误场，零部件独立出售方便备件储备。"},{"icon":"🏆","title":"符合主流赛事规格","desc":"满足 500g 量级主流竞技规则，适配国内外各大机器人格斗联赛标准场地与评分体系。"}],"heroImg":"/images/5f2929ee-5969-4077-b525-68ce90ff207e.JPG","featImg":"/images/01ed2520-0525-4a8e-b578-fadb72265cb2.JPG","competition":{"show":true,"title":"BoxBot 格斗机器人大赛","subtitle":"2026 全国青少年格斗机器人联赛","desc":"BoxBot 是国内最具影响力的青少年格斗机器人竞技赛事，涵盖小学、初中、高中三个组别，旨在培养青少年的工程思维、动手能力与竞技精神。","classes":[{"name":"迷你级","weight":"150g","group":"小学组","desc":"入门级赛事，使用小型格斗机器人，适合初次接触竞技机器人领域的学生。","icon":"🎯"},{"name":"轻量级","weight":"320g","group":"中小学组","desc":"主流竞技级别，考验选手的操控技巧与战术策略，竞争最为激烈。","icon":"⚔️"},{"name":"重量级","weight":"1.5kg","group":"初高中组","desc":"高端竞技赛事，装备更强武器系统，观赏性与技术含量最高。","icon":"💥"}],"timeline":[{"month":"3月","event":"报名开启"},{"month":"5月","event":"城市海选赛"},{"month":"7月","event":"区域晋级赛"},{"month":"8月","event":"全国总决赛"}],"contact":"15970070712","registerUrl":"#contact"},"accessories":{"show":true,"title":"配件器材","subtitle":"模块化设计 · 快速更换 · 赛场无忧","items":[{"icon":"⚙️","name":"武器模块","desc":"推铲/转鼓/弹射等多种武器模块，支持10分钟快拆更换","price":"¥280起"},{"icon":"🚗","name":"驱动底盘","desc":"四轮独立悬挂底盘，高强度ABS材质，损坏可单独更换","price":"¥380"},{"icon":"📡","name":"遥控器","desc":"2.4GHz抗干扰遥控，响应延迟<5ms，支持多机同场竞技","price":"¥220"},{"icon":"🔋","name":"锂电池组","desc":"7.4V 1000mAh 动力锂电池，高倍率放电，支持快速充电","price":"¥120"},{"icon":"🔩","name":"易损配件包","desc":"轮毂/轴承/螺丝等常用易损件套餐，赛场必备备件","price":"¥68"},{"icon":"🛡️","name":"装甲护板","desc":"高强度尼龙护板，有效抵御旋转武器冲击，可重复安装","price":"¥88"}]},"contact":{"show":true,"title":"联系我们","subtitle":"造悟社 · 专注格斗机器人教育与竞技","phone":"15970070712","email":"97631170@qq.com","hours":"周一至周六 9:00 - 18:00","address":"中国 · 造悟社机器人工作室","qrNote":"扫码咨询 · 添加客服微信","formTitle":"在线询价","formFields":[{"label":"您的姓名","placeholder":"请输入姓名"},{"label":"联系电话","placeholder":"请输入手机号"},{"label":"咨询内容","placeholder":"我想咨询产品报价 / 赛事报名 / 器材采购..."}]},"footerBrand":"造悟社 · 格斗机器人","footerInfo":"咨询热线：15970070712 · 邮箱：97631170@qq.com · © 2026 造悟社 版权所有","published":true,"publishUrl":"","nav":[{"text":"产品系列","href":"#products"},{"text":"赛事规则","href":"#competition"},{"text":"设备器材","href":"#accessories"},{"text":"技术规格","href":"#features"},{"text":"联系采购","href":"#contact","cta":true}]};
 
-function renderProducts(prods) {
-  const container = document.getElementById('prod-list');
-  container.innerHTML = prods.map((p, i) => '<div class="prod-card">' +
-    '<input class="prod-name" value="' + p.name + '" placeholder="产品名称">' +
-    '<input class="prod-tag" value="' + p.tag + '" placeholder="标签">' +
-    '<textarea class="prod-desc" placeholder="描述">' + p.desc + '</textarea>' +
-    '<input class="prod-price" value="' + p.price + '" placeholder="价格">' +
-    '<input class="prod-img" value="' + p.img + '" placeholder="图片路径">' +
-    '<button class="btn" onclick="delProduct(' + i + ')">🗑️ 删除</button>' +
-    '</div>').join('');
-}
-
-function addProduct() {
-  siteData.products.push({
-    name: '新机器人',
-    tag: '新品',
-    series: 'SERIES-X',
-    desc: '请编辑产品描述...',
-    specs: ['重量: 320g'],
-    price: '¥1,000',
-    priceNote: '整机含遥控器',
-    hot: false,
-    img: '/images/placeholder.jpg'
-  });
-  renderProducts(siteData.products);
-}
-
-function delProduct(i) {
-  if (confirm('确定删除这个产品？')) {
-    siteData.products.splice(i, 1);
-    renderProducts(siteData.products);
-  }
-}
-
-function saveProducts() {
-  const cards = document.querySelectorAll('.prod-card');
-  cards.forEach((card, i) => {
-    siteData.products[i].name = card.querySelector('.prod-name').value;
-    siteData.products[i].tag = card.querySelector('.prod-tag').value;
-    siteData.products[i].desc = card.querySelector('.prod-desc').value;
-    siteData.products[i].price = card.querySelector('.prod-price').value;
-    siteData.products[i].img = card.querySelector('.prod-img').value;
-  });
-  localStorage.setItem('siteData', JSON.stringify(siteData));
-  alert('产品已保存到 localStorage！');
-}
-
+// 页面切换
 function showPage(id, el) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  document.getElementById('page-' + id).classList.add('active');
   if (el) el.classList.add('active');
 }
 
-function saveContact() {
-  siteData.contact.phone = document.getElementById('contact-phone').value;
-  siteData.contact.email = document.getElementById('contact-email').value;
+// 产品操作
+function updProd(idx, field, val) {
+  siteData.products[idx][field] = val;
+  if (field === 'series') {
+    document.querySelectorAll('.prod-series')[idx].textContent = val;
+  }
+}
+
+function delProd(idx) {
+  if (confirm('确定删除这个产品？')) {
+    siteData.products.splice(idx, 1);
+    renderProds();
+    toast('已删除', 'success');
+  }
+}
+
+function addProd() {
+  siteData.products.push({
+    tag:'新品',series:'SERIES-N',name:'新机器人',
+    desc:'请编辑产品描述...',specs:['重量: 320g','材质: ABS+'],
+    price:'¥1,000',priceNote:'整机含遥控器',hot:false,img:'/images/placeholder.jpg'
+  });
+  renderProds();
+  toast('已添加', 'success');
+}
+
+function renderProds() {
+  const list = document.getElementById('prod-list');
+  list.innerHTML = siteData.products.map((p, i) => `
+    <div class="prod-panel${i === 0 ? ' active' : ''}" data-index="${i}" onclick="toggleProd(this)">
+      <div class="panel-header">
+        <span class="prod-series">${p.series}</span>
+        <button class="btn-del" onclick="event.stopPropagation();delProd(${i})">删除</button>
+      </div>
+      <div class="panel-body">
+        <div class="form-group"><label>产品名称</label><input type="text" value="${esc(p.name)}" onchange="updProd(${i},'name',this.value)"></div>
+        <div class="form-group"><label>标签</label><input type="text" value="${esc(p.tag)}" onchange="updProd(${i},'tag',this.value)"></div>
+        <div class="form-group"><label>描述</label><textarea onchange="updProd(${i},'desc',this.value)">${esc(p.desc)}</textarea></div>
+        <div class="form-group"><label>价格</label><input type="text" value="${esc(p.price)}" onchange="updProd(${i},'price',this.value)"></div>
+        <div class="form-group"><label>图片路径</label><input type="text" value="${esc(p.img)}" onchange="updProd(${i},'img',this.value)"></div>
+        <div class="form-group"><label>规格（每行一个）</label><textarea onchange="updProd(${i},'specs',this.value.split('\n'))">${esc((p.specs||[]).join('\n'))}</textarea></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleProd(el) {
+  el.classList.toggle('active');
+}
+
+// 导航操作
+function updNav(idx, field, val) {
+  siteData.nav[idx][field] = val;
+}
+
+function addNav() {
+  siteData.nav.push({text:'新链接',href:'#',cta:false});
+  renderNav();
+}
+
+function renderNav() {
+  document.getElementById('nav-list').innerHTML = siteData.nav.map((n, i) => `
+    <div class="nav-row" style="display:flex;gap:12px;align-items:center;margin-bottom:12px;padding:12px;background:var(--surface);border-radius:8px">
+      <input type="text" placeholder="文字" value="${esc(n.text)}" onchange="updNav(${i},'text',this.value)" style="flex:1">
+      <input type="text" placeholder="链接" value="${esc(n.href)}" onchange="updNav(${i},'href',this.value)" style="flex:1">
+      <label style="display:flex;align-items:center;gap:6px;white-space:nowrap"><input type="checkbox" ${n.cta?'checked':''} onchange="updNav(${i},'cta',this.checked)"> CTA</label>
+    </div>
+  `).join('');
+}
+
+// 字段保存
+function saveField(type) {
+  if (type === 'hero') {
+    siteData.brand = document.getElementById('f-brand').value;
+    siteData.heroEyebrow = document.getElementById('f-heroEyebrow').value;
+    siteData.heroLine1 = document.getElementById('f-heroLine1').value;
+    siteData.heroLine2 = document.getElementById('f-heroLine2').value;
+    siteData.heroDesc = document.getElementById('f-heroDesc').value;
+  } else if (type === 'contact') {
+    siteData.contact.phone = document.getElementById('f-phone').value;
+    siteData.contact.email = document.getElementById('f-email').value;
+    siteData.contact.hours = document.getElementById('f-hours').value;
+    siteData.contact.address = document.getElementById('f-address').value;
+  }
+  // 保存到 localStorage
   localStorage.setItem('siteData', JSON.stringify(siteData));
-  alert('联系信息已保存！');
+  // 下载 JSON 文件
+  downloadJson();
+  toast('已保存并下载 JSON', 'success');
 }
 
+function downloadJson() {
+  const blob = new Blob([JSON.stringify(siteData, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'site.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// 发布
 function publishSite() {
-  alert('请运行 node upload_github.js 发布网站');
+  downloadJson();
+  toast('请下载 site.json，然后运行 node gen_static.js', 'success');
 }
 
-// 初始化
-document.getElementById('contact-phone').value = siteData.contact?.phone || '';
-document.getElementById('contact-email').value = siteData.contact?.email || '';
-renderProducts(siteData.products || []);
+// Toast 提示
+function toast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type + ' show';
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// HTML 转义
+function esc(s) {
+  if (!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 </script>
 </body>
 </html>
