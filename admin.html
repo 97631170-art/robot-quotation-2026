@@ -539,6 +539,7 @@ async function loadData() {
 
 function renderAll() {
   const d = siteData;
+  console.log('renderAll called, products:', d.products ? d.products.length : 0);
   // 基础字段
   ['brand','navBadge','heroEyebrow','heroLine1','heroLine2','heroDesc','heroBtn1','heroBtn2',
    'featTitle','footerBrand','footerInfo','heroImg','featImg'].forEach(k => {
