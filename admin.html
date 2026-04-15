@@ -513,32 +513,11 @@ const PAGE_CSS = \`*,*::before,*::after{box-sizing:border-box;margin:0;padding:0
 
 function loadData() {
   console.log('loadData called');
-  // 优先从 localStorage 加载
-  const saved = localStorage.getItem('siteData');
-  console.log('localStorage saved:', saved ? 'yes' : 'no');
-  if (saved) {
-    try {
-      siteData = JSON.parse(saved);
-      console.log('parsed siteData:', siteData);
-      // 检查数据完整性
-      if (!siteData.products || siteData.products.length === 0) {
-        console.warn('localStorage 数据为空，使用默认数据');
-        localStorage.removeItem('siteData');
-        siteData = JSON.parse(JSON.stringify(DEFAULT_DATA));
-      }
-      renderAll();
-      toast('数据加载成功', 'success');
-      return;
-    } catch(e) {
-      console.error('localStorage 解析失败，使用默认数据', e);
-      localStorage.removeItem('siteData');
-    }
-  }
-  // 使用默认数据
-  console.log('使用默认数据');
+  // 强制使用默认数据（绕过 localStorage）
   siteData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  console.log('使用默认数据, products:', siteData.products ? siteData.products.length : 0);
   renderAll();
-  toast('使用默认数据', 'info');
+  toast('数据加载成功', 'success');
 }
 
 function renderAll() {
