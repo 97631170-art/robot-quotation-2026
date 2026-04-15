@@ -629,6 +629,7 @@ function renderKpi(kpis) {
 }
 
 function renderProducts(prods) {
+  console.log('renderProducts called, count:', prods ? prods.length : 0, prods);
   const container = document.getElementById('prod-panels');
   container.innerHTML = prods.map((p, i) => `
     <div class="tab-panel ${i===0?'active':''}">
