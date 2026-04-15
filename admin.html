@@ -1,992 +1,131 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>⚡ 中国格斗机甲联盟-造悟社 · 后台管理</title>
-<script>
-// 登录验证
-(function(){
-  const pwd = localStorage.getItem('cms_pwd');
-  if (!pwd) { window.location.href = 'login.html'; }
-})();
-</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>造悟社 CMS 管理后台</title>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#0c0c14; --sidebar:#111120; --card:#181828;
-  --border:#2a2a3e; --red:#e8242a; --red2:#ff4e4e;
-  --text:#e8e8f0; --muted:#7070a0; --input-bg:#1e1e30;
-  --green:#22c55e; --blue:#3b82f6; --yellow:#f59e0b;
-}
-html,body{height:100%;font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text)}
-a{text-decoration:none;color:inherit}
-
-/* ===== 布局 ===== */
-.layout{display:flex;height:100vh;overflow:hidden}
-
-/* 侧边栏 */
-.sidebar{width:220px;flex-shrink:0;background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto}
-.sidebar-logo{padding:24px 20px 16px;font-size:16px;font-weight:900;letter-spacing:2px;border-bottom:1px solid var(--border)}
-.sidebar-logo em{color:var(--red);font-style:normal}
-.sidebar-section{padding:8px 12px 4px;font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-top:8px}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;cursor:pointer;border-radius:0;transition:background .15s,color .15s;border-left:3px solid transparent;color:var(--muted)}
-.nav-item:hover{background:rgba(232,36,42,.06);color:var(--text)}
-.nav-item.active{background:rgba(232,36,42,.1);color:#fff;border-left-color:var(--red)}
-.nav-item .icon{font-size:16px;width:20px;text-align:center}
-.sidebar-footer{margin-top:auto;padding:16px 20px;font-size:11px;color:var(--muted);border-top:1px solid var(--border)}
-.status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:6px;box-shadow:0 0 8px var(--green)}
-
-/* 主区域 */
-.main{flex:1;overflow-y:auto;background:var(--bg)}
-
-/* 顶部栏 */
-.topbar{padding:0 32px;height:60px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg);position:sticky;top:0;z-index:100}
-.topbar-title{font-size:16px;font-weight:700;letter-spacing:1px}
-.topbar-right{display:flex;gap:10px;align-items:center}
-
-/* 按钮 */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;letter-spacing:.5px}
-.btn-primary{background:var(--red);color:#fff;box-shadow:0 4px 16px rgba(232,36,42,.3)}
-.btn-primary:hover{background:#c41e23;transform:translateY(-1px)}
-.btn-secondary{background:var(--card);color:var(--text);border:1px solid var(--border)}
-.btn-secondary:hover{border-color:var(--red);color:var(--red)}
-.btn-success{background:var(--green);color:#000}
-.btn-success:hover{background:#16a34a}
-.btn-blue{background:var(--blue);color:#fff}
-.btn-blue:hover{background:#2563eb}
-.btn-sm{padding:6px 14px;font-size:12px}
-.btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important}
-
-/* 页面内容 */
-.page{display:none;padding:28px 32px}
-.page.active{display:block}
-
-/* 卡片 */
-.panel{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:24px;overflow:hidden}
-.panel-head{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.panel-head h3{font-size:14px;font-weight:700;letter-spacing:.5px}
-.panel-body{padding:22px}
-
-/* 表单 */
-.form-row{margin-bottom:18px}
-.form-row label{display:block;font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:7px}
-.form-row input[type=text],
-.form-row textarea{width:100%;background:var(--input-bg);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:7px;font-size:13px;outline:none;transition:border-color .2s;font-family:inherit;resize:vertical}
-.form-row input[type=text]:focus,
-.form-row textarea:focus{border-color:var(--red)}
-.form-row textarea{min-height:90px;line-height:1.7}
-
-/* 图片上传 */
-.img-upload{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.img-preview{width:120px;height:80px;border-radius:8px;overflow:hidden;background:var(--input-bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;position:relative;cursor:pointer}
-.img-preview img{width:100%;height:100%;object-fit:cover;border-radius:8px}
-.img-preview-label{font-size:11px;color:var(--muted);cursor:pointer}
-.img-preview-label:hover{color:var(--red)}
-.file-input{display:none}
-
-/* 产品选项卡 */
-.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px}
-.tab{padding:10px 20px;font-size:13px;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s;letter-spacing:.5px}
-.tab.active{color:#fff;border-bottom-color:var(--red)}
-.tab:hover{color:var(--text)}
-.tab-panel{display:none}.tab-panel.active{display:block}
-
-/* 规格标签编辑 */
-.spec-list{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
-.spec-item{display:flex;align-items:center;gap:6px;background:var(--input-bg);border:1px solid var(--border);border-radius:5px;padding:4px 10px;font-size:12px}
-.spec-item span{outline:none;min-width:60px}
-.spec-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0 2px;line-height:1}
-.spec-del:hover{color:var(--red)}
-.spec-add{background:rgba(232,36,42,.12);border:1px dashed rgba(232,36,42,.4);color:var(--red);padding:4px 14px;border-radius:5px;font-size:12px;cursor:pointer;transition:background .2s}
-.spec-add:hover{background:rgba(232,36,42,.2)}
-
-/* 特性条目 */
-.feat-row{display:grid;grid-template-columns:60px 1fr 2fr;gap:10px;align-items:start;margin-bottom:12px}
-.feat-row input{width:100%;background:var(--input-bg);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:6px;font-size:13px;outline:none;font-family:inherit}
-.feat-row input:focus{border-color:var(--red)}
-.feat-row textarea{width:100%;background:var(--input-bg);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:6px;font-size:13px;outline:none;font-family:inherit;resize:vertical;min-height:60px}
-.feat-row textarea:focus{border-color:var(--red)}
-
-/* KPI 网格 */
-.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-@media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
-.kpi-card{background:var(--input-bg);border:1px solid var(--border);border-radius:8px;padding:14px}
-.kpi-card label{font-size:10px;color:var(--muted);letter-spacing:1px;display:block;margin-bottom:5px}
-.kpi-card input{width:100%;background:transparent;border:none;color:var(--text);font-size:22px;font-weight:900;outline:none;font-family:inherit}
-
-/* 发布区 */
-.publish-box{background:linear-gradient(135deg,rgba(232,36,42,.06),rgba(232,36,42,.02));border:1px solid rgba(232,36,42,.2);border-radius:12px;padding:28px;text-align:center}
-.publish-box h3{font-size:18px;font-weight:800;margin-bottom:8px}
-.publish-box p{color:var(--muted);font-size:13px;margin-bottom:24px;line-height:1.7}
-.publish-actions{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
-.tunnel-result{margin-top:20px;background:var(--input-bg);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:left;display:none}
-.tunnel-url{font-size:20px;font-weight:700;color:var(--green);word-break:break-all;margin:8px 0}
-.tunnel-hint{font-size:12px;color:var(--muted)}
-.tunnel-log{font-size:11px;color:var(--muted);margin-top:8px;font-family:monospace;max-height:80px;overflow-y:auto}
-
-/* 预览iframe */
-.preview-wrap{border:1px solid var(--border);border-radius:10px;overflow:hidden;position:relative;background:#000}
-.preview-wrap iframe{width:100%;height:500px;border:none;background:#000}
-.preview-toolbar{padding:10px 16px;background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
-.preview-dots{display:flex;gap:6px}.preview-dots span{width:10px;height:10px;border-radius:50%}
-
-/* toast */
-.toast{position:fixed;top:20px;right:20px;padding:12px 24px;border-radius:8px;font-size:13px;font-weight:600;z-index:9999;transform:translateX(120%);transition:transform .3s;letter-spacing:.5px}
-.toast.show{transform:translateX(0)}
-.toast-success{background:var(--green);color:#000}
-.toast-error{background:var(--red);color:#fff}
-.toast-info{background:var(--blue);color:#fff}
-
-/* badge */
-.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.5px}
-.badge-green{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3)}
-.badge-red{background:rgba(232,36,42,.15);color:var(--red);border:1px solid rgba(232,36,42,.3)}
-
-/* 分割线 */
-hr.divider{border:none;border-top:1px solid var(--border);margin:20px 0}
-
-/* 开关 */
-.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
-.toggle-row label{font-size:13px;color:var(--text)}
-.toggle{position:relative;width:44px;height:24px}
-.toggle input{opacity:0;width:0;height:0}
-.toggle-slider{position:absolute;cursor:pointer;inset:0;background:var(--border);border-radius:12px;transition:.3s}
-.toggle-slider::before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.3s}
-.toggle input:checked+.toggle-slider{background:var(--red)}
-.toggle input:checked+.toggle-slider::before{transform:translateX(20px)}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'PingFang SC', sans-serif; background: #0a0a14; color: #fff; }
+.admin-layout { display: flex; min-height: 100vh; }
+.sidebar { width: 220px; background: #111; border-right: 1px solid #333; padding: 20px 0; }
+.sidebar h1 { font-size: 16px; padding: 0 20px 20px; color: #e8242a; }
+.nav-item { padding: 12px 20px; cursor: pointer; border-left: 3px solid transparent; transition: all 0.2s; }
+.nav-item:hover, .nav-item.active { background: rgba(232,36,42,0.1); border-left-color: #e8242a; }
+.page { display: none; padding: 30px; }
+.page.active { display: block; }
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; margin-bottom: 6px; font-size: 12px; color: #888; }
+.form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; background: #1a1a24; border: 1px solid #333; color: #fff; border-radius: 6px; }
+.form-group textarea { min-height: 80px; resize: vertical; }
+.prod-card { background: #1a1a24; border: 1px solid #333; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+.btn { padding: 10px 20px; background: linear-gradient(135deg, #e8242a, #b01a1f); color: #fff; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px; }
+.btn:hover { opacity: 0.9; }
+.btn-save { background: #22c55e; }
+#prod-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
 </style>
-<script>
-// ===== 页面切换 =====
-function showPage(id, el) {
-  console.log('showPage called:', id, el);
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const targetPage = document.getElementById(id);
-  if (!targetPage) { console.error('Page not found:', id); return; }
-  targetPage.classList.add('active');
-  if (el) el.classList.add('active');
-  const titles = {
-    'page-hero':'首屏 / 品牌信息','page-products':'产品系列',
-    'page-features':'核心特性','page-footer':'页脚信息',
-    'page-contact':'联系咨询','page-nav':'导航菜单',
-    'page-publish':'发布到网上','page-preview':'预览前台'
-  };
-  document.getElementById('pageTitle').textContent = titles[id] || '';
-  if (id === 'page-preview') {
-    document.getElementById('preview-frame').src = 'http://localhost:7788/?t=' + Date.now();
-  }
-}
-</script>
 </head>
 <body>
-
-<div class="layout">
-
-  <!-- 侧边栏 -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">⚡ 中国格斗机甲联盟<br/><span style="font-size:10px;color:var(--muted);font-weight:400;letter-spacing:1px;">造悟社</span></div>
-
-    <div class="sidebar-section">内容管理</div>
-    <div class="nav-item active" onclick="showPage('page-hero',this)">
-      <span class="icon">🏠</span> 首屏 / 品牌信息
+<div class="admin-layout">
+  <div class="sidebar">
+    <h1>⚡ CMS 后台</h1>
+    <div class="nav-item active" onclick="showPage('page-products', this)">产品系列</div>
+    <div class="nav-item" onclick="showPage('page-contact', this)">联系信息</div>
+    <div class="nav-item" onclick="showPage('page-publish', this)">发布网站</div>
+  </div>
+  <div style="flex: 1; overflow: auto;">
+    <div id="page-products" class="page active">
+      <h2>产品系列</h2>
+      <div id="prod-list"></div>
+      <button class="btn" onclick="addProduct()">+ 添加产品</button>
+      <button class="btn btn-save" onclick="saveProducts()">💾 保存</button>
     </div>
-    <div class="nav-item" onclick="showPage('page-products',this)">
-      <span class="icon">🤖</span> 产品系列
+    <div id="page-contact" class="page">
+      <h2>联系信息</h2>
+      <div class="form-group"><label>电话</label><input id="contact-phone"></div>
+      <div class="form-group"><label>邮箱</label><input id="contact-email"></div>
+      <button class="btn btn-save" onclick="saveContact()">💾 保存</button>
     </div>
-    <div class="nav-item" onclick="showPage('page-features',this)">
-      <span class="icon">⚙️</span> 核心特性
+    <div id="page-publish" class="page">
+      <h2>发布网站</h2>
+      <p>点击下方按钮将网站发布到 GitHub Pages</p>
+      <button class="btn" onclick="publishSite()">🚀 发布网站</button>
     </div>
-    <div class="nav-item" onclick="showPage('page-footer',this)">
-      <span class="icon">📄</span> 页脚信息
-    </div>
-    <div class="nav-item" onclick="showPage('page-contact',this)">
-      <span class="icon">📞</span> 联系咨询
-    </div>
-    <div class="nav-item" onclick="showPage('page-nav',this)">
-      <span class="icon">🔗</span> 导航菜单
-    </div>
-
-    <div class="sidebar-section">发布</div>
-    <div class="nav-item" onclick="showPage('page-publish',this)">
-      <span class="icon">🚀</span> 发布到网上
-    </div>
-    <div class="nav-item" onclick="showPage('page-preview',this)">
-      <span class="icon">👁️</span> 预览前台
-    </div>
-
-    <div class="sidebar-footer">
-      <span class="status-dot"></span>服务运行中
-    </div>
-  </aside>
-
-  <!-- 主区域 -->
-  <div class="main">
-    <div class="topbar">
-      <div class="topbar-title" id="pageTitle">首屏 / 品牌信息</div>
-      <div class="topbar-right">
-        <button class="btn btn-secondary btn-sm" onclick="loadData()">↺ 刷新数据</button>
-        <button class="btn btn-primary btn-sm" onclick="saveAll()">💾 保存</button>
-      </div>
-    </div>
-
-    <!-- 首屏页 -->
-    <div class="page active" id="page-hero">
-      <div class="panel">
-        <div class="panel-head"><h3>品牌 &amp; 导航</h3></div>
-        <div class="panel-body">
-          <div class="form-row"><label>品牌名称</label><input type="text" id="f-brand" placeholder="⚡ BATTLEBOT"/></div>
-          <div class="form-row"><label>导航徽标文字</label><input type="text" id="f-navBadge" placeholder="2026 新品"/></div>
-        </div>
-      </div>
-      <div class="panel">
-        <div class="panel-head"><h3>英雄区文字</h3></div>
-        <div class="panel-body">
-          <div class="form-row"><label>副标签文字</label><input type="text" id="f-heroEyebrow"/></div>
-          <div class="form-row"><label>标题第一行</label><input type="text" id="f-heroLine1"/></div>
-          <div class="form-row"><label>标题第二行（红色）</label><input type="text" id="f-heroLine2"/></div>
-          <div class="form-row"><label>描述文案</label><textarea id="f-heroDesc"></textarea></div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-            <div class="form-row"><label>按钮一（主）</label><input type="text" id="f-heroBtn1"/></div>
-            <div class="form-row"><label>按钮二（次）</label><input type="text" id="f-heroBtn2"/></div>
-          </div>
-        </div>
-      </div>
-      <div class="panel">
-        <div class="panel-head"><h3>英雄区图片</h3></div>
-        <div class="panel-body">
-          <div class="img-upload">
-            <div class="img-preview" onclick="triggerUpload('hero-img-input','f-heroImg','hero-img-preview')">
-              <img id="hero-img-preview" src="" alt="" style="display:none"/>
-              <span id="hero-img-icon">🖼</span>
-            </div>
-            <div>
-              <div class="img-preview-label" onclick="triggerUpload('hero-img-input','f-heroImg','hero-img-preview')">点击上传英雄区背景图</div>
-              <div style="font-size:11px;color:var(--muted);margin-top:4px;">建议尺寸 1400×900，支持 JPG/PNG/WEBP</div>
-              <input id="f-heroImg" type="text" style="width:240px;margin-top:8px;" placeholder="或填写图片 URL"/>
-            </div>
-          </div>
-          <input type="file" id="hero-img-input" class="file-input" accept="image/*" onchange="uploadImg(this,'f-heroImg','hero-img-preview','hero-img-icon')"/>
-        </div>
-      </div>
-      <div class="panel">
-        <div class="panel-head"><h3>数据指标（KPI）</h3></div>
-        <div class="panel-body">
-          <div class="kpi-grid" id="kpi-grid"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 产品页 -->
-    <div class="page" id="page-products">
-      <div class="panel">
-        <div class="panel-head"><h3>产品系列管理</h3><span id="prod-count-label" style="font-size:12px;color:var(--muted)">共 0 款</span></div>
-        <div class="panel-body">
-          <div class="tabs" id="prod-tabs"></div>
-          <div id="prod-panels"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 特性页 -->
-    <div class="page" id="page-features">
-      <div class="panel">
-        <div class="panel-head"><h3>特性区标题</h3></div>
-        <div class="panel-body">
-          <div class="form-row"><label>大标题</label><input type="text" id="f-featTitle"/></div>
-          <div class="form-row"><label>特性区图片</label>
-            <div class="img-upload" style="margin-top:8px">
-              <div class="img-preview" onclick="triggerUpload('feat-img-input','f-featImg','feat-img-preview')">
-                <img id="feat-img-preview" src="" alt="" style="display:none"/>
-                <span id="feat-img-icon">📸</span>
-              </div>
-              <div>
-                <div class="img-preview-label" onclick="triggerUpload('feat-img-input','f-featImg','feat-img-preview')">点击上传特性区图片</div>
-                <input id="f-featImg" type="text" style="width:240px;margin-top:8px;" placeholder="或填写图片 URL"/>
-              </div>
-            </div>
-            <input type="file" id="feat-img-input" class="file-input" accept="image/*" onchange="uploadImg(this,'f-featImg','feat-img-preview','feat-img-icon')"/>
-          </div>
-        </div>
-      </div>
-      <div class="panel">
-        <div class="panel-head"><h3>特性条目</h3></div>
-        <div class="panel-body">
-          <div style="display:grid;grid-template-columns:60px 1fr 2fr;gap:10px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border)">
-            <div style="font-size:11px;color:var(--muted);letter-spacing:1px;">图标</div>
-            <div style="font-size:11px;color:var(--muted);letter-spacing:1px;">标题</div>
-            <div style="font-size:11px;color:var(--muted);letter-spacing:1px;">描述</div>
-          </div>
-          <div id="feat-rows"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 页脚页 -->
-    <div class="page" id="page-footer">
-      <div class="panel">
-        <div class="panel-head"><h3>页脚信息</h3></div>
-        <div class="panel-body">
-          <div class="form-row"><label>品牌文字</label><input type="text" id="f-footerBrand"/></div>
-          <div class="form-row"><label>联系信息</label><textarea id="f-footerInfo" style="min-height:60px;"></textarea></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 联系咨询页 -->
-    <div class="page" id="page-contact">
-      <div class="panel">
-        <div class="panel-head"><h3>联系信息</h3></div>
-        <div class="panel-body">
-          <div class="form-row"><label>标题</label><input type="text" id="f-contact-title" placeholder="联系我们"/></div>
-          <div class="form-row"><label>副标题</label><input type="text" id="f-contact-subtitle" placeholder="造悟社 · 专注格斗机器人教育与竞技"/></div>
-          <div class="form-row"><label>咨询热线</label><input type="text" id="f-contact-phone" placeholder="15970070712"/></div>
-          <div class="form-row"><label>电子邮箱</label><input type="text" id="f-contact-email" placeholder="contact@example.com"/></div>
-          <div class="form-row"><label>营业时间</label><input type="text" id="f-contact-hours" placeholder="周一至周五 9:00-18:00"/></div>
-          <div class="form-row"><label>地址</label><input type="text" id="f-contact-address" placeholder="江西省赣州市章贡区..."/></div>
-        </div>
-      </div>
-      <div class="panel">
-        <div class="panel-head"><h3>微信二维码</h3></div>
-        <div class="panel-body">
-          <div class="img-preview" onclick="triggerUpload('qr-img-input','f-contact-wechatQr','qr-img-preview')">
-            <div id="qr-img-preview" class="img-preview-icon">📱</div>
-            <div class="img-preview-label">点击上传微信二维码图片</div>
-          </div>
-          <input type="file" id="qr-img-input" class="file-input" accept="image/*" onchange="uploadImg(this,'f-contact-wechatQr','qr-img-preview','qr-img-icon')"/>
-          <input type="text" id="f-contact-wechatQr" style="width:240px;margin-top:8px;" placeholder="或填写图片 URL"/>
-          <div class="form-row" style="margin-top:12px;"><label>二维码说明文字</label><input type="text" id="f-contact-qrNote" placeholder="扫码咨询 · 添加客服微信"/></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 导航菜单页 -->
-    <div class="page" id="page-nav">
-      <div class="panel">
-        <div class="panel-head"><h3>导航菜单设置</h3></div>
-        <div class="panel-body" id="nav-items-container">
-          <!-- 导航项将通过 JS 动态渲染 -->
-        </div>
-        <div style="padding:16px;margin-top:8px;">
-          <button class="btn btn-secondary" onclick="addNavItem()">+ 添加导航项</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 发布页 -->
-    <div class="page" id="page-publish">
-      <div class="publish-box">
-        <h3>🚀 一键发布到公网</h3>
-        <p>自动保存内容、生成静态页面并发布到 GitHub Pages。<br/><strong>发布后约 1-2 分钟生效，可通过域名 zaowushe.cn 访问。</strong></p>
-        <div class="publish-actions">
-          <button class="btn btn-primary" id="btn-publish" onclick="publishSite()">🚀 发布网站</button>
-        </div>
-        <div id="publish-log" style="margin-top:20px;text-align:left;background:#000;border-radius:8px;padding:16px;font-family:monospace;font-size:13px;max-height:300px;overflow-y:auto;"></div>
-        <div id="publish-result" style="margin-top:20px;display:none;">
-          <div style="font-size:14px;color:#4ade80;margin-bottom:8px;">🎉 发布成功！</div>
-          <a id="publish-url" href="#" target="_blank" style="color:#60a5fa;font-size:16px;font-weight:bold;"></a>
-          <div style="font-size:12px;color:#888;margin-top:8px;">约 1-2 分钟后生效</div>
-        </div>
-      </div>
-
-      <div class="panel" style="margin-top:28px">
-        <div class="panel-head"><h3>访问地址</h3></div>
-        <div class="panel-body">
-          <div style="display:flex;gap:16px;flex-wrap:wrap">
-            <div style="flex:1;background:var(--input-bg);border:1px solid var(--border);border-radius:8px;padding:16px">
-              <div style="font-size:11px;color:var(--muted);letter-spacing:1px;margin-bottom:8px">前台展示页（本地）</div>
-              <a href="http://localhost:7788" target="_blank" style="color:var(--blue);font-size:15px;font-weight:700;">http://localhost:7788</a>
-            </div>
-            <div style="flex:1;background:var(--input-bg);border:1px solid var(--border);border-radius:8px;padding:16px">
-              <div style="font-size:11px;color:var(--muted);letter-spacing:1px;margin-bottom:8px">GitHub Pages</div>
-              <a href="https://97631170-art.github.io/robot-quotation-2026/" target="_blank" style="color:var(--green);font-size:15px;font-weight:700;">点此打开</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 预览页 -->
-    <div class="page" id="page-preview">
-      <div class="preview-wrap">
-        <div class="preview-toolbar">
-          <div class="preview-dots">
-            <span style="background:#ff5f57"></span>
-            <span style="background:#febc2e"></span>
-            <span style="background:#28c840"></span>
-          </div>
-          <span style="font-size:12px;color:var(--muted);margin-left:10px;">http://localhost:7788</span>
-          <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="document.getElementById('preview-frame').src='http://localhost:7788?t='+Date.now()">↺ 刷新</button>
-          <a href="http://localhost:7788" target="_blank"><button class="btn btn-blue btn-sm">↗ 新标签打开</button></a>
-        </div>
-        <iframe id="preview-frame" src="http://localhost:8090"></iframe>
-      </div>
-    </div>
-
-  </div><!-- /main -->
-</div><!-- /layout -->
-
-<!-- Toast -->
-<div class="toast" id="toast"></div>
-
+  </div>
+</div>
 <script>
 const API = 'http://localhost:7788/api';
-const BASE_PATH = '/robot-quotation-2026';
+let siteData = {"brand":"⚡中国格斗机甲联盟-造悟社","navBadge":"2026 新品","heroEyebrow":"格斗机器人 · 2026 竞技系列","heroLine1":"极速突破","heroLine2":"铸造冠军","heroDesc":"专为竞技格斗设计的高性能机器人系列，采用高强度ABS+ 3D 打印结构，搭载精准电控系统。多款型号——推铲型、垂直旋转型、双头型，满足不同战术风格，一键入场，决战巅峰。","heroBtn1":"赛事规则","heroBtn2":"设备器材","kpi":[{"num":"7","label":"产品型号"},{"num":"320g","label":"竞技重量级"},{"num":"8V","label":"额定电压"},{"num":"5ms","label":"控制响应"}],"products":[{"tag":"320克竖转类格斗机器人","series":"SERIES-A","name":"竖转格斗机器人","desc":"低重心楔形推铲设计，正面强攻利器。红蓝双色高辨识配色，前置坡面铲头可轻松翻转对手，攻防兼备，适合初入竞技场的选手。","specs":["重量: 320g","材质: ABS+","驱动: 四轮","武器: 推铲"],"price":"","priceNote":"整机含遥控器","hot":false,"img":"/images/43c4a798-c5a8-4cbc-9a11-cc09e243f9af.jpg"},{"tag":"320克横转类格斗机器人","series":"SERIES-D","name":"横传格斗机器人","desc":"水平高速转鼓武器，侧面攻击角度独特，可从侧翼击穿对手装甲。深灰色战斗涂装，低重心宽体设计，稳定性极佳，适合技巧型选手。","specs":["重量: 320g","武器: 水平横转","材质: ABS+","高速电机","新规格"],"price":"0","priceNote":"整机含遥控器","hot":false,"img":"/images/1775790736879.png"},{"tag":"抓举","series":"SERIES-F","name":"风暴 GX-06","desc":"液压模拟抓举臂，可将对手提起并推入场地陷阱。前置钳爪开合速度快，支持连续夹持，是控制型选手的最爱。","specs":["重量: 320g","武器: 抓举臂","材质: ABS+","高速舵机"],"price":"¥1,380","priceNote":"整机含遥控器","hot":false,"img":"/images/1775790699904.jpg"},{"tag":"320克弹射类格斗机器人","series":"SERIES-G","name":"弹射格斗机器人","desc":"高速舵机","specs":["重量: 320g","武器: 高速锤","材质: ABS+","强力舵机"],"price":"¥1,520","priceNote":"整机含遥控器","hot":false,"img":"/images/aabb4b3a-9dd0-472d-9976-f3f546b2224d.jpg"},{"tag":"新品","series":"SERIES-X","name":"新机器人","desc":"请编辑产品描述...","specs":["重量: 320g","材质: ABS+"],"price":"¥1,000","priceNote":"整机含遥控器","hot":false,"img":"/images/微信图片_20260116120809_11_81.jpg"}],"featTitle":"为竞技而生","features":[{"icon":"🏗️","title":"高强度 3D 打印结构","desc":"全机身ABS+ 材料，层厚 0.2mm 精细打印，强度媲美注塑件，抗冲击性卓越，损坏后可快速补件更换。"},{"icon":"⚡","title":"精准电控系统","desc":"竞技级电调，响应延迟低至 5ms，支持 2.4GHz 抗干扰遥控，在高密度干扰环境中稳定运行。"},{"icon":"🔧","title":"模块化快拆设计","desc":"武器模块、驱动模块可 10 分钟内完成更换，赛间快速维修不误场，零部件独立出售方便备件储备。"},{"icon":"🏆","title":"符合主流赛事规格","desc":"满足 500g 量级主流竞技规则，适配国内外各大机器人格斗联赛标准场地与评分体系。"}],"heroImg":"/images/5f2929ee-5969-4077-b525-68ce90ff207e.JPG","featImg":"/images/01ed2520-0525-4a8e-b578-fadb72265cb2.JPG","competition":{"show":true,"title":"BoxBot 格斗机器人大赛","subtitle":"2026 全国青少年格斗机器人联赛","desc":"BoxBot 是国内最具影响力的青少年格斗机器人竞技赛事，涵盖小学、初中、高中三个组别，旨在培养青少年的工程思维、动手能力与竞技精神。","classes":[{"name":"迷你级","weight":"150g","group":"小学组","desc":"入门级赛事，使用小型格斗机器人，适合初次接触竞技机器人领域的学生。","icon":"🎯"},{"name":"轻量级","weight":"320g","group":"中小学组","desc":"主流竞技级别，考验选手的操控技巧与战术策略，竞争最为激烈。","icon":"⚔️"},{"name":"重量级","weight":"1.5kg","group":"初高中组","desc":"高端竞技赛事，装备更强武器系统，观赏性与技术含量最高。","icon":"💥"}],"timeline":[{"month":"3月","event":"报名开启"},{"month":"5月","event":"城市海选赛"},{"month":"7月","event":"区域晋级赛"},{"month":"8月","event":"全国总决赛"}],"contact":"15970070712","registerUrl":"#contact"},"accessories":{"show":true,"title":"配件器材","subtitle":"模块化设计 · 快速更换 · 赛场无忧","items":[{"icon":"⚙️","name":"武器模块","desc":"推铲/转鼓/弹射等多种武器模块，支持10分钟快拆更换","price":"¥280起"},{"icon":"🚗","name":"驱动底盘","desc":"四轮独立悬挂底盘，高强度ABS材质，损坏可单独更换","price":"¥380"},{"icon":"📡","name":"遥控器","desc":"2.4GHz抗干扰遥控，响应延迟<5ms，支持多机同场竞技","price":"¥220"},{"icon":"🔋","name":"锂电池组","desc":"7.4V 1000mAh 动力锂电池，高倍率放电，支持快速充电","price":"¥120"},{"icon":"🔩","name":"易损配件包","desc":"轮毂/轴承/螺丝等常用易损件套餐，赛场必备备件","price":"¥68"},{"icon":"🛡️","name":"装甲护板","desc":"高强度尼龙护板，有效抵御旋转武器冲击，可重复安装","price":"¥88"}]},"contact":{"show":true,"title":"联系我们","subtitle":"造悟社 · 专注格斗机器人教育与竞技","phone":"15970070712","email":"97631170@qq.com","hours":"周一至周六 9:00 - 18:00","address":"中国 · 造悟社机器人工作室","qrNote":"扫码咨询 · 添加客服微信","formTitle":"在线询价","formFields":[{"label":"您的姓名","placeholder":"请输入姓名"},{"label":"联系电话","placeholder":"请输入手机号"},{"label":"咨询内容","placeholder":"我想咨询产品报价 / 赛事报名 / 器材采购..."}]},"footerBrand":"造悟社 · 格斗机器人","footerInfo":"咨询热线：15970070712 · 邮箱：97631170@qq.com · © 2026 造悟社 版权所有","published":true,"publishUrl":"","nav":[{"text":"产品系列","href":"#products"},{"text":"赛事规则","href":"#competition"},{"text":"设备器材","href":"#accessories"},{"text":"技术规格","href":"#features"},{"text":"联系采购","href":"#contact","cta":true}]};
 
-
-
-
-
-
-// ===== Tab 切换 =====
-function showTab(idx, el) {
-  document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  if (el) el.classList.add('active');
-  document.querySelectorAll('.tab-panel')[idx]?.classList.add('active');
-}
-
-// ===== 产品标签渲染 =====
-function renderProductTabs() {
-  const tabs = document.getElementById('prod-tabs');
-  const prods = siteData.products || [];
-  const labels = ['A','B','C','D','E','F','G','H','I','J'];
-  
-  tabs.innerHTML = prods.map((p, i) => `
-    <div class="tab ${i===0?'active':''}" onclick="showTab(${i},this)" style="display:flex;align-items:center;gap:4px;">
-      <span>${labels[i]||(i+1)}</span>
-      ${prods.length > 1 ? `<button onclick="event.stopPropagation();delProduct(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0;line-height:1;" title="删除">×</button>` : ''}
-    </div>
-  `).join('') + `
-    <button class="tab" onclick="addProduct()" style="opacity:0.7;font-size:16px;" title="添加产品">+</button>
-  `;
-  
-  document.getElementById('prod-count-label').textContent = `共 ${prods.length} 款`;
+function renderProducts(prods) {
+  const container = document.getElementById('prod-list');
+  container.innerHTML = prods.map((p, i) => '<div class="prod-card">' +
+    '<input class="prod-name" value="' + p.name + '" placeholder="产品名称">' +
+    '<input class="prod-tag" value="' + p.tag + '" placeholder="标签">' +
+    '<textarea class="prod-desc" placeholder="描述">' + p.desc + '</textarea>' +
+    '<input class="prod-price" value="' + p.price + '" placeholder="价格">' +
+    '<input class="prod-img" value="' + p.img + '" placeholder="图片路径">' +
+    '<button class="btn" onclick="delProduct(' + i + ')">🗑️ 删除</button>' +
+    '</div>').join('');
 }
 
 function addProduct() {
-  const newProduct = {
+  siteData.products.push({
+    name: '新机器人',
     tag: '新品',
     series: 'SERIES-X',
-    name: '新机器人',
     desc: '请编辑产品描述...',
-    specs: ['重量: 320g', '材质: ABS+'],
+    specs: ['重量: 320g'],
     price: '¥1,000',
     priceNote: '整机含遥控器',
     hot: false,
-    img: ''
-  };
-  siteData.products.push(newProduct);
-  renderProductTabs();
+    img: '/images/placeholder.jpg'
+  });
   renderProducts(siteData.products);
-  // 切换到新产品
-  const tabs = document.querySelectorAll('#prod-tabs .tab');
-  if (tabs.length > 0) {
-    showTab(siteData.products.length - 1, tabs[siteData.products.length - 1]);
+}
+
+function delProduct(i) {
+  if (confirm('确定删除这个产品？')) {
+    siteData.products.splice(i, 1);
+    renderProducts(siteData.products);
   }
 }
 
-function delProduct(idx) {
-  if (siteData.products.length <= 1) {
-    toast('至少保留一款产品', 'error');
-    return;
-  }
-  if (!confirm(`确定删除第 ${idx + 1} 款产品？`)) return;
-  siteData.products.splice(idx, 1);
-  renderProductTabs();
-  renderProducts(siteData.products);
-  showTab(Math.max(0, idx - 1), document.querySelectorAll('#prod-tabs .tab')[Math.max(0, idx - 1)]);
-}
-
-// ===== Toast =====
-function toast(msg, type='success') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast toast-' + type;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
-}
-
-// ===== 加载数据 =====
-let siteData = {};
-const DEFAULT_DATA = {"brand":"⚡中国格斗机甲联盟-造悟社","navBadge":"2026 新品","heroEyebrow":"格斗机器人 · 2026 竞技系列","heroLine1":"极速突破","heroLine2":"铸造冠军","heroDesc":"专为竞技格斗设计的高性能机器人系列，采用高强度ABS+ 3D 打印结构，搭载精准电控系统。多款型号——推铲型、垂直旋转型、双头型，满足不同战术风格，一键入场，决战巅峰。","heroBtn1":"赛事规则","heroBtn2":"设备器材","kpi":[{"num":"7","label":"产品型号"},{"num":"320g","label":"竞技重量级"},{"num":"8V","label":"额定电压"},{"num":"5ms","label":"控制响应"}],"products":[{"tag":"320克竖转类格斗机器人","series":"SERIES-A","name":"竖转格斗机器人","desc":"低重心楔形推铲设计，正面强攻利器。红蓝双色高辨识配色，前置坡面铲头可轻松翻转对手，攻防兼备，适合初入竞技场的选手。","specs":["重量: 320g","材质: ABS+","驱动: 四轮","武器: 推铲"],"price":"","priceNote":"整机含遥控器","hot":false,"img":"/images/43c4a798-c5a8-4cbc-9a11-cc09e243f9af.jpg"},{"tag":"320克横转类格斗机器人","series":"SERIES-D","name":"横传格斗机器人","desc":"水平高速转鼓武器，侧面攻击角度独特，可从侧翼击穿对手装甲。深灰色战斗涂装，低重心宽体设计，稳定性极佳，适合技巧型选手。","specs":["重量: 320g","武器: 水平横转","材质: ABS+","高速电机","新规格"],"price":"0","priceNote":"整机含遥控器","hot":false,"img":"/images/1775790736879.png"},{"tag":"抓举","series":"SERIES-F","name":"风暴 GX-06","desc":"液压模拟抓举臂，可将对手提起并推入场地陷阱。前置钳爪开合速度快，支持连续夹持，是控制型选手的最爱。","specs":["重量: 320g","武器: 抓举臂","材质: ABS+","高速舵机"],"price":"¥1,380","priceNote":"整机含遥控器","hot":false,"img":"/images/1775790699904.jpg"},{"tag":"320克弹射类格斗机器人","series":"SERIES-G","name":"弹射格斗机器人","desc":"高速舵机","specs":["重量: 320g","武器: 高速锤","材质: ABS+","强力舵机"],"price":"¥1,520","priceNote":"整机含遥控器","hot":false,"img":"/images/aabb4b3a-9dd0-472d-9976-f3f546b2224d.jpg"},{"tag":"新品","series":"SERIES-X","name":"新机器人","desc":"请编辑产品描述...","specs":["重量: 320g","材质: ABS+"],"price":"¥1,000","priceNote":"整机含遥控器","hot":false,"img":"/images/微信图片_20260116120809_11_81.jpg"}],"featTitle":"为竞技而生","features":[{"icon":"🏗️","title":"高强度 3D 打印结构","desc":"全机身ABS+ 材料，层厚 0.2mm 精细打印，强度媲美注塑件，抗冲击性卓越，损坏后可快速补件更换。"},{"icon":"⚡","title":"精准电控系统","desc":"竞技级电调，响应延迟低至 5ms，支持 2.4GHz 抗干扰遥控，在高密度干扰环境中稳定运行。"},{"icon":"🔧","title":"模块化快拆设计","desc":"武器模块、驱动模块可 10 分钟内完成更换，赛间快速维修不误场，零部件独立出售方便备件储备。"},{"icon":"🏆","title":"符合主流赛事规格","desc":"满足 500g 量级主流竞技规则，适配国内外各大机器人格斗联赛标准场地与评分体系。"}],"heroImg":"/images/5f2929ee-5969-4077-b525-68ce90ff207e.JPG","featImg":"/images/01ed2520-0525-4a8e-b578-fadb72265cb2.JPG","competition":{"show":true,"title":"BoxBot 格斗机器人大赛","subtitle":"2026 全国青少年格斗机器人联赛","desc":"BoxBot 是国内最具影响力的青少年格斗机器人竞技赛事，涵盖小学、初中、高中三个组别，旨在培养青少年的工程思维、动手能力与竞技精神。","classes":[{"name":"迷你级","weight":"150g","group":"小学组","desc":"入门级赛事，使用小型格斗机器人，适合初次接触竞技机器人领域的学生。","icon":"🎯"},{"name":"轻量级","weight":"320g","group":"中小学组","desc":"主流竞技级别，考验选手的操控技巧与战术策略，竞争最为激烈。","icon":"⚔️"},{"name":"重量级","weight":"1.5kg","group":"初高中组","desc":"高端竞技赛事，装备更强武器系统，观赏性与技术含量最高。","icon":"💥"}],"timeline":[{"month":"3月","event":"报名开启"},{"month":"5月","event":"城市海选赛"},{"month":"7月","event":"区域晋级赛"},{"month":"8月","event":"全国总决赛"}],"contact":"15970070712","registerUrl":"#contact"},"accessories":{"show":true,"title":"配件器材","subtitle":"模块化设计 · 快速更换 · 赛场无忧","items":[{"icon":"⚙️","name":"武器模块","desc":"推铲/转鼓/弹射等多种武器模块，支持10分钟快拆更换","price":"¥280起"},{"icon":"🚗","name":"驱动底盘","desc":"四轮独立悬挂底盘，高强度ABS材质，损坏可单独更换","price":"¥380"},{"icon":"📡","name":"遥控器","desc":"2.4GHz抗干扰遥控，响应延迟<5ms，支持多机同场竞技","price":"¥220"},{"icon":"🔋","name":"锂电池组","desc":"7.4V 1000mAh 动力锂电池，高倍率放电，支持快速充电","price":"¥120"},{"icon":"🔩","name":"易损配件包","desc":"轮毂/轴承/螺丝等常用易损件套餐，赛场必备备件","price":"¥68"},{"icon":"🛡️","name":"装甲护板","desc":"高强度尼龙护板，有效抵御旋转武器冲击，可重复安装","price":"¥88"}]},"contact":{"show":true,"title":"联系我们","subtitle":"造悟社 · 专注格斗机器人教育与竞技","phone":"15970070712","email":"97631170@qq.com","hours":"周一至周六 9:00 - 18:00","address":"中国 · 造悟社机器人工作室","qrNote":"扫码咨询 · 添加客服微信","formTitle":"在线询价","formFields":[{"label":"您的姓名","placeholder":"请输入姓名"},{"label":"联系电话","placeholder":"请输入手机号"},{"label":"咨询内容","placeholder":"我想咨询产品报价 / 赛事报名 / 器材采购..."}]},"footerBrand":"造悟社 · 格斗机器人","footerInfo":"咨询热线：15970070712 · 邮箱：97631170@qq.com · © 2026 造悟社 版权所有","published":true,"publishUrl":"","nav":[{"text":"产品系列","href":"#products"},{"text":"赛事规则","href":"#competition"},{"text":"设备器材","href":"#accessories"},{"text":"技术规格","href":"#features"},{"text":"联系采购","href":"#contact","cta":true}]};
-
-// 立即执行数据加载（放在模板字符串之前）
-loadData();
-
-// ===== 静态页面 CSS（用于发布时内嵌，转义 </style> 防止提前关闭标签）=====
-const PAGE_CSS = \`*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}:root{--red:#e8242a;--red-dark:#b01a1f;--red-glow:rgba(232,36,42,.35);--bg:#080810;--bg2:#0d0d1a;--surface:rgba(255,255,255,.04);--border:rgba(255,255,255,.08);--muted:rgba(255,255,255,.5);--gold:#f5a623;--green:#22c55e;--blue:#3b82f6}html{scroll-behavior:smooth}body{font-family:'PingFang SC','Microsoft YaHei','Helvetica Neue',sans-serif;background:var(--bg);color:#fff;overflow-x:hidden}.reveal{opacity:0;transform:translateY(40px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}.reveal.visible{opacity:1;transform:translateY(0)}.reveal-delay-1{transition-delay:.1s}.reveal-delay-2{transition-delay:.2s}.reveal-delay-3{transition-delay:.3s}.reveal-delay-4{transition-delay:.4s}.reveal-delay-5{transition-delay:.5s}nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 60px;height:64px;background:rgba(8,8,16,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:background .3s}nav.scrolled{background:rgba(8,8,16,.98);box-shadow:0 4px 30px rgba(0,0,0,.4)}.nav-logo{font-size:17px;font-weight:900;letter-spacing:3px;cursor:pointer}.nav-logo em{color:var(--red);font-style:normal}.nav-badge{display:inline-block;background:rgba(232,36,42,.15);border:1px solid rgba(232,36,42,.3);color:var(--red);font-size:9px;font-weight:700;letter-spacing:2px;padding:2px 8px;border-radius:10px;margin-left:10px;text-transform:uppercase;vertical-align:middle}.nav-menu{display:flex;gap:28px;list-style:none;align-items:center}.nav-menu a{color:var(--muted);text-decoration:none;font-size:13px;letter-spacing:1px;transition:color .2s;position:relative}.nav-menu a:hover{color:#fff}.nav-menu a.active{color:#fff}.nav-menu a::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:var(--red);transform:scaleX(0);transition:transform .25s cubic-bezier(.16,1,.3,1)}.nav-menu a:hover::after,.nav-menu a.active::after{transform:scaleX(1)}.nav-cta{background:linear-gradient(135deg,var(--red),var(--red-dark))!important;color:#fff!important;padding:8px 22px!important;border-radius:5px!important;font-weight:700!important;box-shadow:0 4px 16px rgba(232,36,42,.3);transition:all .2s!important}.nav-cta:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(232,36,42,.45)!important}.nav-cta::after{display:none!important}.nav-mobile{display:none}@media(max-width:768px){nav{padding:0 20px}.nav-menu{display:none}.nav-mobile{display:flex;gap:8px;align-items:center}.mobile-menu-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#fff;padding:8px 14px;border-radius:5px;font-size:12px;cursor:pointer}}.hero{position:relative;min-height:100vh;display:flex;align-items:center;padding:100px 60px 60px;overflow:hidden}.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 70% 60%,rgba(232,36,42,.1) 0%,transparent 70%),radial-gradient(ellipse 40% 40% at 20% 80%,rgba(59,130,246,.05) 0%,transparent 60%),linear-gradient(135deg,#0d0d1a 0%,#080810 100%)}.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%)}.hero-vline{position:absolute;left:56px;top:20%;bottom:20%;width:2px;background:linear-gradient(180deg,transparent,var(--red) 40%,var(--red) 60%,transparent)}.hero-content{position:relative;z-index:2;max-width:640px}.hero-eyebrow{display:inline-flex;align-items:center;gap:10px;margin-bottom:28px}.eyebrow-dot{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 12px var(--red);animation:pulse 2s ease-in-out infinite}@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.8)}}.eyebrow-text{font-size:11px;letter-spacing:4px;color:var(--red);text-transform:uppercase;font-weight:600}.hero-h1{font-size:clamp(44px,6vw,82px);font-weight:900;line-height:1.05;letter-spacing:-1px;margin-bottom:24px}.hero-h1 .line2{color:var(--red);display:block;text-shadow:0 0 60px rgba(232,36,42,.4)}.hero-desc{font-size:15px;color:var(--muted);line-height:1.9;margin-bottom:44px;max-width:500px}.hero-actions{display:flex;gap:14px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 32px;border-radius:5px;font-size:14px;font-weight:700;letter-spacing:2px;cursor:pointer;border:none;transition:all .22s;text-decoration:none}.btn-red{background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff;box-shadow:0 6px 28px var(--red-glow)}.btn-red:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(232,36,42,.5)}.btn-outline{background:transparent;color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.2)}.btn-outline:hover{border-color:rgba(255,255,255,.5);color:#fff;transform:translateY(-2px)}.hero-visual{position:absolute;right:0;top:64px;bottom:0;width:52%;overflow:hidden;border-radius:0 0 0 24px}.hero-visual::before{content:'';position:absolute;left:0;top:0;bottom:0;width:50%;background:linear-gradient(90deg,var(--bg),transparent);z-index:1;pointer-events:none}.hero-visual::after{content:'';position:absolute;left:0;right:0;bottom:0;height:40%;background:linear-gradient(0deg,var(--bg),transparent);z-index:1;pointer-events:none}.hero-visual-inner{width:100%;height:100%}.hero-kpis{position:absolute;bottom:60px;left:60px;z-index:3;display:flex;gap:0}.kpi{padding:0 36px 0 0;margin-right:36px;border-right:1px solid rgba(255,255,255,.1)}.kpi:last-child{border-right:none;margin-right:0}.kpi-num{font-size:36px;font-weight:900;color:var(--red);line-height:1}.kpi-label{font-size:11px;color:var(--muted);letter-spacing:2px;margin-top:4px}.section{padding:100px 60px}.section-dark{background:rgba(255,255,255,.015);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}.section-red{background:linear-gradient(135deg,rgba(232,36,42,.08),rgba(8,8,16,1))}.section-head{text-align:center;margin-bottom:64px}.section-kicker{display:inline-flex;align-items:center;gap:12px;margin-bottom:16px}.kicker-line{width:32px;height:2px;background:var(--red)}.kicker-text{font-size:11px;letter-spacing:4px;color:var(--red);text-transform:uppercase;font-weight:600}.section-h2{font-size:clamp(26px,3vw,42px);font-weight:800;letter-spacing:1px;margin-bottom:14px}.section-sub{margin-top:0;color:var(--muted);font-size:14px;line-height:1.8}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}@media(max-width:1000px){.cards{grid-template-columns:1fr;max-width:500px;margin:0 auto}}.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s,border-color .35s}.card:hover{transform:translateY(-10px);box-shadow:0 32px 72px rgba(0,0,0,.5),0 0 0 1px rgba(232,36,42,.25);border-color:rgba(232,36,42,.35)}.card.hot{border-color:rgba(232,36,42,.3);background:linear-gradient(160deg,rgba(232,36,42,.07) 0%,rgba(232,36,42,.02) 100%)}.card-ribbon{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;min-height:40px}.ribbon-tag{background:rgba(232,36,42,.18);border:1px solid rgba(232,36,42,.35);color:#ff6b6b;font-size:10px;font-weight:700;letter-spacing:2.5px;padding:4px 12px;border-radius:20px;text-transform:uppercase}.ribbon-tag.hot-tag{background:linear-gradient(90deg,rgba(232,36,42,.3),rgba(232,36,42,.15));border-color:var(--red);color:#fff}.card-img-wrap{width:100%;height:240px;background:#0a0a14;overflow:hidden;display:flex;align-items:center;justify-content:center}.card-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.16,1,.3,1)}.card:hover .card-img-wrap img{transform:scale(1.08)}.card-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;font-size:64px}.p1{background:linear-gradient(135deg,#0e1525,#1a243a)}.p2{background:linear-gradient(135deg,#100a0a,#1e1010)}.p3{background:linear-gradient(135deg,#0a0e0a,#0e1a0e)}.card-body{padding:22px 22px 26px}.card-series{font-size:10px;letter-spacing:3.5px;color:var(--red);text-transform:uppercase;margin-bottom:6px}.card-title{font-size:22px;font-weight:800;letter-spacing:1px;margin-bottom:12px}.card-desc{font-size:13px;color:var(--muted);line-height:1.85;margin-bottom:18px}.card-tags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:22px}.tag{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);font-size:11px;padding:4px 11px;border-radius:3px}.card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:18px;border-top:1px solid rgba(255,255,255,.06)}.price-val{font-size:28px;font-weight:900;color:var(--red)}.price-note{font-size:12px;color:var(--muted);margin-top:2px}.card-btn{background:var(--surface);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);padding:9px 20px;border-radius:5px;font-size:12px;font-weight:600;letter-spacing:1.5px;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block}.card-btn:hover{border-color:var(--red);color:var(--red);background:rgba(232,36,42,.06)}.comp-header{text-align:center;margin-bottom:60px}.comp-classes{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:60px}@media(max-width:900px){.comp-classes{grid-template-columns:1fr;max-width:400px;margin:0 auto}}.comp-class-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px 28px;text-align:center;transition:transform .3s,border-color .3s,box-shadow .3s}.comp-class-card:hover{transform:translateY(-6px);border-color:rgba(232,36,42,.3);box-shadow:0 20px 50px rgba(0,0,0,.4)}.comp-icon{font-size:48px;margin-bottom:16px}.comp-weight{font-size:40px;font-weight:900;color:var(--red);line-height:1;margin-bottom:6px}.comp-name{font-size:18px;font-weight:700;letter-spacing:1px;margin-bottom:4px}.comp-group{font-size:12px;color:var(--gold);letter-spacing:2px;margin-bottom:14px;text-transform:uppercase}.comp-desc{font-size:13px;color:var(--muted);line-height:1.75}.comp-cta{display:flex;align-items:center;justify-content:center;gap:40px;padding:36px;background:linear-gradient(135deg,rgba(232,36,42,.06),rgba(232,36,42,.02));border:1px solid rgba(232,36,42,.2);border-radius:16px;text-align:center;flex-wrap:wrap}.comp-cta-text{font-size:18px;font-weight:700;letter-spacing:1px}.comp-cta-text em{color:var(--red);font-style:normal}.comp-cta-phone{font-size:24px;font-weight:900;color:var(--red);letter-spacing:2px}.timeline{display:flex;align-items:center;justify-content:center;gap:0;margin-top:60px;position:relative;flex-wrap:wrap}.timeline::before{content:'';position:absolute;top:16px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,rgba(232,36,42,.4),rgba(232,36,42,.4),transparent)}.timeline-item{text-align:center;position:relative;z-index:1;flex:1;min-width:120px}.timeline-dot{width:12px;height:12px;border-radius:50%;background:var(--red);margin:10px auto 16px;box-shadow:0 0 12px var(--red)}.timeline-month{font-size:14px;font-weight:700;color:var(--red);margin-bottom:4px}.timeline-event{font-size:12px;color:var(--muted);letter-spacing:1px}.acc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}@media(max-width:900px){.acc-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.acc-grid{grid-template-columns:1fr}}.acc-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px 24px;transition:transform .3s,border-color .3s,box-shadow .3s;cursor:default}.acc-card:hover{transform:translateY(-6px);border-color:rgba(232,36,42,.25);box-shadow:0 16px 40px rgba(0,0,0,.35)}.acc-icon{font-size:36px;margin-bottom:16px}.acc-name{font-size:16px;font-weight:700;letter-spacing:.5px;margin-bottom:8px}.acc-desc{font-size:12px;color:var(--muted);line-height:1.75;margin-bottom:16px}.acc-price{font-size:20px;font-weight:900;color:var(--red)}.features-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}@media(max-width:900px){.features-inner{grid-template-columns:1fr;gap:40px}}.features-visual{position:relative;border-radius:18px;overflow:hidden}.features-visual img{width:100%;display:block;border-radius:18px}.features-visual::after{content:'';position:absolute;inset:0;border-radius:18px;border:1px solid rgba(232,36,42,.2);pointer-events:none}.features-visual::before{content:'';position:absolute;top:-1px;left:-1px;width:50px;height:50px;border-top:2px solid var(--red);border-left:2px solid var(--red);pointer-events:none;z-index:2}.feat-ph{width:100%;height:360px;background:linear-gradient(135deg,#0d0d1a,#1a0808);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;border-radius:18px;font-size:60px}.feat-list{list-style:none}.feat-item{display:flex;gap:18px;align-items:flex-start;padding:22px 0;border-bottom:1px solid rgba(255,255,255,.05);transition:padding-left .3s}.feat-item:first-child{padding-top:0}.feat-item:last-child{border-bottom:none;padding-bottom:0}.feat-item:hover{padding-left:8px}.feat-icon{flex-shrink:0;width:44px;height:44px;border-radius:10px;background:rgba(232,36,42,.1);border:1px solid rgba(232,36,42,.2);display:flex;align-items:center;justify-content:center;font-size:20px}.feat-info h4{font-size:15px;font-weight:700;margin-bottom:6px}.feat-info p{font-size:13px;color:var(--muted);line-height:1.75}.contact-inner{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}@media(max-width:900px){.contact-inner{grid-template-columns:1fr;gap:40px}}.contact-info-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:40px}.contact-item{display:flex;gap:16px;align-items:flex-start;padding:20px 0;border-bottom:1px solid rgba(255,255,255,.05)}.contact-item:first-child{padding-top:0}.contact-item:last-child{border-bottom:none}.contact-icon{font-size:24px;flex-shrink:0;width:48px;height:48px;border-radius:12px;background:rgba(232,36,42,.1);border:1px solid rgba(232,36,42,.2);display:flex;align-items:center;justify-content:center}.contact-label{font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}.contact-value{font-size:16px;font-weight:700}.contact-value a{color:#fff;text-decoration:none;transition:color .2s}.contact-value a:hover{color:var(--red)}.qr-area{text-align:center;margin-top:28px;padding:24px;background:rgba(255,255,255,.03);border-radius:12px;border:1px solid rgba(255,255,255,.06)}.qr-placeholder{width:120px;height:120px;background:linear-gradient(135deg,#1a1a2e,#1e1e3a);border-radius:12px;margin:0 auto 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:40px;gap:6px}.qr-hint{font-size:12px;color:var(--muted);letter-spacing:1px}.form-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:40px}.form-title{font-size:18px;font-weight:800;letter-spacing:1px;margin-bottom:24px}.form-group{margin-bottom:18px}.form-group label{display:block;font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}.form-group input,.form-group textarea{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#fff;padding:12px 16px;border-radius:8px;font-size:14px;font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s}.form-group input::placeholder,.form-group textarea::placeholder{color:rgba(255,255,255,.25)}.form-group input:focus,.form-group textarea:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(232,36,42,.1)}.form-group textarea{resize:vertical;min-height:80px}.form-submit{width:100%;padding:14px;background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(232,36,42,.3)}.form-submit:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(232,36,42,.45)}footer{padding:48px 60px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}.footer-brand{font-size:14px;font-weight:700;letter-spacing:2px}.footer-brand em{color:var(--red);font-style:normal}.footer-info{font-size:12px;color:var(--muted)}.footer-links{display:flex;gap:24px}.footer-links a{color:var(--muted);text-decoration:none;font-size:12px;letter-spacing:1px;transition:color .2s}.footer-links a:hover{color:#fff}@media(max-width:768px){.hero{padding:80px 20px 40px;min-height:auto}.hero-visual{display:none}.hero-kpis{left:20px;bottom:30px;gap:0;flex-wrap:wrap}.kpi{padding:0 20px 0 0;margin-right:20px}.section{padding:60px 20px}nav{padding:0 20px}.hero-actions{flex-direction:column;align-items:flex-start}footer{padding:30px 20px;flex-direction:column;text-align:center}.footer-links{justify-content:center}.contact-inner{grid-template-columns:1fr}.contact-info-card,.form-card{padding:24px}.timeline{flex-direction:column;gap:24px}.timeline::before{display:none}}.nav-progress{position:fixed;top:64px;left:0;height:2px;background:linear-gradient(90deg,var(--red),var(--gold));z-index:199;transition:width .1s}.float-cta{position:fixed;bottom:32px;right:32px;z-index:180;display:flex;flex-direction:column;gap:10px;align-items:flex-end}.float-cta a{background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff;padding:12px 20px;border-radius:50px;font-size:13px;font-weight:700;letter-spacing:1px;text-decoration:none;box-shadow:0 6px 24px rgba(232,36,42,.4);transition:all .25s;display:flex;align-items:center;gap:8px}.float-cta a:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(232,36,42,.55)}\`;
-
-function loadData() {
-  console.log('loadData called');
-  // 强制使用默认数据（绕过 localStorage）
-  siteData = JSON.parse(JSON.stringify(DEFAULT_DATA));
-  console.log('使用默认数据, products:', siteData.products ? siteData.products.length : 0);
-  renderAll();
-  toast('数据加载成功', 'success');
-}
-
-function renderAll() {
-  const d = siteData;
-  // 基础字段
-  ['brand','navBadge','heroEyebrow','heroLine1','heroLine2','heroDesc','heroBtn1','heroBtn2',
-   'featTitle','footerBrand','footerInfo','heroImg','featImg'].forEach(k => {
-    const el = document.getElementById('f-' + k);
-    if (el) el.value = d[k] || '';
+function saveProducts() {
+  const cards = document.querySelectorAll('.prod-card');
+  cards.forEach((card, i) => {
+    siteData.products[i].name = card.querySelector('.prod-name').value;
+    siteData.products[i].tag = card.querySelector('.prod-tag').value;
+    siteData.products[i].desc = card.querySelector('.prod-desc').value;
+    siteData.products[i].price = card.querySelector('.prod-price').value;
+    siteData.products[i].img = card.querySelector('.prod-img').value;
   });
-  // 联系信息
-  const ct = d.contact || {};
-  ['title','subtitle','phone','email','hours','address','qrNote'].forEach(k => {
-    const el = document.getElementById('f-contact-' + k);
-    if (el) el.value = ct[k] || '';
-  });
-  // 图片预览
-  setImgPreview('f-heroImg', 'hero-img-preview', 'hero-img-icon');
-  setImgPreview('f-featImg', 'feat-img-preview', 'feat-img-icon');
-
-  // KPI
-  renderKpi(d.kpi || []);
-  // 产品
-  renderProductTabs();
-  renderProducts(d.products || []);
-  // 特性
-  renderFeatures(d.features || []);
-  // 导航
-  renderNavItems();
-  // 微信二维码预览
-  setImgPreview('f-contact-wechatQr', 'qr-img-preview', 'qr-img-icon');
+  localStorage.setItem('siteData', JSON.stringify(siteData));
+  alert('产品已保存到 localStorage！');
 }
 
-// ===== 导航菜单管理 =====
-function renderNavItems() {
-  const container = document.getElementById('nav-items-container');
-  const nav = siteData.nav || [];
-  container.innerHTML = nav.map((n, i) => `
-    <div style="background:var(--input-bg);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:12px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <span style="font-weight:700;color:var(--primary)">导航项 ${i+1}</span>
-        <button class="btn btn-danger btn-sm" onclick="removeNavItem(${i})">删除</button>
-      </div>
-      <div class="form-row">
-        <label>链接文本</label>
-        <input type="text" value="${esc(n.text)}" oninput="siteData.nav[${i}].text=this.value" placeholder="产品系列"/>
-      </div>
-      <div class="form-row">
-        <label>跳转链接（#开头）</label>
-        <input type="text" value="${esc(n.href)}" oninput="siteData.nav[${i}].href=this.value" placeholder="#products"/>
-      </div>
-      <div class="form-row">
-        <label><input type="checkbox" ${n.cta ? 'checked' : ''} onchange="siteData.nav[${i}].cta=this.checked"/> 高亮按钮（CTA）</label>
-      </div>
-    </div>`).join('');
-  if (nav.length === 0) {
-    container.innerHTML = '<p style="color:var(--muted);text-align:center;padding:20px;">暂无导航项，点击下方按钮添加</p>';
-  }
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (el) el.classList.add('active');
 }
 
-function addNavItem() {
-  if (!siteData.nav) siteData.nav = [];
-  siteData.nav.push({ text: '新导航', href: '#products', cta: false });
-  renderNavItems();
+function saveContact() {
+  siteData.contact.phone = document.getElementById('contact-phone').value;
+  siteData.contact.email = document.getElementById('contact-email').value;
+  localStorage.setItem('siteData', JSON.stringify(siteData));
+  alert('联系信息已保存！');
 }
 
-function removeNavItem(index) {
-  siteData.nav.splice(index, 1);
-  renderNavItems();
+function publishSite() {
+  alert('请运行 node upload_github.js 发布网站');
 }
 
-function setImgPreview(inputId, previewId, iconId) {
-  const url = document.getElementById(inputId)?.value;
-  const img = document.getElementById(previewId);
-  const icon = document.getElementById(iconId);
-  if (url && img) {
-    img.src = url.startsWith('/') ? (BASE_PATH + url.slice(1)) : url;
-    img.style.display = 'block';
-    if (icon) icon.style.display = 'none';
-  }
-}
-
-function renderKpi(kpis) {
-  const grid = document.getElementById('kpi-grid');
-  grid.innerHTML = kpis.map((k, i) => `
-    <div class="kpi-card">
-      <label>KPI ${i+1} - 数值</label>
-      <input value="${esc(k.num)}" oninput="siteData.kpi[${i}].num=this.value" style="font-size:24px;font-weight:900;"/>
-      <label style="margin-top:8px;">说明文字</label>
-      <input value="${esc(k.label)}" oninput="siteData.kpi[${i}].label=this.value" style="font-size:13px;"/>
-    </div>`).join('');
-}
-
-function renderProducts(prods) {
-  console.log('renderProducts called, count:', prods ? prods.length : 0, prods);
-  const container = document.getElementById('prod-panels');
-  container.innerHTML = prods.map((p, i) => `
-    <div class="tab-panel ${i===0?'active':''}">
-      <div class="form-row"><label>产品图片</label>
-        <div class="img-upload" style="margin-top:8px;">
-          <div class="img-preview" onclick="triggerUpload('prod-file-${i}','prod-img-input-${i}','prod-img-prev-${i}','prod-img-icon-${i}')">
-            ${p.img ? `<img id="prod-img-prev-${i}" src="${p.img.startsWith('/') ? BASE_PATH + p.img.slice(1) : p.img}" alt="" style="width:100%;height:100%;object-fit:cover;"/>` : `<img id="prod-img-prev-${i}" src="" alt="" style="display:none;"/>`}
-            <span id="prod-img-icon-${i}" ${p.img?'style="display:none"':''}>📷</span>
-          </div>
-          <div>
-            <div class="img-preview-label" onclick="triggerUpload('prod-file-${i}','prod-img-input-${i}','prod-img-prev-${i}','prod-img-icon-${i}')">点击上传产品图</div>
-            <input id="prod-img-input-${i}" type="text" style="width:240px;margin-top:8px;" value="${esc(p.img)}" placeholder="或填写图片 URL" oninput="siteData.products[${i}].img=this.value"/>
-          </div>
-        </div>
-        <input type="file" id="prod-file-${i}" class="file-input" accept="image/*" onchange="uploadProdImg(this,${i})"/>
-      </div>
-      <hr class="divider"/>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-        <div class="form-row"><label>标签文字</label><input type="text" value="${esc(p.tag)}" oninput="siteData.products[${i}].tag=this.value"/></div>
-        <div class="form-row"><label>系列编号</label><input type="text" value="${esc(p.series)}" oninput="siteData.products[${i}].series=this.value"/></div>
-      </div>
-      <div class="form-row"><label>产品名称</label><input type="text" value="${esc(p.name)}" oninput="siteData.products[${i}].name=this.value"/></div>
-      <div class="form-row"><label>产品描述</label><textarea oninput="siteData.products[${i}].desc=this.value">${esc(p.desc)}</textarea></div>
-      <div class="form-row"><label>规格标签</label>
-        <div class="spec-list" id="spec-list-${i}">
-          ${(p.specs||[]).map((s,j) => `
-            <div class="spec-item">
-              <span contenteditable="true" onblur="siteData.products[${i}].specs[${j}]=this.textContent">${esc(s)}</span>
-              <button class="spec-del" onclick="delSpec(${i},${j})">×</button>
-            </div>`).join('')}
-        </div>
-        <button class="spec-add" onclick="addSpec(${i})">+ 添加规格</button>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-        <div class="form-row"><label>价格</label><input type="text" value="${esc(p.price)}" oninput="siteData.products[${i}].price=this.value"/></div>
-        <div class="form-row"><label>价格备注</label><input type="text" value="${esc(p.priceNote)}" oninput="siteData.products[${i}].priceNote=this.value"/></div>
-      </div>
-      <div class="toggle-row">
-        <label>标记为主推爆款</label>
-        <label class="toggle"><input type="checkbox" ${p.hot?'checked':''} onchange="siteData.products[${i}].hot=this.checked"/><span class="toggle-slider"></span></label>
-      </div>
-    </div>`).join('');
-}
-
-function renderFeatures(feats) {
-  const container = document.getElementById('feat-rows');
-  container.innerHTML = feats.map((f, i) => `
-    <div class="feat-row">
-      <input type="text" value="${esc(f.icon)}" placeholder="🏗️" oninput="siteData.features[${i}].icon=this.value"/>
-      <input type="text" value="${esc(f.title)}" placeholder="标题" oninput="siteData.features[${i}].title=this.value"/>
-      <textarea placeholder="描述" oninput="siteData.features[${i}].desc=this.value">${esc(f.desc)}</textarea>
-    </div>`).join('');
-}
-
-// ===== 规格 =====
-function addSpec(prodIdx) {
-  if (!siteData.products[prodIdx].specs) siteData.products[prodIdx].specs = [];
-  siteData.products[prodIdx].specs.push('新规格');
-  renderProducts(siteData.products);
-  // 保持当前tab
-  document.querySelectorAll('.tab-panel')[prodIdx].classList.add('active');
-}
-function delSpec(prodIdx, specIdx) {
-  siteData.products[prodIdx].specs.splice(specIdx, 1);
-  renderProducts(siteData.products);
-  document.querySelectorAll('.tab-panel')[prodIdx].classList.add('active');
-}
-
-// ===== 保存 =====
-function collectData() {
-  const d = siteData;
-  ['brand','navBadge','heroEyebrow','heroLine1','heroLine2','heroDesc','heroBtn1','heroBtn2',
-   'featTitle','footerBrand','footerInfo','heroImg','featImg'].forEach(k => {
-    const el = document.getElementById('f-' + k);
-    if (el) d[k] = el.value;
-  });
-  // 联系信息
-  if (!d.contact) d.contact = {};
-  ['title','subtitle','phone','email','hours','address','qrNote','wechatQr'].forEach(k => {
-    const el = document.getElementById('f-contact-' + k);
-    if (el) d.contact[k] = el.value;
-  });
-  return d;
-}
-
-async function saveAll(quiet) {
-  const d = collectData();
-  try {
-    // 保存到 localStorage
-    localStorage.setItem('siteData', JSON.stringify(d));
-    siteData = d;
-    if (!quiet) toast('✅ 保存成功！', 'success');
-    else toast('✅ 内容已保存', 'success');
-  } catch(e) { toast('保存失败：' + e.message, 'error'); }
-}
-
-// ===== 发布到 GitHub Pages =====
-const GH = {
-  token: () => localStorage.getItem('cms_token'),
-  user: '97631170-art',
-  repo: 'robot-quotation-2026',
-  branch: 'main',
-  base: 'https://api.github.com',
-  async api(method, path, body) {
-    const res = await fetch(this.base + path, {
-      method,
-      headers: {
-        'Authorization': 'token ' + this.token(),
-        'Content-Type': 'application/json',
-        'User-Agent': 'BattleBot-CMS',
-        'Accept': 'application/vnd.github.v3+json'
-      },
-      body: body ? JSON.stringify(body) : undefined
-    });
-    const data = await res.json();
-    return { ok: res.status >= 200 && res.status < 300, data };
-  },
-  async uploadFile(content, path, msg) {
-    // 获取 SHA（文件已存在时需要）
-    let sha = null;
-    const g = await this.api('GET', `/repos/${this.user}/${this.repo}/contents/${path}?ref=${this.branch}`);
-    if (g.ok && g.data.sha) sha = g.data.sha;
-
-    const body = {
-      message: msg,
-      content: content,
-      branch: this.branch
-    };
-    if (sha) body.sha = sha;
-    return this.api('PUT', `/repos/${this.user}/${this.repo}/contents/${path}`, body);
-  }
-};
-
-async function publishSite() {
-  const btn = document.getElementById('btn-publish');
-  const log = document.getElementById('publish-log');
-  const result = document.getElementById('publish-result');
-  const urlEl = document.getElementById('publish-url');
-
-  const token = GH.token();
-  if (!token) { alert('请先在登录页配置 GitHub Token'); window.location.href = 'login.html'; return; }
-
-  btn.disabled = true;
-  btn.textContent = '发布中...';
-  log.innerHTML = '';
-  result.style.display = 'none';
-
-  const addLog = (msg, color = '#fff') => {
-    log.innerHTML += `<div style="color:${color}">${msg}</div>`;
-    log.scrollTop = log.scrollHeight;
-  };
-
-  try {
-    // 1. 保存内容到 localStorage
-    addLog('💾 正在保存内容...', '#60a5fa');
-    await saveAll(true);
-    addLog('✅ 保存完成', '#4ade80');
-
-    // 2. 生成静态 HTML（内嵌 siteData）
-    addLog('📄 正在生成静态页面...', '#60a5fa');
-    const html = generateStaticHTML(siteData);
-    addLog('✅ 生成完成，HTML 大小: ' + (html.length / 1024).toFixed(1) + ' KB', '#4ade80');
-
-    // 3. 上传 index.html
-    addLog('🚀 正在上传到 GitHub...', '#60a5fa');
-    const b64 = btoa(unescape(encodeURIComponent(html)));
-    const r1 = await GH.uploadFile(b64, 'index.html', '🤖 更新格斗机器人产品展示页（2026 BattleBot CMS）');
-    if (!r1.ok) { addLog('❌ index.html 上传失败: ' + JSON.stringify(r1.data).slice(0, 200), '#f87171'); throw new Error(); }
-    addLog('✅ index.html', '#4ade80');
-
-    // 4. 上传 admin.html
-    const adminResp = await fetch('admin.html');
-    const adminHtml = await adminResp.text();
-    const adminB64 = btoa(unescape(encodeURIComponent(adminHtml)));
-    const r2 = await GH.uploadFile(adminB64, 'admin.html', '⚙️ 更新后台管理页面');
-    if (r2.ok) addLog('✅ admin.html', '#4ade80');
-
-    // 5. 上传图片（从 cmsData.localImages）
-    const imgs = JSON.parse(localStorage.getItem('cms_local_images') || '[]');
-    for (const img of imgs) {
-      addLog('📷 正在上传图片: ' + img.name, '#60a5fa');
-      const r3 = await GH.uploadFile(img.data, 'images/' + img.name, '📷 上传产品图片: ' + img.name);
-      if (r3.ok) addLog('✅ images/' + img.name, '#4ade80');
-      else addLog('⚠️ images/' + img.name + ' 上传失败', '#fbbf24');
-    }
-
-    addLog('', '#fff');
-    addLog('🎉 发布成功！', '#4ade80');
-    const pubUrl = 'https://97631170-art.github.io/robot-quotation-2026/';
-    addLog('🔗 ' + pubUrl, '#60a5fa');
-    urlEl.href = pubUrl;
-    urlEl.textContent = pubUrl;
-    result.style.display = 'block';
-    toast('🎉 发布成功！约 1-2 分钟后生效', 'success');
-  } catch(e) {
-    if (e.message) addLog('❌ 发布失败: ' + e.message, '#f87171');
-  }
-
-  btn.disabled = false;
-  btn.textContent = '🚀 再次发布';
-}
-
-// ===== 生成静态 HTML（用于发布）=====
-function generateStaticHTML(d) {
-  const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  const heroImg = d.heroImg ? 'images/' + d.heroImg.replace('/images/','') : '';
-  const featImg = d.featImg ? 'images/' + d.featImg.replace('/images/','') : '';
-
-  const prods = (d.products||[]).map((p,i) => {
-    const imgP = p.img ? 'images/' + p.img.replace('/images/','') : '';
-    return `<div class="card${p.hot?' hot':''}" id="product-${i}"><div class="card-ribbon"><span class="ribbon-tag${p.hot?' hot-tag':''}">${esc(p.tag)}</span>${p.hot?'<span class="ribbon-tag hot-tag">🔥 主推</span>':''}</div><div class="card-img-wrap">${imgP?`<img src="${esc(imgP)}" alt="${esc(p.name)}" style="width:100%;height:100%;object-fit:cover;" loading="lazy"/>`:`<div class="card-placeholder p${i+1}">${['🤖','⚙️','🦾'][i]}</div>`}</div><div class="card-body"><div class="card-series">${esc(p.series)}</div><div class="card-title">${esc(p.name)}</div><p class="card-desc">${esc(p.desc)}</p><div class="card-tags">${(p.specs||[]).map(s=>`<span class="tag">${esc(s)}</span>`).join('')}</div><div class="card-footer"><div><div class="price-val">${esc(p.price)}</div><div class="price-note">${esc(p.priceNote)}</div></div><a href="#contact" class="card-btn">立即咨询</a></div></div></div>`;
-  }).join('');
-
-  const feats = (d.features||[]).map(f => `<li class="feat-item"><div class="feat-icon">${f.icon||'🔧'}</div><div class="feat-info"><h4>${esc(f.title)}</h4><p>${esc(f.desc)}</p></div></li>`).join('');
-  const kpis = (d.kpi||[]).map(k => `<div class="kpi"><div class="kpi-num">${esc(k.num)}</div><div class="kpi-label">${esc(k.label)}</div></div>`).join('');
-  const comp = d.competition||{};
-  const classes = (comp.classes||[]).map(c => `<div class="comp-class-card"><div class="comp-icon">${c.icon||'⚔️'}</div><div class="comp-weight">${esc(c.weight)}</div><div class="comp-name">${esc(c.name)}</div><div class="comp-group">${esc(c.group)}</div><p class="comp-desc">${esc(c.desc)}</p></div>`).join('');
-  const timeline = (comp.timeline||[]).map(t => `<div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-month">${esc(t.month)}</div><div class="timeline-event">${esc(t.event)}</div></div>`).join('');
-  const acc = d.accessories||{};
-  const accItems = (acc.items||[]).map(item => `<div class="acc-card"><div class="acc-icon">${item.icon||'🔧'}</div><div class="acc-name">${esc(item.name)}</div><div class="acc-desc">${esc(item.desc)}</div><div class="acc-price">${esc(item.price)}</div></div>`).join('');
-  const ct = d.contact||{};
-  const ctFields = (ct.formFields||[]).map(f => `<div class="form-group"><label>${esc(f.label)}</label>${f.label==='咨询内容'?`<textarea rows="3" placeholder="${esc(f.placeholder)}"></textarea>`:`<input type="text" placeholder="${esc(f.placeholder)}"/>`}</div>`).join('');
-
-  return `<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="description" content="造悟社格斗机器人 · 2026竞技系列 · BoxBot赛事官方器材供应商"/><title>${esc(d.brand||'BattleBot')} · 格斗机器人产品展示</title><style>${PAGE_CSS}<\/style></head><body><div class="nav-progress" id="navProgress"></div><nav id="navbar"><div class="nav-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">⚡ BATTLE<em>BOT</em></div><ul class="nav-menu"><li><a href="#products">产品系列</a></li><li><a href="#competition">赛事规则</a></li><li><a href="#accessories">设备器材</a></li><li><a href="#features">技术规格</a></li><li><a href="#contact" class="nav-cta">联系采购</a></li></ul></nav><section class="hero" id="hero"><div class="hero-bg"></div><div class="hero-grid"></div><div class="hero-vline"></div><div class="hero-content"><div class="hero-eyebrow"><div class="eyebrow-dot"></div><div class="eyebrow-text">${esc(d.heroEyebrow)}</div></div><h1 class="hero-h1"><span>${esc(d.heroLine1)}</span><span class="line2">${esc(d.heroLine2)}</span></h1><p class="hero-desc">${esc(d.heroDesc)}</p><div class="hero-actions"><a href="#competition" class="btn btn-red">${esc(d.heroBtn1||'赛事规则')} →</a><a href="#accessories" class="btn btn-outline">${esc(d.heroBtn2||'设备器材')} →</a></div></div><div class="hero-visual"><div class="hero-visual-inner">${heroImg?`<img src="${esc(heroImg)}" style="width:100%;height:100%;object-fit:cover;object-position:center 60%;filter:brightness(.65) saturate(1.1);" alt="格斗机器人"/>`:`<div style="width:100%;height:100%;background:linear-gradient(135deg,#0d0d20,#1a0a0a);display:flex;align-items:center;justify-content:center;font-size:140px;">🤖</div>`}</div></div><div class="hero-kpis">${kpis}</div></section><section class="section" id="products"><div class="section-head reveal"><div class="section-kicker"><div class="kicker-line"></div><div class="kicker-text">Product Series</div><div class="kicker-line"></div></div><h2 class="section-h2">三款竞技型号</h2><p class="section-sub">模块化设计，快速拆装，适配多种竞技场景</p></div><div class="cards">${prods}</div></section><section class="section section-dark" id="competition"><div class="section-head reveal"><div class="section-kicker"><div class="kicker-line"></div><div class="kicker-text">BoxBot Tournament</div><div class="kicker-line"></div></div><h2 class="section-h2">${esc(comp.title||'BoxBot 格斗机器人大赛')}</h2><p class="section-sub">${esc(comp.subtitle||'2026 全国青少年格斗机器人联赛')}</p><p class="section-sub" style="margin-top:12px;max-width:680px;margin-left:auto;margin-right:auto">${esc(comp.desc||'')}</p></div><div class="comp-classes reveal reveal-delay-1">${classes}</div><div class="comp-cta reveal reveal-delay-2"><div><div class="comp-cta-text">想报名参赛？咨询赛事规则</div></div><div><div class="comp-cta-phone">📞 ${esc(comp.contact||d.contact?.phone||'15970070712')}</div></div><a href="#contact" class="btn btn-red">立即咨询</a></div><div class="timeline reveal reveal-delay-3">${timeline}</div></section><section class="section" id="accessories"><div class="section-head reveal"><div class="section-kicker"><div class="kicker-line"></div><div class="kicker-text">Equipment</div><div class="kicker-line"></div></div><h2 class="section-h2">${esc(acc.title||'配件器材')}</h2><p class="section-sub">${esc(acc.subtitle||'模块化设计 · 快速更换 · 赛场无忧')}</p></div><div class="acc-grid">${accItems}</div></section><section class="section section-dark" id="features"><div class="features-inner"><div class="features-visual reveal">${featImg?`<img src="${esc(featImg)}" alt="产品细节"/>`:`<div class="feat-ph">📸</div>`}</div><div class="reveal reveal-delay-2"><div class="section-kicker" style="margin-bottom:20px;"><div class="kicker-line"></div><div class="kicker-text">Core Features</div></div><h2 class="section-h2" style="margin-bottom:36px;">${esc(d.featTitle||'为竞技而生')}</h2><ul class="feat-list">${feats}</ul></div></div></section><section class="section section-red" id="contact"><div class="section-head reveal"><div class="section-kicker"><div class="kicker-line"></div><div class="kicker-text">Contact Us</div><div class="kicker-line"></div></div><h2 class="section-h2">${esc(ct.title||'联系我们')}</h2><p class="section-sub">${esc(ct.subtitle||'造悟社 · 专注格斗机器人教育与竞技')}</p></div><div class="contact-inner"><div class="contact-info-card reveal"><div class="contact-item"><div class="contact-icon">📞</div><div><div class="contact-label">咨询热线</div><div class="contact-value"><a href="tel:${esc(ct.phone||'')}">${esc(ct.phone||'')}</a></div></div></div><div class="contact-item"><div class="contact-icon">✉️</div><div><div class="contact-label">电子邮箱</div><div class="contact-value"><a href="mailto:${esc(ct.email||'')}">${esc(ct.email||'')}</a></div></div></div><div class="contact-item"><div class="contact-icon">🕘</div><div><div class="contact-label">营业时间</div><div class="contact-value">${esc(ct.hours||'')}</div></div></div><div class="contact-item"><div class="contact-icon">📍</div><div><div class="contact-label">地址</div><div class="contact-value">${esc(ct.address||'')}</div></div></div><div class="qr-area"><div class="qr-placeholder"><div>📱</div><div style="font-size:10px;color:var(--muted);letter-spacing:1px">微信</div></div><div class="qr-hint">${esc(ct.qrNote||'扫码咨询 · 添加客服微信')}</div></div></div><div class="form-card reveal reveal-delay-2"><div class="form-title">${esc(ct.formTitle||'在线询价')}</div>${ctFields}<button class="form-submit" onclick="alert('感谢咨询！我们将在24小时内联系您。')">提交咨询</button></div></div></section><footer><div class="footer-brand">⚡ ${esc(d.footerBrand||'造悟社 · 格斗机器人')}</div><div class="footer-links"><a href="#products">产品系列</a><a href="#competition">赛事介绍</a><a href="#accessories">器材配件</a><a href="#contact">联系我们</a></div><div class="footer-info">${esc(d.footerInfo||'')}</div></footer><div class="float-cta"><a href="#contact">📞 立即咨询</a></div><!--INLINE_SCRIPT--></body></html>`;
-}
-
-// ===== 图片上传 =====
-function triggerUpload(fileInputId) {
-  document.getElementById(fileInputId)?.click();
-}
-
-// 管理已上传图片列表（存到 localStorage，发布时统一上传）
-function getLocalImages() { return JSON.parse(localStorage.getItem('cms_local_images') || '[]'); }
-function addLocalImage(name, data) {
-  const imgs = getLocalImages();
-  if (!imgs.find(i => i.name === name)) {
-    imgs.push({ name, data });
-    localStorage.setItem('cms_local_images', JSON.stringify(imgs));
-  }
-}
-
-async function uploadImg(input, textInputId, previewId, iconId) {
-  if (!input.files?.[0]) return;
-  const file = input.files[0];
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    // 转成压缩后的 JPEG base64（前端压缩）
-    const originalData = e.target.result;
-    document.getElementById(textInputId).value = '/images/' + file.name;
-    if (textInputId === 'f-heroImg') siteData.heroImg = '/images/' + file.name;
-    if (textInputId === 'f-featImg') siteData.featImg = '/images/' + file.name;
-    document.getElementById(previewId).src = originalData;
-    document.getElementById(previewId).style.display = 'block';
-    if (iconId) document.getElementById(iconId).style.display = 'none';
-    // 压缩并存储
-    try {
-      const compressed = await compressImage(originalData);
-      addLocalImage(file.name, compressed);
-      toast('✅ 图片已保存，发布时自动上传', 'success');
-    } catch(e) {
-      addLocalImage(file.name, originalData.split(',')[1]);
-      toast('✅ 图片已保存（未压缩）', 'success');
-    }
-  };
-  reader.readAsDataURL(file);
-}
-
-async function uploadProdImg(input, prodIdx) {
-  if (!input.files?.[0]) return;
-  const file = input.files[0];
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    const originalData = e.target.result;
-    siteData.products[prodIdx].img = '/images/' + file.name;
-    document.getElementById('prod-img-input-' + prodIdx).value = '/images/' + file.name;
-    const prev = document.getElementById('prod-img-prev-' + prodIdx);
-    prev.src = originalData;
-    prev.style.display = 'block';
-    document.getElementById('prod-img-icon-' + prodIdx).style.display = 'none';
-    try {
-      const compressed = await compressImage(originalData);
-      addLocalImage(file.name, compressed);
-      toast('✅ 图片已保存，发布时自动上传', 'success');
-    } catch(e) {
-      addLocalImage(file.name, originalData.split(',')[1]);
-      toast('✅ 图片已保存（未压缩）', 'success');
-    }
-  };
-  reader.readAsDataURL(file);
-}
-
-// 前端图片压缩（canvas）
-function compressImage(dataUrl, maxW = 1200, quality = 0.8) {
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      let w = img.width, h = img.height;
-      if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      resolve(canvas.toDataURL('image/jpeg', quality).split(',')[1]);
-    };
-    img.src = dataUrl;
-  });
-}
-
-// ===== 生成静态页 =====
-async function buildStatic() {
-  await saveAll(true);
-  try {
-    const r = await fetch(API + '/publish', { method:'POST' });
-    const d = await r.json();
-    if (d.ok) toast('✅ 静态页面已生成到 dist/index.html', 'success');
-    else toast('生成失败', 'error');
-  } catch(e) { toast('生成失败：' + e.message, 'error'); }
-}
-
-// ===== 发布公网 =====
-let tunnelUrl = '';
-async function startTunnel() {
-  const btn = document.getElementById('btn-tunnel');
-  btn.disabled = true;
-  btn.textContent = '⏳ 连接中...';
-  const box = document.getElementById('tunnel-result');
-  const urlEl = document.getElementById('tunnel-url');
-  const logEl = document.getElementById('tunnel-log');
-  box.style.display = 'block';
-  urlEl.textContent = '正在建立隧道，请稍候...';
-  logEl.textContent = '';
-
-  try {
-    const es = new EventSource(API + '/tunnel?port=8090');
-    es.onmessage = (e) => {
-      const data = JSON.parse(e.data);
-      if (data.url) {
-        tunnelUrl = data.url;
-        urlEl.textContent = tunnelUrl;
-        document.getElementById('tunnel-open').href = tunnelUrl;
-        btn.disabled = false;
-        btn.textContent = '🔄 重新发布';
-        toast('🌐 公网链接已生成！', 'success');
-      }
-      if (data.log) {
-        logEl.textContent += data.log;
-        logEl.scrollTop = logEl.scrollHeight;
-      }
-    };
-    es.onerror = () => {
-      btn.disabled = false;
-      btn.textContent = '🌐 发布到公网';
-    };
-  } catch(e) {
-    toast('发布失败：' + e.message, 'error');
-    btn.disabled = false;
-    btn.textContent = '🌐 发布到公网';
-  }
-}
-
-function copyUrl() {
-  if (!tunnelUrl) return toast('尚未获取到链接', 'error');
-  navigator.clipboard.writeText(tunnelUrl).then(() => toast('✅ 链接已复制', 'success'));
-}
-
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-// 初始加载
-loadData();
-<\/script>
+// 初始化
+document.getElementById('contact-phone').value = siteData.contact?.phone || '';
+document.getElementById('contact-email').value = siteData.contact?.email || '';
+renderProducts(siteData.products || []);
+</script>
 </body>
 </html>
