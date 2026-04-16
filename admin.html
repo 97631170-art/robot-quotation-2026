@@ -1063,6 +1063,39 @@
     }
     
     // ========== 图片上传 ==========
+    // 图片上传到 GitHub
+    async function uploadImage(file) {
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            try {
+              const data = JSON.parse(xhr.responseText);
+              if (data.success) {
+                resolve(data.url);
+              } else {
+                reject(new Error(data.error || '上传失败'));
+              }
+            } catch(e) {
+              reject(new Error('解析响应失败'));
+            }
+          } else {
+            reject(new Error('服务器错误: ' + xhr.status));
+          }
+        };
+        
+        xhr.onerror = function() {
+          reject(new Error('网络错误，请确保服务器已启动 (node server)'));
+        };
+        
+        xhr.open('POST', 'http://localhost:7788/api/upload-image');
+        xhr.send(formData);
+      });
+    }
+    
     async function uploadHeroImg() {
       const input = document.createElement('input');
       input.type = 'file';
@@ -1071,20 +1104,15 @@
         const file = this.files[0];
         if (!file) return;
         showToast('上传中...');
-        const formData = new FormData();
-        formData.append('image', file);
         try {
-          const resp = await fetch('https://api.imgbb.com/1/upload?key=18699f8065186fe6a1e3241af4a10e9', {method: 'POST', body: formData});
-          const data = await resp.json();
-          if (data.success) {
-            siteData.heroImg = data.data.url;
-            autoSave();
-            document.getElementById('heroImgUpload').innerHTML = '<img src="' + data.data.url + '" onerror="handleImgError(this)">';
-            document.getElementById('heroImgUpload').classList.add('has-img');
-            showToast('✅ 上传成功');
-          }
+          const url = await uploadImage(file);
+          siteData.heroImg = url;
+          autoSave();
+          document.getElementById('heroImgUpload').innerHTML = '<img src="' + url + '" onerror="handleImgError(this)">';
+          document.getElementById('heroImgUpload').classList.add('has-img');
+          showToast('✅ 上传成功');
         } catch(e) {
-          showToast('❌ 上传失败');
+          showToast('❌ ' + e.message);
         }
       };
       input.click();
@@ -1098,23 +1126,14 @@
         const file = this.files[0];
         if (!file) return;
         showToast('上传中...');
-        const formData = new FormData();
-        formData.append('image', file);
         try {
-          const resp = await fetch('https://api.imgbb.com/1/upload?key=18699f8065186fe6a1e3241af4a10e9', {method: 'POST', body: formData});
-          const data = await resp.json();
-          console.log('上传结果:', data);
-          if (data.success) {
-            siteData.products[idx].img = data.data.url;
-            autoSave();
-            renderProducts();
-            showToast('✅ 上传成功');
-          } else {
-            showToast('❌ 上传失败: ' + (data.error?.message || '未知错误'));
-          }
+          const url = await uploadImage(file);
+          siteData.products[idx].img = url;
+          autoSave();
+          renderProducts();
+          showToast('✅ 上传成功');
         } catch(e) {
-          console.error('上传错误:', e);
-          showToast('❌ 上传失败: ' + e.message);
+          showToast('❌ ' + e.message);
         }
       };
       input.click();
