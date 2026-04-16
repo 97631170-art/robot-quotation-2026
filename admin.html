@@ -82,7 +82,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <a href="#" onclick="showSection('nav',this)">🔗 导航菜单</a>
     <a href="#" onclick="showSection('contact',this)">📞 联系信息</a>
     <a href="#" onclick="showSection('footer',this)">📋 页脚信息</a>
-    <a href="#" onclick="saveData()" class="btn" style="margin:20px 16px;text-align:center;">💾 保存发布</a>
+    <button onclick="saveData()" class="btn btn-publish" style="margin:20px 16px;width:calc(100% - 32px);background:#10b981">🚀 一键发布</button>
+    <div id="publishStatus" style="text-align:center;margin:0 16px 10px;font-size:0.85rem"></div>
   </div>
   <div class="content">
     <!-- 产品系列 -->
@@ -675,27 +676,45 @@ function applyImgPath(path) {
   alert('图片路径已更新: ' + path + '\n\n请确保图片文件已上传到 images 文件夹！');
 }
 
-// 保存
-function saveData() {
-  // 更新 heroImg 和 featImg
-  const heroVal = document.querySelector('#heroImgPreview, .img-wrap img')?.src || data.heroImg;
-  const featVal = document.getElementById('featImgPreview')?.src || data.featImg;
+// 保存并发布
+async function saveData() {
+  const btn = document.querySelector('.btn-publish');
+  btn.textContent = '🔄 发布中...';
+  btn.disabled = true;
   
-  const json = JSON.stringify(data, null, 2);
-  const blob = new Blob([json], {type: 'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'site.json';
-  a.click();
-  URL.revokeObjectURL(url);
-  
-  // 复制到剪贴板
-  navigator.clipboard.writeText(json).then(() => {
-    alert('✅ site.json 已下载！\n\n请将内容复制到 cms_data/site.json 并运行 node upload_github.js');
-  }).catch(() => {
-    alert('✅ site.json 已下载！\n\n请复制内容到 cms_data/site.json 并运行 node upload_github.js');
-  });
+  try {
+    // 显示加载
+    document.getElementById('publishStatus').innerHTML = '<span style="color:#f59e0b">⏳ 正在发布...</span>';
+    
+    // 发送数据到本地服务器
+    const resp = await fetch('http://localhost:7788/api/publish', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+    
+    if (resp.ok) {
+      document.getElementById('publishStatus').innerHTML = '<span style="color:#10b981">✅ 发布成功！网站约 1-5 分钟后生效</span>';
+      btn.textContent = '✅ 已发布';
+      setTimeout(() => { btn.textContent = '🚀 一键发布'; btn.disabled = false; }, 3000);
+    } else {
+      throw new Error('Server error');
+    }
+  } catch(e) {
+    // 服务器不可用，下载 JSON
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'site.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    document.getElementById('publishStatus').innerHTML = '<span style="color:#f59e0b">⚠️ 服务器未运行，已下载 site.json</span><br><span style="color:#6b7280">请运行: node publish</span>';
+    btn.textContent = '🚀 一键发布';
+    btn.disabled = false;
+  }
 }
 
 // 初始化
