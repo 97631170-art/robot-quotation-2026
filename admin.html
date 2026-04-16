@@ -828,6 +828,9 @@
       return path;
     }
     
+    // buildFixImgUrl 是 fixImgUrl 的别名
+    const buildFixImgUrl = fixImgUrl;
+    
     // 图片加载失败处理
     function handleImgError(img) {
       img.style.display = 'none';
@@ -1160,9 +1163,30 @@
     
     // 初始化
     function init() {
+      // 优先使用本地缓存，否则用 JSON 文件数据
       const cached = localStorage.getItem('siteData');
       if (cached) {
-        try { siteData = JSON.parse(cached); } catch(e) {}
+        try {
+          const parsed = JSON.parse(cached);
+          // 合并数据，确保所有字段都存在
+          siteData = {
+            ...siteData,  // JSON 文件的完整结构
+            ...parsed,     // 用户修改的内容
+            products: parsed.products || siteData.products,
+            features: parsed.features || siteData.features,
+            accessories: {
+              ...siteData.accessories,
+              ...parsed.accessories,
+              items: parsed.accessories?.items || siteData.accessories.items
+            },
+            competition: {
+              ...siteData.competition,
+              ...parsed.competition,
+              timeline: parsed.competition?.timeline || siteData.competition.timeline,
+              classes: parsed.competition?.classes || siteData.competition.classes
+            }
+          };
+        } catch(e) {}
       }
       renderKpi();
       renderProducts();
