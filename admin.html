@@ -91,6 +91,10 @@ body{font-family:'Noto Sans SC',-apple-system,BlinkMacSystemFont,sans-serif;back
 .timeline-event{color:var(--text-muted)}
 /* 配件 */
 .accessories-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+/* 添加按钮 */
+.add-btn{display:block;width:100%;padding:30px;border:2px dashed var(--border);border-radius:20px;text-align:center;color:var(--text-muted);cursor:pointer;transition:.3s;background:none;font-size:1rem}
+.add-btn:hover{border-color:var(--primary);color:var(--primary);background:rgba(79,70,229,0.1)}
+.add-section{text-align:center;margin-top:30px}
 .accessory-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:24px;text-align:center;position:relative;transition:.3s}
 .accessory-card:hover{transform:translateY(-4px);border-color:var(--primary)}
 .accessory-icon{font-size:2.5rem;margin-bottom:12px}
@@ -161,7 +165,7 @@ body{font-family:'Noto Sans SC',-apple-system,BlinkMacSystemFont,sans-serif;back
       <h2>产品系列</h2>
       <p>专业竞技格斗机器人</p>
     </div>
-    <div class="products-grid">
+    <div class="products-grid" id="productsGrid">
       
       <div class="product-card editable">
         <button class="btn btn-edit" onclick="editProduct(0)">编辑</button>
@@ -223,6 +227,9 @@ body{font-family:'Noto Sans SC',-apple-system,BlinkMacSystemFont,sans-serif;back
         </div>
       </div>
       
+    </div>
+    <div class="add-section">
+      <button class="add-btn" onclick="addProduct()">➕ 添加产品</button>
     </div>
   </section>
 
@@ -384,6 +391,9 @@ body{font-family:'Noto Sans SC',-apple-system,BlinkMacSystemFont,sans-serif;back
       </div>
       
     </div>
+    <div class="add-section">
+      <button class="add-btn" onclick="addAccessory()">➕ 添加配件</button>
+    </div>
   </section>
 
   <!-- 联系 -->
@@ -520,6 +530,18 @@ function editClass(idx) {
   `);
 }
 
+// 添加产品
+function addProduct() {
+  currentEdit = {type: 'add-product'};
+  showModal('添加产品', '<div class="form-group"><label>产品名称</label><input type="text" id="e-name" value=""></div><div class="form-group"><label>标签</label><input type="text" id="e-tag" value=""></div><div class="form-group"><label>系列</label><input type="text" id="e-series" value=""></div><div class="form-group"><label>描述</label><textarea id="e-desc" rows="4"></textarea></div><div class="form-group"><label>价格</label><input type="text" id="e-price" value=""></div>');
+}
+
+// 添加配件
+function addAccessory() {
+  currentEdit = {type: 'add-accessory'};
+  showModal('添加配件', '<div class="form-group"><label>图标</label><input type="text" id="e-icon" value="⚙️"></div><div class="form-group"><label>名称</label><input type="text" id="e-name" value=""></div><div class="form-group"><label>描述</label><textarea id="e-desc" rows="3"></textarea></div><div class="form-group"><label>价格</label><input type="text" id="e-price" value=""></div>');
+}
+
 // 编辑配件
 function editAccessory(idx) {
   const a = siteData.accessories.items[idx];
@@ -570,6 +592,25 @@ function saveEdit() {
       siteData.accessories.items[idx].name = document.getElementById('e-name').value;
       siteData.accessories.items[idx].desc = document.getElementById('e-desc').value;
       siteData.accessories.items[idx].price = document.getElementById('e-price').value;
+      break;
+    case 'add-product':
+      siteData.products.push({
+        name: document.getElementById('e-name').value,
+        tag: document.getElementById('e-tag').value,
+        series: document.getElementById('e-series').value,
+        desc: document.getElementById('e-desc').value,
+        price: document.getElementById('e-price').value,
+        img: ''
+      });
+      break;
+    case 'add-accessory':
+      siteData.accessories.items.push({
+        icon: document.getElementById('e-icon').value,
+        name: document.getElementById('e-name').value,
+        desc: document.getElementById('e-desc').value,
+        price: document.getElementById('e-price').value,
+        img: ''
+      });
       break;
   }
   
