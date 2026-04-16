@@ -67,6 +67,7 @@ body{font-family:'Noto Sans SC',-apple-system,BlinkMacSystemFont,sans-serif;back
 .img-upload-area .text{color:var(--text-muted)}
 .img-upload-area img{max-width:100%;max-height:200px;border-radius:8px}
 .img-upload-area input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.img-upload-area.uploading{pointer-events:none;opacity:0.7}
 /* 列表 */
 .list-item{display:flex;align-items:center;padding:16px;background:var(--bg3);border-radius:10px;margin-bottom:12px;transition:.2s}
 .list-item:hover{background:var(--bg)}
@@ -105,15 +106,17 @@ body{font-family:'Noto Sans SC',-apple-system,BlinkMacSystemFont,sans-serif;back
 .main{margin-left:0}
 .editor-grid{grid-template-columns:1fr}
 }
-/* 加载动画 */
-.loading{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999}
-.loading-spinner{width:50px;height:50px;border:4px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 1s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}
-}
+/* Hero预览 */
+.hero-preview{background:linear-gradient(135deg,var(--bg3),var(--bg));border-radius:12px;padding:24px;margin-bottom:20px}
+.hero-preview .eyebrow{color:var(--primary);margin-bottom:8px}
+.hero-preview .title{font-size:2rem;font-weight:700;margin-bottom:12px;background:linear-gradient(135deg,#fff,#a5b4fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-preview .desc{color:var(--text-muted);font-size:0.9rem;margin-bottom:16px}
 /* 发布状态 */
 .publish-status{padding:12px 24px;background:var(--bg2);border-radius:10px;display:flex;align-items:center;gap:12px;margin-bottom:24px}
 .publish-status .dot{width:10px;height:10px;border-radius:50%;background:var(--success)}
-.publish-status.ready .dot{background:var(--success)}
+/* Specs标签 */
+.specs-wrap{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.spec-tag{background:rgba(255,255,255,0.05);padding:4px 10px;border-radius:6px;font-size:0.8rem}
 </style>
 </head>
 <body>
@@ -234,44 +237,55 @@ body{font-family:'Noto Sans SC',-apple-system,BlinkMacSystemFont,sans-serif;back
     <!-- 首页设置 -->
     <section id="page-homepage" class="page hidden">
       <h1 class="page-title"><span class="icon">🏠</span> 首页设置</h1>
+      
+      <!-- Hero区域 -->
       <div class="card">
         <div class="card-header">
           <span class="card-title">首屏Hero区域</span>
         </div>
         <div class="card-body">
+          <div class="hero-preview">
+            <div class="eyebrow" id="heroPreviewEyebrow">格斗机器人 · 2026 竞技系列</div>
+            <div class="title" id="heroPreviewTitle">极速突破<br>铸造冠军</div>
+            <div class="desc" id="heroPreviewDesc">专为竞技格斗设计的高性能机器人系列，采用高强度ABS+ 3D 打印结构，搭载精准电控系统。多款型号——推铲型、垂直旋转型、双头型，满足不同战术风格，一键入场，决战巅峰。</div>
+          </div>
           <div class="editor-grid">
             <div>
               <div class="form-group">
                 <label class="form-label">副标题</label>
-                <input type="text" class="form-input" id="heroEyebrow" value="格斗机器人 · 2026 竞技系列">
+                <input type="text" class="form-input" id="heroEyebrow" value="格斗机器人 · 2026 竞技系列" oninput="updateHeroPreview()">
               </div>
               <div class="form-group">
                 <label class="form-label">标题第一行</label>
-                <input type="text" class="form-input" id="heroLine1" value="极速突破">
+                <input type="text" class="form-input" id="heroLine1" value="极速突破" oninput="updateHeroPreview()">
               </div>
               <div class="form-group">
                 <label class="form-label">标题第二行</label>
-                <input type="text" class="form-input" id="heroLine2" value="铸造冠军">
+                <input type="text" class="form-input" id="heroLine2" value="铸造冠军" oninput="updateHeroPreview()">
               </div>
             </div>
             <div>
               <div class="form-group">
                 <label class="form-label">描述文字</label>
-                <textarea class="form-textarea" id="heroDesc" rows="4">专为竞技格斗设计的高性能机器人系列，采用高强度ABS+ 3D 打印结构，搭载精准电控系统。多款型号——推铲型、垂直旋转型、双头型，满足不同战术风格，一键入场，决战巅峰。</textarea>
+                <textarea class="form-textarea" id="heroDesc" rows="4" oninput="updateHeroPreview()">专为竞技格斗设计的高性能机器人系列，采用高强度ABS+ 3D 打印结构，搭载精准电控系统。多款型号——推铲型、垂直旋转型、双头型，满足不同战术风格，一键入场，决战巅峰。</textarea>
               </div>
-              <div class="form-group">
-                <label class="form-label">按钮1文字</label>
-                <input type="text" class="form-input" id="heroBtn1" value="赛事规则">
-              </div>
-              <div class="form-group">
-                <label class="form-label">按钮2文字</label>
-                <input type="text" class="form-input" id="heroBtn2" value="设备器材">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">按钮1文字</label>
+                  <input type="text" class="form-input" id="heroBtn1" value="赛事规则">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">按钮2文字</label>
+                  <input type="text" class="form-input" id="heroBtn2" value="设备器材">
+                </div>
               </div>
             </div>
           </div>
           <button class="btn btn-primary" onclick="saveHomepage()">💾 保存修改</button>
         </div>
       </div>
+      
+      <!-- KPI数字 -->
       <div class="card">
         <div class="card-header">
           <span class="card-title">KPI数字</span>
@@ -356,7 +370,6 @@ body{font-family:'Noto Sans SC',-apple-system,BlinkMacSystemFont,sans-serif;back
 // 全局数据
 let siteData = {"brand":"⚡中国格斗机甲联盟-造悟社","navBadge":"2026 新品","heroEyebrow":"格斗机器人 · 2026 竞技系列","heroLine1":"极速突破","heroLine2":"铸造冠军","heroDesc":"专为竞技格斗设计的高性能机器人系列，采用高强度ABS+ 3D 打印结构，搭载精准电控系统。多款型号——推铲型、垂直旋转型、双头型，满足不同战术风格，一键入场，决战巅峰。","heroBtn1":"赛事规则","heroBtn2":"设备器材","kpi":[{"num":"7","label":"产品型号"},{"num":"320g","label":"竞技重量级"},{"num":"8V","label":"额定电压"},{"num":"5ms","label":"控制响应"}],"products":[{"tag":"320克竖转类格斗机器人","series":"SERIES-A","name":"竖转格斗机器人","desc":"低重心楔形推铲设计，正面强攻利器。红蓝双色高辨识配色，前置坡面铲头可轻松翻转对手，攻防兼备，适合初入竞技场的选手。","specs":["重量: 320g","材质: ABS+","驱动: 四轮","武器: 推铲"],"price":"","priceNote":"整机含遥控器","hot":false,"img":"/images/43c4a798-c5a8-4cbc-9a11-cc09e243f9af.jpg"},{"tag":"320克横转类格斗机器人","series":"SERIES-D","name":"横传格斗机器人","desc":"水平高速转鼓武器，侧面攻击角度独特，可从侧翼击穿对手装甲。深灰色战斗涂装，低重心宽体设计，稳定性极佳，适合技巧型选手。","specs":["重量: 320g","武器: 水平横转","材质: ABS+","高速电机","新规格"],"price":"0","priceNote":"整机含遥控器","hot":false,"img":"/images/1775790736879.png"},{"tag":"抓举","series":"SERIES-F","name":"风暴 GX-06","desc":"液压模拟抓举臂，可将对手提起并推入场地陷阱。前置钳爪开合速度快，支持连续夹持，是控制型选手的最爱。","specs":["重量: 320g","武器: 抓举臂","材质: ABS+","高速舵机"],"price":"¥1,380","priceNote":"整机含遥控器","hot":false,"img":"/images/1775790699904.jpg"},{"tag":"320克弹射类格斗机器人","series":"SERIES-G","name":"弹射格斗机器人","desc":"高速舵机","specs":["重量: 320g","武器: 高速锤","材质: ABS+","强力舵机"],"price":"¥1,520","priceNote":"整机含遥控器","hot":false,"img":"/images/aabb4b3a-9dd0-472d-9976-f3f546b2224d.jpg"},{"tag":"新品","series":"SERIES-X","name":"新机器人","desc":"请编辑产品描述...","specs":["重量: 320g","材质: ABS+"],"price":"¥1,000","priceNote":"整机含遥控器","hot":false,"img":"/images/微信图片_20260116120809_11_81.jpg"}],"featTitle":"为竞技而生","features":[{"icon":"🏗️","title":"高强度 3D 打印结构","desc":"全机身ABS+ 材料，层厚 0.2mm 精细打印，强度媲美注塑件，抗冲击性卓越，损坏后可快速补件更换。"},{"icon":"⚡","title":"精准电控系统","desc":"竞技级电调，响应延迟低至 5ms，支持 2.4GHz 抗干扰遥控，在高密度干扰环境中稳定运行。"},{"icon":"🔧","title":"模块化快拆设计","desc":"武器模块、驱动模块可 10 分钟内完成更换，赛间快速维修不误场，零部件独立出售方便备件储备。"},{"icon":"🏆","title":"符合主流赛事规格","desc":"满足 500g 量级主流竞技规则，适配国内外各大机器人格斗联赛标准场地与评分体系。"}],"heroImg":"/images/5f2929ee-5969-4077-b525-68ce90ff207e.JPG","featImg":"/images/01ed2520-0525-4a8e-b578-fadb72265cb2.JPG","competition":{"show":true,"title":"BoxBot 格斗机器人大赛","subtitle":"2026 全国青少年格斗机器人联赛","desc":"BoxBot 是国内最具影响力的青少年格斗机器人竞技赛事，涵盖小学、初中、高中三个组别，旨在培养青少年的工程思维、动手能力与竞技精神。","classes":[{"name":"迷你级","weight":"150g","group":"小学组","desc":"入门级赛事，使用小型格斗机器人，适合初次接触竞技机器人领域的学生。","icon":"🎯"},{"name":"轻量级","weight":"320g","group":"中小学组","desc":"主流竞技级别，考验选手的操控技巧与战术策略，竞争最为激烈。","icon":"⚔️"},{"name":"重量级","weight":"1.5kg","group":"初高中组","desc":"高端竞技赛事，装备更强武器系统，观赏性与技术含量最高。","icon":"💥"}],"timeline":[{"month":"3月","event":"报名开启"},{"month":"5月","event":"城市海选赛"},{"month":"7月","event":"区域晋级赛"},{"month":"8月","event":"全国总决赛"}],"contact":"15970070712","registerUrl":"#contact"},"accessories":{"show":true,"title":"配件器材","subtitle":"模块化设计 · 快速更换 · 赛场无忧","items":[{"icon":"⚙️","name":"武器模块","desc":"推铲/转鼓/弹射等多种武器模块，支持10分钟快拆更换","price":"¥280起"},{"icon":"🚗","name":"驱动底盘","desc":"四轮独立悬挂底盘，高强度ABS材质，损坏可单独更换","price":"¥380"},{"icon":"📡","name":"遥控器","desc":"2.4GHz抗干扰遥控，响应延迟<5ms，支持多机同场竞技","price":"¥220"},{"icon":"🔋","name":"锂电池组","desc":"7.4V 1000mAh 动力锂电池，高倍率放电，支持快速充电","price":"¥120"},{"icon":"🔩","name":"易损配件包","desc":"轮毂/轴承/螺丝等常用易损件套餐，赛场必备备件","price":"¥68"},{"icon":"🛡️","name":"装甲护板","desc":"高强度尼龙护板，有效抵御旋转武器冲击，可重复安装","price":"¥88"}]},"contact":{"show":true,"title":"联系我们","subtitle":"造悟社 · 专注格斗机器人教育与竞技","phone":"15970070712","email":"97631170@qq.com","hours":"周一至周六 9:00 - 18:00","address":"中国 · 造悟社机器人工作室","qrNote":"扫码咨询 · 添加客服微信","formTitle":"在线询价","formFields":[{"label":"您的姓名","placeholder":"请输入姓名"},{"label":"联系电话","placeholder":"请输入手机号"},{"label":"咨询内容","placeholder":"我想咨询产品报价 / 赛事报名 / 器材采购..."}]},"footerBrand":"造悟社 · 格斗机器人","footerInfo":"咨询热线：15970070712 · 邮箱：97631170@qq.com · © 2026 造悟社 版权所有","published":true,"publishUrl":"","nav":[{"text":"产品系列","href":"#products"},{"text":"赛事规则","href":"#competition"},{"text":"设备器材","href":"#accessories"},{"text":"技术规格","href":"#features"},{"text":"联系采购","href":"#contact","cta":true}]};
 let currentEdit = {type:'', idx:null};
-let tempImg = '';
 
 // GitHub配置
 const GITHUB_USER = '97631170-art';
@@ -393,11 +406,12 @@ function renderProducts() {
   const list = document.getElementById('productsList');
   list.innerHTML = siteData.products.map((p, i) => `
     <div class="product-item">
-      <img src="${p.img || '/images/placeholder.jpg'}" class="product-img" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 300 180%22><rect fill=%22%231a1a2e%22 width=%22300%22 height=%22180%22/><text x=%22150%22 y=%2290%22 text-anchor=%22middle%22 fill=%22%23666%22 font-size=%2240%22>📷</text></svg>'">
+      <img src="${p.img}" class="product-img" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 300 180%22><rect fill=%22%231a1a2e%22 width=%22300%22 height=%22180%22/><text x=%22150%22 y=%2290%22 text-anchor=%22middle%22 fill=%22%23666%22 font-size=%2240%22>📷</text></svg>'">
       <div class="product-info">
         <span class="product-tag">${p.tag}</span>
         <div class="product-name">${p.name}</div>
         <p class="product-desc">${p.desc}</p>
+        ${p.specs && p.specs.length ? '<div class="specs-wrap">' + p.specs.map(s => '<span class="spec-tag">'+s+'</span>').join('') + '</div>' : ''}
         <div class="product-actions">
           <button class="btn btn-sm btn-outline" onclick="editProduct(${i})">✏️ 编辑</button>
           <button class="btn btn-sm btn-danger" onclick="deleteProduct(${i})">🗑️ 删除</button>
@@ -417,11 +431,11 @@ function editProduct(idx) {
   document.getElementById('modalBody').innerHTML = `
     <div class="form-group">
       <label class="form-label">产品图片</label>
-      <div class="img-upload-area" onclick="document.getElementById('imgFile').click()">
-        <input type="file" id="imgFile" accept="image/*" onchange="uploadImg(this)">
-        ${p.img ? '<img src="'+p.img+'" id="imgPreview">' : '<div class="icon">📷</div><div class="text">点击上传图片</div>'}
+      <div class="img-upload-area" id="imgUploadArea">
+        ${p.img ? '<img src="'+p.img+'" id="imgPreview">' : '<div class="icon">📷</div><div class="text">点击选择图片</div>'}
+        <input type="file" id="imgFile" accept="image/*">
       </div>
-      <input type="hidden" id="editImg" value="${p.img}">
+      <input type="hidden" id="editImg" value="${p.img || ''}">
     </div>
     <div class="form-group">
       <label class="form-label">产品名称</label>
@@ -440,10 +454,22 @@ function editProduct(idx) {
       <textarea class="form-textarea" id="editDesc" rows="3">${p.desc}</textarea>
     </div>
     <div class="form-group">
-      <label class="form-label">价格</label>
-      <input type="text" class="form-input" id="editPrice" value="${p.price}" placeholder="留空显示"询价"">
+      <label class="form-label">价格（留空显示"询价"）</label>
+      <input type="text" class="form-input" id="editPrice" value="${p.price}">
     </div>
   `;
+  
+  // 绑定图片上传
+  document.getElementById('imgFile').addEventListener('change', function() {
+    uploadImgToGitHub(this.files[0], function(imgPath) {
+      document.getElementById('editImg').value = imgPath;
+      const area = document.getElementById('imgUploadArea');
+      area.innerHTML = '<img src="'+imgPath+'" id="imgPreview">' +
+        '<input type="file" id="imgFile" accept="image/*">';
+      document.getElementById('imgFile').addEventListener('change', arguments.callee);
+    });
+  });
+  
   document.getElementById('editModal').classList.add('active');
 }
 
@@ -686,6 +712,12 @@ function closeModal() {
 }
 
 // ============ 首页/联系/页脚保存 ============
+function updateHeroPreview() {
+  document.getElementById('heroPreviewEyebrow').textContent = document.getElementById('heroEyebrow').value;
+  document.getElementById('heroPreviewTitle').innerHTML = document.getElementById('heroLine1').value + '<br>' + document.getElementById('heroLine2').value;
+  document.getElementById('heroPreviewDesc').textContent = document.getElementById('heroDesc').value;
+}
+
 function saveHomepage() {
   siteData.heroEyebrow = document.getElementById('heroEyebrow').value;
   siteData.heroLine1 = document.getElementById('heroLine1').value;
@@ -726,19 +758,27 @@ function renderKPI() {
   `).join('');
 }
 
-// ============ 图片上传 ============
-async function uploadImg(fileInput) {
-  const file = fileInput.files[0];
-  if (!file) return;
-  
-  // 获取token
+// ============ 图片上传到 GitHub ============
+function getGitHubToken() {
   let token = localStorage.getItem('gh_token');
   if (!token) {
     token = prompt('请输入 GitHub Token（用于上传图片）:\n\n获取方式: GitHub Settings → Developer settings → Personal access tokens → Generate new token');
-    if (!token) return;
-    localStorage.setItem('gh_token', token);
+    if (token) localStorage.setItem('gh_token', token);
+  }
+  return token;
+}
+
+async function uploadImgToGitHub(file, callback) {
+  if (!file) return;
+  
+  const token = getGitHubToken();
+  if (!token) {
+    toast('❌ 需要 GitHub Token', 'error');
+    return;
   }
   
+  const area = document.getElementById('imgUploadArea');
+  area.classList.add('uploading');
   toast('⏳ 上传中...', 'info');
   
   const reader = new FileReader();
@@ -767,14 +807,16 @@ async function uploadImg(fileInput) {
       
       if (resp.ok) {
         const imgPath = '/' + path;
-        document.getElementById('editImg').value = imgPath;
-        document.getElementById('imgPreview').src = imgPath;
         toast('✅ 图片上传成功！', 'success');
+        area.classList.remove('uploading');
+        callback(imgPath);
       } else {
-        throw new Error(await resp.text());
+        const err = await resp.text();
+        throw new Error(err);
       }
     } catch(e) {
       toast('❌ 上传失败: ' + e.message, 'error');
+      area.classList.remove('uploading');
     }
   };
   reader.readAsDataURL(file);
@@ -806,7 +848,7 @@ async function publishAll() {
     a.download = 'site.json';
     a.click();
     URL.revokeObjectURL(url);
-    toast('⚠️ 请运行 node server 后再发布', 'error');
+    toast('⚠️ 请先运行 node server', 'error');
   }
 }
 </script>
