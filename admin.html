@@ -316,7 +316,7 @@
             <span class="card-title">🖼️ Hero 图片</span>
           </div>
           <div class="img-upload has-img" id="heroImgUpload" onclick="uploadHeroImg()">
-            <img src="/images/5f2929ee-5969-4077-b525-68ce90ff207e.JPG">
+            <img src="https://97631170-art.github.io/robot-quotation-2026/images/5f2929ee-5969-4077-b525-68ce90ff207e.JPG" onerror="handleImgError(this)">
           </div>
         </div>
         
@@ -815,6 +815,25 @@
   ]
 };
     
+    // GitHub Pages 基础路径
+    const BASE_URL = 'https://97631170-art.github.io/robot-quotation-2026';
+    
+    // 修复图片路径 (运行时版本)
+    function fixImgUrl(path) {
+      if (!path) return '';
+      if (path.startsWith('http')) return path;
+      if (path.startsWith('/images/')) {
+        return BASE_URL + path;
+      }
+      return path;
+    }
+    
+    // 图片加载失败处理
+    function handleImgError(img) {
+      img.style.display = 'none';
+      img.parentElement.innerHTML = '<div style="font-size:48px;padding:40px;">📷</div>';
+    }
+    
     // Toast
     function showToast(msg) {
       const toast = document.getElementById('toast');
@@ -879,7 +898,7 @@
       document.getElementById('productGrid').innerHTML = siteData.products.map((p, i) => 
         '<div class="product-card">' +
           '<div class="product-img-area" onclick="uploadProductImg(' + i + ')">' +
-            (p.img ? '<img src="' + p.img + '">' : '<span style="font-size:48px;">📷</span>') +
+            (p.img ? '<img src="' + buildFixImgUrl(p.img) + '" onerror="handleImgError(this)">' : '<span style="font-size:48px;">📷</span>') +
             '<div class="upload-hint"><span>📷</span><div>点击更换</div></div>' +
           '</div>' +
           '<div class="product-content">' +
@@ -1057,7 +1076,7 @@
           if (data.success) {
             siteData.heroImg = data.data.url;
             autoSave();
-            document.getElementById('heroImgUpload').innerHTML = '<img src="' + data.data.url + '">';
+            document.getElementById('heroImgUpload').innerHTML = '<img src="' + data.data.url + '" onerror="handleImgError(this)">';
             document.getElementById('heroImgUpload').classList.add('has-img');
             showToast('✅ 上传成功');
           }
