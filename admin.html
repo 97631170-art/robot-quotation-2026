@@ -684,10 +684,14 @@ async function handleImgUpload(fileInput, targetId) {
       if (resp.ok) {
         const imgPath = '/' + path;
         document.getElementById(targetId).value = imgPath;
-        document.getElementById('e-img-preview').src = imgPath;
+        const preview = document.getElementById('e-img-preview');
+        if (preview) {
+          preview.src = imgPath;
+        }
         showToast('✅ 上传成功');
       } else {
-        throw new Error('Upload failed');
+        const err = await resp.text();
+        throw new Error('Upload failed: ' + err);
       }
     } catch(e) {
       showToast('❌ 上传失败: ' + e.message);
