@@ -5,66 +5,70 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>造悟社 CMS 后台</title>
 <style>
+:root{--bg:#0a0a1a;--bg2:#111128;--bg3:#1a1a2e;--text:#fff;--text-muted:#a1a1aa;--primary:#4f46e5;--primary-hover:#4338ca;--border:rgba(255,255,255,0.1)}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f7fa;color:#333}
-.header{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;padding:20px 30px;display:flex;justify-content:space-between;align-items:center}
-.header h1{font-size:1.5rem;font-weight:600}
-.header .user{font-size:.9rem;opacity:.8}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.header{background:linear-gradient(135deg,var(--bg3),#16213e);padding:20px 30px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+.header h1{font-size:1.5rem;font-weight:600;color:var(--primary)}
+.header .user{font-size:.9rem;color:var(--text-muted)}
 .main{display:flex;min-height:calc(100vh - 70px)}
-.sidebar{width:220px;background:#fff;padding:20px 0;border-right:1px solid #e5e7eb}
-.sidebar a{display:block;padding:12px 24px;color:#4b5563;text-decoration:none;transition:.2s;border-left:3px solid transparent}
-.sidebar a:hover,.sidebar a.active{background:#eef2ff;color:#4f46e5;border-left-color:#4f46e5}
-.content{flex:1;padding:30px;overflow-y:auto}
+.sidebar{width:220px;background:var(--bg2);padding:20px 0;border-right:1px solid var(--border)}
+.sidebar a{display:block;padding:12px 24px;color:var(--text-muted);text-decoration:none;transition:.2s;border-left:3px solid transparent}
+.sidebar a:hover,.sidebar a.active{background:var(--bg3);color:var(--primary);border-left-color:var(--primary)}
+.content{flex:1;padding:30px;overflow-y:auto;background:var(--bg)}
 .section{display:none}
 .section.active{display:block}
-.section h2{font-size:1.3rem;margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid #e5e7eb}
-.card{background:#fff;border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.section h2{font-size:1.3rem;margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid var(--border);color:var(--text)}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
 .card img{max-width:100%;border-radius:8px;margin-bottom:12px}
 .card-body{display:flex;flex-direction:column;gap:10px}
-.card input,.card textarea,.card select{width:100%;padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:.95rem}
+.card input,.card textarea,.card select{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:8px;font-size:.95rem;background:var(--bg3);color:var(--text)}
 .card textarea{min-height:80px;resize:vertical}
-.card input:focus,.card textarea:focus,.card select:focus{outline:none;border-color:#4f46e5}
-.inp-title{font-size:1.1rem!important;font-weight:600!important;border-color:#4f46e5!important}
-.inp-tag{background:#fef3c7!important;border-color:#f59e0b!important}
+.card input:focus,.card textarea:focus,.card select:focus{outline:none;border-color:var(--primary)}
+.inp-title{font-size:1.1rem!important;font-weight:600!important;border-color:var(--primary)!important}
+.inp-tag{background:rgba(245,158,11,0.1)!important;border-color:#f59e0b!important}
 .inp-icon{width:60px!important;text-align:center;font-size:1.5rem!important}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
 .grid .card{height:100%}
-.btn{background:#4f46e5;color:#fff;border:none;padding:12px 24px;border-radius:8px;cursor:pointer;font-size:1rem;transition:.2s}
-.btn:hover{background:#4338ca}
+.btn{background:var(--primary);color:#fff;border:none;padding:12px 24px;border-radius:8px;cursor:pointer;font-size:1rem;transition:.2s}
+.btn:hover{background:var(--primary-hover);transform:translateY(-2px)}
 .btn-del{background:#ef4444!important}
 .btn-del:hover{background:#dc2626!important}
 .btn-sm{padding:6px 12px;font-size:.85rem;background:#6b7280}
-.btn-change-img{background:#10b981!important;padding:8px 16px;font-size:.85rem;margin-top:8px}
-.img-wrap{background:#fff;border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.btn-change-img{background:var(--primary)!important;padding:8px 16px;font-size:.85rem;margin-top:8px}
+.img-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
 .img-wrap img{max-width:300px;border-radius:8px;display:block;margin:12px 0}
 .img-wrap .btn{margin-top:10px}
-.no-img{background:#f3f4f6;color:#9ca3af;padding:40px;text-align:center;border-radius:8px}
+.no-img{background:var(--bg3);color:var(--text-muted);padding:40px;text-align:center;border-radius:8px}
 .no-img-sm{padding:15px}
 .feat-img-wrap,.class-img-wrap,.acc-img-wrap{position:relative;display:inline-block}
 .feat-img,.class-img,.acc-img{max-width:80px!important;margin:0!important}
 .prod-img{max-width:200px;margin:0 auto 12px!important;display:block!important}
-.prod-img-wrap{text-align:center;background:#f9fafb;padding:12px;border-radius:8px;margin-bottom:12px}
-.nav-item{display:flex;align-items:center;gap:12px;padding:12px;background:#fff;border-radius:8px;margin-bottom:8px}
+.prod-img-wrap{text-align:center;background:var(--bg3);padding:12px;border-radius:8px;margin-bottom:12px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;margin-bottom:8px}
 .nav-item input{flex:1}
-.nav-item label{display:flex;align-items:center;gap:6px;white-space:nowrap}
+.nav-item label{display:flex;align-items:center;gap:6px;white-space:nowrap;color:var(--text-muted)}
 .nav-item input[type="checkbox"]{width:auto}
-.footer{background:#1a1a2e;color:#fff;padding:16px 30px;display:flex;justify-content:space-between;align-items:center;margin-top:40px}
+.footer{background:var(--bg3);color:var(--text);padding:16px 30px;display:flex;justify-content:space-between;align-items:center;margin-top:40px;border-top:1px solid var(--border)}
 .form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
 .form-group{margin-bottom:16px}
-.form-group label{display:block;margin-bottom:6px;font-weight:500;color:#374151}
-.form-group input,.form-group textarea,.form-group select{width:100%;padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px}
+.form-group label{display:block;margin-bottom:6px;font-weight:500;color:var(--text-muted)}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:8px;background:var(--bg3);color:var(--text)}
 .form-group textarea{min-height:100px}
 .timeline{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px}
-.timeline-item{background:#fff;padding:16px;border-radius:8px;min-width:150px;text-align:center}
-.timeline-item input{text-align:center;border:none;border-bottom:2px solid #4f46e5;border-radius:0;padding:4px}
-.alert{padding:16px;background:#fef3c7;border-left:4px solid #f59e0b;border-radius:4px;margin-bottom:20px}
-#uploadModal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);justify-content:center;align-items:center;z-index:1000}
+.timeline-item{background:var(--bg2);border:1px solid var(--border);padding:16px;border-radius:8px;min-width:150px;text-align:center}
+.timeline-item input{text-align:center;border:none;border-bottom:2px solid var(--primary);border-radius:0;padding:4px;background:transparent;color:var(--text)}
+.alert{padding:16px;background:rgba(245,158,11,0.1);border-left:4px solid #f59e0b;border-radius:4px;margin-bottom:20px;color:var(--text)}
+#uploadModal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);justify-content:center;align-items:center;z-index:1000}
 #uploadModal.active{display:flex}
-.modal-content{background:#fff;padding:30px;border-radius:16px;max-width:500px;width:90%}
-.modal-content h3{margin-bottom:20px}
+.modal-content{background:var(--bg2);border:1px solid var(--border);padding:30px;border-radius:16px;max-width:500px;width:90%}
+.modal-content h3{margin-bottom:20px;color:var(--text)}
 .modal-content .btn{margin-top:16px;width:100%}
-.drop-zone{border:2px dashed #e5e7eb;border-radius:12px;padding:40px;text-align:center;transition:.2s;cursor:pointer}
-.drop-zone:hover,.drop-zone.dragover{border-color:#4f46e5;background:#eef2ff}
+.drop-zone{border:2px dashed var(--border);border-radius:12px;padding:40px;text-align:center;transition:.2s;cursor:pointer;color:var(--text-muted)}
+.drop-zone:hover,.drop-zone.dragover{border-color:var(--primary);background:var(--bg3)}
+#publishStatus{text-align:center;margin:0 16px 10px;font-size:0.85rem}
+.btn-publish{background:#10b981!important}
+.btn-publish:hover{background:#059669!important}
 </style>
 </head>
 <body>
@@ -82,8 +86,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <a href="#" onclick="showSection('nav',this)">🔗 导航菜单</a>
     <a href="#" onclick="showSection('contact',this)">📞 联系信息</a>
     <a href="#" onclick="showSection('footer',this)">📋 页脚信息</a>
-    <button onclick="saveData()" class="btn btn-publish" style="margin:20px 16px;width:calc(100% - 32px);background:#10b981">🚀 一键发布</button>
-    <div id="publishStatus" style="text-align:center;margin:0 16px 10px;font-size:0.85rem"></div>
+    <button onclick="saveData()" class="btn btn-publish" style="margin:20px 16px;width:calc(100% - 32px)">🚀 一键发布</button>
+    <div id="publishStatus"></div>
   </div>
   <div class="content">
     <!-- 产品系列 -->
@@ -91,7 +95,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <h2>📦 产品系列 <button class="btn" onclick="addProduct()">+ 添加产品</button></h2>
       <div class="grid" id="productsGrid">
   <div class="card" id="prod-0">
-    <div class="prod-img-wrap"><img src="/images/43c4a798-c5a8-4cbc-9a11-cc09e243f9af.jpg" class="prod-img"><button class="btn-change-img" onclick="uploadImg('product', 0)">更换图片</button></div>
+    <div class="prod-img-wrap"><img src="/images/43c4a798-c5a8-4cbc-9a11-cc09e243f9af.jpg" class="prod-img" onerror="this.src='/images/placeholder.png'"><button class="btn-change-img" onclick="uploadImg('product', 0)">更换图片</button></div>
     <div class="card-body">
       <input type="text" class="inp-title" value="竖转格斗机器人" placeholder="产品名称" onchange="updProd(0,'name',this.value)">
       <input type="text" class="inp-tag" value="320克竖转类格斗机器人" placeholder="标签" onchange="updProd(0,'tag',this.value)">
@@ -109,7 +113,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
   </div>
   <div class="card" id="prod-1">
-    <div class="prod-img-wrap"><img src="/images/1775790736879.png" class="prod-img"><button class="btn-change-img" onclick="uploadImg('product', 1)">更换图片</button></div>
+    <div class="prod-img-wrap"><img src="/images/1775790736879.png" class="prod-img" onerror="this.src='/images/placeholder.png'"><button class="btn-change-img" onclick="uploadImg('product', 1)">更换图片</button></div>
     <div class="card-body">
       <input type="text" class="inp-title" value="横传格斗机器人" placeholder="产品名称" onchange="updProd(1,'name',this.value)">
       <input type="text" class="inp-tag" value="320克横转类格斗机器人" placeholder="标签" onchange="updProd(1,'tag',this.value)">
@@ -128,7 +132,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
   </div>
   <div class="card" id="prod-2">
-    <div class="prod-img-wrap"><img src="/images/1775790699904.jpg" class="prod-img"><button class="btn-change-img" onclick="uploadImg('product', 2)">更换图片</button></div>
+    <div class="prod-img-wrap"><img src="/images/1775790699904.jpg" class="prod-img" onerror="this.src='/images/placeholder.png'"><button class="btn-change-img" onclick="uploadImg('product', 2)">更换图片</button></div>
     <div class="card-body">
       <input type="text" class="inp-title" value="风暴 GX-06" placeholder="产品名称" onchange="updProd(2,'name',this.value)">
       <input type="text" class="inp-tag" value="抓举" placeholder="标签" onchange="updProd(2,'tag',this.value)">
@@ -146,7 +150,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
   </div>
   <div class="card" id="prod-3">
-    <div class="prod-img-wrap"><img src="/images/aabb4b3a-9dd0-472d-9976-f3f546b2224d.jpg" class="prod-img"><button class="btn-change-img" onclick="uploadImg('product', 3)">更换图片</button></div>
+    <div class="prod-img-wrap"><img src="/images/aabb4b3a-9dd0-472d-9976-f3f546b2224d.jpg" class="prod-img" onerror="this.src='/images/placeholder.png'"><button class="btn-change-img" onclick="uploadImg('product', 3)">更换图片</button></div>
     <div class="card-body">
       <input type="text" class="inp-title" value="弹射格斗机器人" placeholder="产品名称" onchange="updProd(3,'name',this.value)">
       <input type="text" class="inp-tag" value="320克弹射类格斗机器人" placeholder="标签" onchange="updProd(3,'tag',this.value)">
@@ -164,7 +168,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
   </div>
   <div class="card" id="prod-4">
-    <div class="prod-img-wrap"><img src="/images/微信图片_20260116120809_11_81.jpg" class="prod-img"><button class="btn-change-img" onclick="uploadImg('product', 4)">更换图片</button></div>
+    <div class="prod-img-wrap"><img src="/images/微信图片_20260116120809_11_81.jpg" class="prod-img" onerror="this.src='/images/placeholder.png'"><button class="btn-change-img" onclick="uploadImg('product', 4)">更换图片</button></div>
     <div class="card-body">
       <input type="text" class="inp-title" value="新机器人" placeholder="产品名称" onchange="updProd(4,'name',this.value)">
       <input type="text" class="inp-tag" value="新品" placeholder="标签" onchange="updProd(4,'tag',this.value)">
@@ -185,11 +189,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="section" id="sec-hero">
       <h2>🏠 首页设置</h2>
       <div class="card">
-        <h3 style="margin-bottom:16px">主视觉图片</h3>
-        <div class="img-wrap"><img src="/images/5f2929ee-5969-4077-b525-68ce90ff207e.JPG" id="heroImgPreview"><button class="btn" onclick="uploadImg('hero',0)">更换图片</button></div>
+        <h3 style="margin-bottom:16px;color:var(--text)">主视觉图片</h3>
+        <div class="img-wrap"><img src="/images/5f2929ee-5969-4077-b525-68ce90ff207e.JPG" id="heroImgPreview" onerror="this.src='/images/placeholder.png'"><button class="btn" onclick="uploadImg('hero',0)">更换图片</button></div>
       </div>
       <div class="card">
-        <h3 style="margin-bottom:16px">首屏文字</h3>
+        <h3 style="margin-bottom:16px;color:var(--text)">首屏文字</h3>
         <div class="form-row">
           <div class="form-group"><label>品牌名称</label><input type="text" id="hero-brand" value="⚡中国格斗机甲联盟-造悟社" onchange="updRoot('brand',this.value)"></div>
           <div class="form-group"><label>导航徽章</label><input type="text" id="hero-badge" value="2026 新品" onchange="updRoot('navBadge',this.value)"></div>
@@ -206,12 +210,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         </div>
       </div>
       <div class="card">
-        <h3 style="margin-bottom:16px">KPI 数字</h3>
+        <h3 style="margin-bottom:16px;color:var(--text)">KPI 数字</h3>
         <div class="form-row" style="margin-bottom:12px"><div class="form-group"><label>数字</label><input type="text" value="7" onchange="updItem('kpi',0,'num',this.value)"></div><div class="form-group"><label>说明</label><input type="text" value="产品型号" onchange="updItem('kpi',0,'label',this.value)"></div></div><div class="form-row" style="margin-bottom:12px"><div class="form-group"><label>数字</label><input type="text" value="320g" onchange="updItem('kpi',1,'num',this.value)"></div><div class="form-group"><label>说明</label><input type="text" value="竞技重量级" onchange="updItem('kpi',1,'label',this.value)"></div></div><div class="form-row" style="margin-bottom:12px"><div class="form-group"><label>数字</label><input type="text" value="8V" onchange="updItem('kpi',2,'num',this.value)"></div><div class="form-group"><label>说明</label><input type="text" value="额定电压" onchange="updItem('kpi',2,'label',this.value)"></div></div><div class="form-row" style="margin-bottom:12px"><div class="form-group"><label>数字</label><input type="text" value="5ms" onchange="updItem('kpi',3,'num',this.value)"></div><div class="form-group"><label>说明</label><input type="text" value="控制响应" onchange="updItem('kpi',3,'label',this.value)"></div></div>
       </div>
       <div class="card">
-        <h3 style="margin-bottom:16px">特性图片</h3>
-        <div class="img-wrap"><img src="/images/01ed2520-0525-4a8e-b578-fadb72265cb2.JPG" id="featImgPreview"><button class="btn" onclick="uploadImg('feat',0)">更换图片</button></div>
+        <h3 style="margin-bottom:16px;color:var(--text)">特性图片</h3>
+        <div class="img-wrap"><img src="/images/01ed2520-0525-4a8e-b578-fadb72265cb2.JPG" id="featImgPreview" onerror="this.src='/images/placeholder.png'"><button class="btn" onclick="uploadImg('feat',0)">更换图片</button></div>
       </div>
     </div>
 
@@ -220,7 +224,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <h2>✨ 核心特性 <button class="btn" onclick="addFeature()">+ 添加特性</button></h2>
       <div class="grid" id="featuresGrid">
   <div class="card feat-card" id="feat-0">
-    <div class="feat-img-wrap"><div class="no-img-sm">无图</div><button class="btn-sm" onclick="uploadImg('feature', 0)">上传</button></div>
+    <div class="feat-img-wrap"><div class="no-img-sm">📷</div><button class="btn-sm" onclick="uploadImg('feature', 0)">上传</button></div>
     <div class="card-body">
       <input type="text" value="🏗️" placeholder="图标 emoji" class="inp-icon" onchange="updItem('features',0,'icon',this.value)">
       <input type="text" value="高强度 3D 打印结构" placeholder="标题" onchange="updItem('features',0,'title',this.value)">
@@ -229,7 +233,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
   </div>
   <div class="card feat-card" id="feat-1">
-    <div class="feat-img-wrap"><div class="no-img-sm">无图</div><button class="btn-sm" onclick="uploadImg('feature', 1)">上传</button></div>
+    <div class="feat-img-wrap"><div class="no-img-sm">📷</div><button class="btn-sm" onclick="uploadImg('feature', 1)">上传</button></div>
     <div class="card-body">
       <input type="text" value="⚡" placeholder="图标 emoji" class="inp-icon" onchange="updItem('features',1,'icon',this.value)">
       <input type="text" value="精准电控系统" placeholder="标题" onchange="updItem('features',1,'title',this.value)">
@@ -238,7 +242,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
   </div>
   <div class="card feat-card" id="feat-2">
-    <div class="feat-img-wrap"><div class="no-img-sm">无图</div><button class="btn-sm" onclick="uploadImg('feature', 2)">上传</button></div>
+    <div class="feat-img-wrap"><div class="no-img-sm">📷</div><button class="btn-sm" onclick="uploadImg('feature', 2)">上传</button></div>
     <div class="card-body">
       <input type="text" value="🔧" placeholder="图标 emoji" class="inp-icon" onchange="updItem('features',2,'icon',this.value)">
       <input type="text" value="模块化快拆设计" placeholder="标题" onchange="updItem('features',2,'title',this.value)">
@@ -247,7 +251,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
   </div>
   <div class="card feat-card" id="feat-3">
-    <div class="feat-img-wrap"><div class="no-img-sm">无图</div><button class="btn-sm" onclick="uploadImg('feature', 3)">上传</button></div>
+    <div class="feat-img-wrap"><div class="no-img-sm">📷</div><button class="btn-sm" onclick="uploadImg('feature', 3)">上传</button></div>
     <div class="card-body">
       <input type="text" value="🏆" placeholder="图标 emoji" class="inp-icon" onchange="updItem('features',3,'icon',this.value)">
       <input type="text" value="符合主流赛事规格" placeholder="标题" onchange="updItem('features',3,'title',this.value)">
@@ -267,10 +271,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         </div>
         <div class="form-group"><label>赛事描述</label><textarea onchange="updRoot('competition.desc',this.value)">BoxBot 是国内最具影响力的青少年格斗机器人竞技赛事，涵盖小学、初中、高中三个组别，旨在培养青少年的工程思维、动手能力与竞技精神。</textarea></div>
       </div>
-      <h3 style="margin:20px 0 12px">比赛级别 <button class="btn btn-sm" onclick="addClass()">+ 添加</button></h3>
+      <h3 style="margin:20px 0 12px;color:var(--text)">比赛级别 <button class="btn btn-sm" onclick="addClass()">+ 添加</button></h3>
       <div class="grid" id="classesGrid">
   <div class="card class-card" id="cls-0">
-    <div class="class-img-wrap"><div class="no-img-sm">无图</div><button class="btn-sm" onclick="uploadImg('class', 0)">上传</button></div>
+    <div class="class-img-wrap"><div class="no-img-sm">📷</div><button class="btn-sm" onclick="uploadImg('class', 0)">上传</button></div>
     <div class="card-body">
       <input type="text" value="🎯" placeholder="图标" class="inp-icon" onchange="updItem('competition.classes',0,'icon',this.value)">
       <input type="text" value="迷你级" placeholder="级别名称" onchange="updItem('competition.classes',0,'name',this.value)">
@@ -281,7 +285,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
   </div>
   <div class="card class-card" id="cls-1">
-    <div class="class-img-wrap"><div class="no-img-sm">无图</div><button class="btn-sm" onclick="uploadImg('class', 1)">上传</button></div>
+    <div class="class-img-wrap"><div class="no-img-sm">📷</div><button class="btn-sm" onclick="uploadImg('class', 1)">上传</button></div>
     <div class="card-body">
       <input type="text" value="⚔️" placeholder="图标" class="inp-icon" onchange="updItem('competition.classes',1,'icon',this.value)">
       <input type="text" value="轻量级" placeholder="级别名称" onchange="updItem('competition.classes',1,'name',this.value)">
@@ -292,7 +296,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
   </div>
   <div class="card class-card" id="cls-2">
-    <div class="class-img-wrap"><div class="no-img-sm">无图</div><button class="btn-sm" onclick="uploadImg('class', 2)">上传</button></div>
+    <div class="class-img-wrap"><div class="no-img-sm">📷</div><button class="btn-sm" onclick="uploadImg('class', 2)">上传</button></div>
     <div class="card-body">
       <input type="text" value="💥" placeholder="图标" class="inp-icon" onchange="updItem('competition.classes',2,'icon',this.value)">
       <input type="text" value="重量级" placeholder="级别名称" onchange="updItem('competition.classes',2,'name',this.value)">
@@ -302,7 +306,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <button class="btn-del" onclick="delItem('competition.classes',2)">删除</button>
     </div>
   </div></div>
-      <h3 style="margin:20px 0 12px">时间线</h3>
+      <h3 style="margin:20px 0 12px;color:var(--text)">时间线</h3>
       <div class="timeline">
         <div class="timeline-item"><input type="text" value="3月" placeholder="月份" onchange="updItem('competition.timeline',0,'month',this.value)"><br><input type="text" value="报名开启" placeholder="事件" onchange="updItem('competition.timeline',0,'event',this.value)"></div><div class="timeline-item"><input type="text" value="5月" placeholder="月份" onchange="updItem('competition.timeline',1,'month',this.value)"><br><input type="text" value="城市海选赛" placeholder="事件" onchange="updItem('competition.timeline',1,'event',this.value)"></div><div class="timeline-item"><input type="text" value="7月" placeholder="月份" onchange="updItem('competition.timeline',2,'month',this.value)"><br><input type="text" value="区域晋级赛" placeholder="事件" onchange="updItem('competition.timeline',2,'event',this.value)"></div><div class="timeline-item"><input type="text" value="8月" placeholder="月份" onchange="updItem('competition.timeline',3,'month',this.value)"><br><input type="text" value="全国总决赛" placeholder="事件" onchange="updItem('competition.timeline',3,'event',this.value)"></div>
       </div>
@@ -313,7 +317,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <h2>🔧 器材配件 <button class="btn" onclick="addAccessory()">+ 添加配件</button></h2>
       <div class="grid" id="accessoriesGrid">
   <div class="card acc-card" id="acc-0">
-    <div class="acc-img-wrap"><div class="no-img-sm">无图</div><button class="btn-sm" onclick="uploadImg('accessory', 0)">上传</button></div>
+    <div class="acc-img-wrap"><div class="no-img-sm">📷</div><button class="btn-sm" onclick="uploadImg('accessory', 0)">上传</button></div>
     <div class="card-body">
       <input type="text" value="⚙️" placeholder="图标 emoji" class="inp-icon" onchange="updItem('accessories.items',0,'icon',this.value)">
       <input type="text" value="武器模块" placeholder="配件名称" onchange="updItem('accessories.items',0,'name',this.value)">
@@ -323,7 +327,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
   </div>
   <div class="card acc-card" id="acc-1">
-    <div class="acc-img-wrap"><div class="no-img-sm">无图</div><button class="btn-sm" onclick="uploadImg('accessory', 1)">上传</button></div>
+    <div class="acc-img-wrap"><div class="no-img-sm">📷</div><button class="btn-sm" onclick="uploadImg('accessory', 1)">上传</button></div>
     <div class="card-body">
       <input type="text" value="🚗" placeholder="图标 emoji" class="inp-icon" onchange="updItem('accessories.items',1,'icon',this.value)">
       <input type="text" value="驱动底盘" placeholder="配件名称" onchange="updItem('accessories.items',1,'name',this.value)">
@@ -333,7 +337,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
   </div>
   <div class="card acc-card" id="acc-2">
-    <div class="acc-img-wrap"><div class="no-img-sm">无图</div><button class="btn-sm" onclick="uploadImg('accessory', 2)">上传</button></div>
+    <div class="acc-img-wrap"><div class="no-img-sm">📷</div><button class="btn-sm" onclick="uploadImg('accessory', 2)">上传</button></div>
     <div class="card-body">
       <input type="text" value="📡" placeholder="图标 emoji" class="inp-icon" onchange="updItem('accessories.items',2,'icon',this.value)">
       <input type="text" value="遥控器" placeholder="配件名称" onchange="updItem('accessories.items',2,'name',this.value)">
@@ -343,7 +347,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
   </div>
   <div class="card acc-card" id="acc-3">
-    <div class="acc-img-wrap"><div class="no-img-sm">无图</div><button class="btn-sm" onclick="uploadImg('accessory', 3)">上传</button></div>
+    <div class="acc-img-wrap"><div class="no-img-sm">📷</div><button class="btn-sm" onclick="uploadImg('accessory', 3)">上传</button></div>
     <div class="card-body">
       <input type="text" value="🔋" placeholder="图标 emoji" class="inp-icon" onchange="updItem('accessories.items',3,'icon',this.value)">
       <input type="text" value="锂电池组" placeholder="配件名称" onchange="updItem('accessories.items',3,'name',this.value)">
@@ -353,7 +357,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
   </div>
   <div class="card acc-card" id="acc-4">
-    <div class="acc-img-wrap"><div class="no-img-sm">无图</div><button class="btn-sm" onclick="uploadImg('accessory', 4)">上传</button></div>
+    <div class="acc-img-wrap"><div class="no-img-sm">📷</div><button class="btn-sm" onclick="uploadImg('accessory', 4)">上传</button></div>
     <div class="card-body">
       <input type="text" value="🔩" placeholder="图标 emoji" class="inp-icon" onchange="updItem('accessories.items',4,'icon',this.value)">
       <input type="text" value="易损配件包" placeholder="配件名称" onchange="updItem('accessories.items',4,'name',this.value)">
@@ -363,7 +367,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
   </div>
   <div class="card acc-card" id="acc-5">
-    <div class="acc-img-wrap"><div class="no-img-sm">无图</div><button class="btn-sm" onclick="uploadImg('accessory', 5)">上传</button></div>
+    <div class="acc-img-wrap"><div class="no-img-sm">📷</div><button class="btn-sm" onclick="uploadImg('accessory', 5)">上传</button></div>
     <div class="card-body">
       <input type="text" value="🛡️" placeholder="图标 emoji" class="inp-icon" onchange="updItem('accessories.items',5,'icon',this.value)">
       <input type="text" value="装甲护板" placeholder="配件名称" onchange="updItem('accessories.items',5,'name',this.value)">
@@ -381,31 +385,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="nav-item" id="nav-0">
     <input type="text" value="产品系列" placeholder="文字" onchange="updItem('nav',0,'text',this.value)">
     <input type="text" value="#products" placeholder="链接" onchange="updItem('nav',0,'href',this.value)">
-    <label><input type="checkbox"  onchange="updItem('nav',0,'cta',this.checked)"> CTA按钮</label>
+    <label><input type="checkbox"  onchange="updItem('nav',0,'cta',this.checked)"> CTA</label>
     <button class="btn-del btn-sm" onclick="delItem('nav',0)">删除</button>
   </div>
   <div class="nav-item" id="nav-1">
     <input type="text" value="赛事规则" placeholder="文字" onchange="updItem('nav',1,'text',this.value)">
     <input type="text" value="#competition" placeholder="链接" onchange="updItem('nav',1,'href',this.value)">
-    <label><input type="checkbox"  onchange="updItem('nav',1,'cta',this.checked)"> CTA按钮</label>
+    <label><input type="checkbox"  onchange="updItem('nav',1,'cta',this.checked)"> CTA</label>
     <button class="btn-del btn-sm" onclick="delItem('nav',1)">删除</button>
   </div>
   <div class="nav-item" id="nav-2">
     <input type="text" value="设备器材" placeholder="文字" onchange="updItem('nav',2,'text',this.value)">
     <input type="text" value="#accessories" placeholder="链接" onchange="updItem('nav',2,'href',this.value)">
-    <label><input type="checkbox"  onchange="updItem('nav',2,'cta',this.checked)"> CTA按钮</label>
+    <label><input type="checkbox"  onchange="updItem('nav',2,'cta',this.checked)"> CTA</label>
     <button class="btn-del btn-sm" onclick="delItem('nav',2)">删除</button>
   </div>
   <div class="nav-item" id="nav-3">
     <input type="text" value="技术规格" placeholder="文字" onchange="updItem('nav',3,'text',this.value)">
     <input type="text" value="#features" placeholder="链接" onchange="updItem('nav',3,'href',this.value)">
-    <label><input type="checkbox"  onchange="updItem('nav',3,'cta',this.checked)"> CTA按钮</label>
+    <label><input type="checkbox"  onchange="updItem('nav',3,'cta',this.checked)"> CTA</label>
     <button class="btn-del btn-sm" onclick="delItem('nav',3)">删除</button>
   </div>
   <div class="nav-item" id="nav-4">
     <input type="text" value="联系采购" placeholder="文字" onchange="updItem('nav',4,'text',this.value)">
     <input type="text" value="#contact" placeholder="链接" onchange="updItem('nav',4,'href',this.value)">
-    <label><input type="checkbox" checked onchange="updItem('nav',4,'cta',this.checked)"> CTA按钮</label>
+    <label><input type="checkbox" checked onchange="updItem('nav',4,'cta',this.checked)"> CTA</label>
     <button class="btn-del btn-sm" onclick="delItem('nav',4)">删除</button>
   </div></div>
     </div>
@@ -427,7 +431,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
           <div class="form-group"><label>地址</label><input type="text" value="中国 · 造悟社机器人工作室" onchange="updRoot('contact.address',this.value)"></div>
         </div>
         <div class="form-group"><label>二维码图片</label>
-          <div class="img-wrap"><div class="no-img">暂无二维码</div><button class="btn" onclick="uploadImg('qr',0)">上传二维码</button></div>
+          <div class="img-wrap"><div class="no-img">📷 暂无二维码</div><button class="btn" onclick="uploadImg('qr',0)">上传二维码</button></div>
         </div>
       </div>
     </div>
@@ -449,7 +453,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <h3>📤 上传图片</h3>
     <div class="drop-zone" id="dropZone">
       <p>拖拽图片到这里</p>
-      <p style="margin:10px 0;color:#9ca3af">或</p>
+      <p style="margin:10px 0;color:var(--text-muted)">或</p>
       <input type="file" id="fileInput" accept="image/*" style="display:none">
       <button class="btn" onclick="document.getElementById('fileInput').click()">选择图片</button>
     </div>
@@ -460,9 +464,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <script>
 let data = {"brand":"⚡中国格斗机甲联盟-造悟社","navBadge":"2026 新品","heroEyebrow":"格斗机器人 · 2026 竞技系列","heroLine1":"极速突破","heroLine2":"铸造冠军","heroDesc":"专为竞技格斗设计的高性能机器人系列，采用高强度ABS+ 3D 打印结构，搭载精准电控系统。多款型号——推铲型、垂直旋转型、双头型，满足不同战术风格，一键入场，决战巅峰。","heroBtn1":"赛事规则","heroBtn2":"设备器材","kpi":[{"num":"7","label":"产品型号"},{"num":"320g","label":"竞技重量级"},{"num":"8V","label":"额定电压"},{"num":"5ms","label":"控制响应"}],"products":[{"tag":"320克竖转类格斗机器人","series":"SERIES-A","name":"竖转格斗机器人","desc":"低重心楔形推铲设计，正面强攻利器。红蓝双色高辨识配色，前置坡面铲头可轻松翻转对手，攻防兼备，适合初入竞技场的选手。","specs":["重量: 320g","材质: ABS+","驱动: 四轮","武器: 推铲"],"price":"","priceNote":"整机含遥控器","hot":false,"img":"/images/43c4a798-c5a8-4cbc-9a11-cc09e243f9af.jpg"},{"tag":"320克横转类格斗机器人","series":"SERIES-D","name":"横传格斗机器人","desc":"水平高速转鼓武器，侧面攻击角度独特，可从侧翼击穿对手装甲。深灰色战斗涂装，低重心宽体设计，稳定性极佳，适合技巧型选手。","specs":["重量: 320g","武器: 水平横转","材质: ABS+","高速电机","新规格"],"price":"0","priceNote":"整机含遥控器","hot":false,"img":"/images/1775790736879.png"},{"tag":"抓举","series":"SERIES-F","name":"风暴 GX-06","desc":"液压模拟抓举臂，可将对手提起并推入场地陷阱。前置钳爪开合速度快，支持连续夹持，是控制型选手的最爱。","specs":["重量: 320g","武器: 抓举臂","材质: ABS+","高速舵机"],"price":"¥1,380","priceNote":"整机含遥控器","hot":false,"img":"/images/1775790699904.jpg"},{"tag":"320克弹射类格斗机器人","series":"SERIES-G","name":"弹射格斗机器人","desc":"高速舵机","specs":["重量: 320g","武器: 高速锤","材质: ABS+","强力舵机"],"price":"¥1,520","priceNote":"整机含遥控器","hot":false,"img":"/images/aabb4b3a-9dd0-472d-9976-f3f546b2224d.jpg"},{"tag":"新品","series":"SERIES-X","name":"新机器人","desc":"请编辑产品描述...","specs":["重量: 320g","材质: ABS+"],"price":"¥1,000","priceNote":"整机含遥控器","hot":false,"img":"/images/微信图片_20260116120809_11_81.jpg"}],"featTitle":"为竞技而生","features":[{"icon":"🏗️","title":"高强度 3D 打印结构","desc":"全机身ABS+ 材料，层厚 0.2mm 精细打印，强度媲美注塑件，抗冲击性卓越，损坏后可快速补件更换。"},{"icon":"⚡","title":"精准电控系统","desc":"竞技级电调，响应延迟低至 5ms，支持 2.4GHz 抗干扰遥控，在高密度干扰环境中稳定运行。"},{"icon":"🔧","title":"模块化快拆设计","desc":"武器模块、驱动模块可 10 分钟内完成更换，赛间快速维修不误场，零部件独立出售方便备件储备。"},{"icon":"🏆","title":"符合主流赛事规格","desc":"满足 500g 量级主流竞技规则，适配国内外各大机器人格斗联赛标准场地与评分体系。"}],"heroImg":"/images/5f2929ee-5969-4077-b525-68ce90ff207e.JPG","featImg":"/images/01ed2520-0525-4a8e-b578-fadb72265cb2.JPG","competition":{"show":true,"title":"BoxBot 格斗机器人大赛","subtitle":"2026 全国青少年格斗机器人联赛","desc":"BoxBot 是国内最具影响力的青少年格斗机器人竞技赛事，涵盖小学、初中、高中三个组别，旨在培养青少年的工程思维、动手能力与竞技精神。","classes":[{"name":"迷你级","weight":"150g","group":"小学组","desc":"入门级赛事，使用小型格斗机器人，适合初次接触竞技机器人领域的学生。","icon":"🎯"},{"name":"轻量级","weight":"320g","group":"中小学组","desc":"主流竞技级别，考验选手的操控技巧与战术策略，竞争最为激烈。","icon":"⚔️"},{"name":"重量级","weight":"1.5kg","group":"初高中组","desc":"高端竞技赛事，装备更强武器系统，观赏性与技术含量最高。","icon":"💥"}],"timeline":[{"month":"3月","event":"报名开启"},{"month":"5月","event":"城市海选赛"},{"month":"7月","event":"区域晋级赛"},{"month":"8月","event":"全国总决赛"}],"contact":"15970070712","registerUrl":"#contact"},"accessories":{"show":true,"title":"配件器材","subtitle":"模块化设计 · 快速更换 · 赛场无忧","items":[{"icon":"⚙️","name":"武器模块","desc":"推铲/转鼓/弹射等多种武器模块，支持10分钟快拆更换","price":"¥280起"},{"icon":"🚗","name":"驱动底盘","desc":"四轮独立悬挂底盘，高强度ABS材质，损坏可单独更换","price":"¥380"},{"icon":"📡","name":"遥控器","desc":"2.4GHz抗干扰遥控，响应延迟<5ms，支持多机同场竞技","price":"¥220"},{"icon":"🔋","name":"锂电池组","desc":"7.4V 1000mAh 动力锂电池，高倍率放电，支持快速充电","price":"¥120"},{"icon":"🔩","name":"易损配件包","desc":"轮毂/轴承/螺丝等常用易损件套餐，赛场必备备件","price":"¥68"},{"icon":"🛡️","name":"装甲护板","desc":"高强度尼龙护板，有效抵御旋转武器冲击，可重复安装","price":"¥88"}]},"contact":{"show":true,"title":"联系我们","subtitle":"造悟社 · 专注格斗机器人教育与竞技","phone":"15970070712","email":"97631170@qq.com","hours":"周一至周六 9:00 - 18:00","address":"中国 · 造悟社机器人工作室","qrNote":"扫码咨询 · 添加客服微信","formTitle":"在线询价","formFields":[{"label":"您的姓名","placeholder":"请输入姓名"},{"label":"联系电话","placeholder":"请输入手机号"},{"label":"咨询内容","placeholder":"我想咨询产品报价 / 赛事报名 / 器材采购..."}]},"footerBrand":"造悟社 · 格斗机器人","footerInfo":"咨询热线：15970070712 · 邮箱：97631170@qq.com · © 2026 造悟社 版权所有","published":true,"publishUrl":"","nav":[{"text":"产品系列","href":"#products"},{"text":"赛事规则","href":"#competition"},{"text":"设备器材","href":"#accessories"},{"text":"技术规格","href":"#features"},{"text":"联系采购","href":"#contact","cta":true}]};
-let uploadTarget = null; // {type, index}
+let uploadTarget = null;
 
-// 切换分区
 function showSection(name, el) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
@@ -470,7 +473,6 @@ function showSection(name, el) {
   if (el) el.classList.add('active');
 }
 
-// 更新数据
 function updRoot(path, val) {
   const keys = path.split('.');
   let obj = data;
@@ -535,7 +537,7 @@ function addNav() {
 function renderProducts() {
   document.getElementById('productsGrid').innerHTML = data.products.map((p,i) => `
     <div class="card" id="prod-${i}">
-      ${p.img ? `<div class="prod-img-wrap"><img src="${p.img}" class="prod-img"><button class="btn-change-img" onclick="uploadImg('product', ${i})">更换图片</button></div>` : `<div class="prod-img-wrap"><div class="no-img">无图片</div><button class="btn-change-img" onclick="uploadImg('product', ${i})">上传图片</button></div>`}
+      ${p.img ? `<div class="prod-img-wrap"><img src="${p.img}" class="prod-img" onerror="this.src='/images/placeholder.png'"><button class="btn-change-img" onclick="uploadImg('product', ${i})">更换图片</button></div>` : `<div class="prod-img-wrap"><div class="no-img">📷 点击上传图片</div><button class="btn-change-img" onclick="uploadImg('product', ${i})">上传图片</button></div>`}
       <div class="card-body">
         <input type="text" class="inp-title" value="${p.name}" placeholder="产品名称" onchange="updProd(${i},'name',this.value)">
         <input type="text" class="inp-tag" value="${p.tag}" placeholder="标签" onchange="updProd(${i},'tag',this.value)">
@@ -554,7 +556,7 @@ function renderProducts() {
 function renderFeatures() {
   document.getElementById('featuresGrid').innerHTML = data.features.map((f,i) => `
     <div class="card feat-card" id="feat-${i}">
-      ${f.iconImg ? `<div class="feat-img-wrap"><img src="${f.iconImg}" class="feat-img"><button class="btn-sm" onclick="uploadImg('feature', ${i})">更换</button></div>` : `<div class="feat-img-wrap"><div class="no-img-sm">无图</div><button class="btn-sm" onclick="uploadImg('feature', ${i})">上传</button></div>`}
+      ${f.iconImg ? `<div class="feat-img-wrap"><img src="${f.iconImg}" class="feat-img" onerror="this.style.display='none'"><button class="btn-sm" onclick="uploadImg('feature', ${i})">更换</button></div>` : `<div class="feat-img-wrap"><div class="no-img-sm">📷</div><button class="btn-sm" onclick="uploadImg('feature', ${i})">上传</button></div>`}
       <div class="card-body">
         <input type="text" value="${f.icon}" placeholder="图标" class="inp-icon" onchange="updItem('features',${i},'icon',this.value)">
         <input type="text" value="${f.title}" placeholder="标题" onchange="updItem('features',${i},'title',this.value)">
@@ -567,7 +569,7 @@ function renderFeatures() {
 function renderClasses() {
   document.getElementById('classesGrid').innerHTML = data.competition.classes.map((c,i) => `
     <div class="card class-card" id="cls-${i}">
-      ${c.img ? `<div class="class-img-wrap"><img src="${c.img}" class="class-img"><button class="btn-sm" onclick="uploadImg('class', ${i})">更换</button></div>` : `<div class="class-img-wrap"><div class="no-img-sm">无图</div><button class="btn-sm" onclick="uploadImg('class', ${i})">上传</button></div>`}
+      ${c.img ? `<div class="class-img-wrap"><img src="${c.img}" class="class-img" onerror="this.style.display='none'"><button class="btn-sm" onclick="uploadImg('class', ${i})">更换</button></div>` : `<div class="class-img-wrap"><div class="no-img-sm">📷</div><button class="btn-sm" onclick="uploadImg('class', ${i})">上传</button></div>`}
       <div class="card-body">
         <input type="text" value="${c.icon}" placeholder="图标" class="inp-icon" onchange="updItem('competition.classes',${i},'icon',this.value)">
         <input type="text" value="${c.name}" placeholder="级别名称" onchange="updItem('competition.classes',${i},'name',this.value)">
@@ -582,7 +584,7 @@ function renderClasses() {
 function renderAccessories() {
   document.getElementById('accessoriesGrid').innerHTML = data.accessories.items.map((a,i) => `
     <div class="card acc-card" id="acc-${i}">
-      ${a.img ? `<div class="acc-img-wrap"><img src="${a.img}" class="acc-img"><button class="btn-sm" onclick="uploadImg('accessory', ${i})">更换</button></div>` : `<div class="acc-img-wrap"><div class="no-img-sm">无图</div><button class="btn-sm" onclick="uploadImg('accessory', ${i})">上传</button></div>`}
+      ${a.img ? `<div class="acc-img-wrap"><img src="${a.img}" class="acc-img" onerror="this.style.display='none'"><button class="btn-sm" onclick="uploadImg('accessory', ${i})">更换</button></div>` : `<div class="acc-img-wrap"><div class="no-img-sm">📷</div><button class="btn-sm" onclick="uploadImg('accessory', ${i})">上传</button></div>`}
       <div class="card-body">
         <input type="text" value="${a.icon}" placeholder="图标" class="inp-icon" onchange="updItem('accessories.items',${i},'icon',this.value)">
         <input type="text" value="${a.name}" placeholder="配件名称" onchange="updItem('accessories.items',${i},'name',this.value)">
@@ -611,7 +613,6 @@ function renderAll() {
   renderNav();
 }
 
-// 图片上传
 function uploadImg(type, idx) {
   uploadTarget = {type, idx};
   document.getElementById('uploadModal').classList.add('active');
@@ -623,20 +624,18 @@ function closeUploadModal() {
   uploadTarget = null;
 }
 
-// 拖拽上传
 const dropZone = document.getElementById('dropZone');
 dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
 dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('dragover'); handleFile(e.dataTransfer.files[0]); });
-
 document.getElementById('fileInput').addEventListener('change', e => handleFile(e.target.files[0]));
 
 function handleFile(file) {
   if (!file || !file.type.startsWith('image/')) {
-    document.getElementById('uploadStatus').innerHTML = '<span style="color:red">请选择图片文件</span>';
+    document.getElementById('uploadStatus').innerHTML = '<span style="color:#ef4444">请选择图片文件</span>';
     return;
   }
-  document.getElementById('uploadStatus').innerHTML = '<span>上传中...</span>';
+  document.getElementById('uploadStatus').innerHTML = '<span style="color:var(--text-muted)">上传中...</span>';
   
   const reader = new FileReader();
   reader.onload = function(e) {
@@ -644,13 +643,11 @@ function handleFile(file) {
     const fileName = 'img_' + Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9.]/g, '');
     const imgPath = '/images/' + fileName;
     
-    // 保存图片到本地
     const link = document.createElement('a');
     link.download = fileName;
     link.href = imgData;
     link.click();
     
-    // 更新数据
     setTimeout(() => {
       const newPath = prompt('图片已下载，请重命名为: ' + fileName + '\n然后移动到 images 文件夹后，点击确定', imgPath);
       if (newPath !== null) {
@@ -676,17 +673,14 @@ function applyImgPath(path) {
   alert('图片路径已更新: ' + path + '\n\n请确保图片文件已上传到 images 文件夹！');
 }
 
-// 保存并发布
 async function saveData() {
   const btn = document.querySelector('.btn-publish');
   btn.textContent = '🔄 发布中...';
   btn.disabled = true;
   
   try {
-    // 显示加载
     document.getElementById('publishStatus').innerHTML = '<span style="color:#f59e0b">⏳ 正在发布...</span>';
     
-    // 发送数据到本地服务器
     const resp = await fetch('http://localhost:7788/api/publish', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -701,7 +695,6 @@ async function saveData() {
       throw new Error('Server error');
     }
   } catch(e) {
-    // 服务器不可用，下载 JSON
     const json = JSON.stringify(data, null, 2);
     const blob = new Blob([json], {type: 'application/json'});
     const url = URL.createObjectURL(blob);
@@ -711,13 +704,12 @@ async function saveData() {
     a.click();
     URL.revokeObjectURL(url);
     
-    document.getElementById('publishStatus').innerHTML = '<span style="color:#f59e0b">⚠️ 服务器未运行，已下载 site.json</span><br><span style="color:#6b7280">请运行: node publish</span>';
+    document.getElementById('publishStatus').innerHTML = '<span style="color:#f59e0b">⚠️ 服务器未运行，已下载 site.json</span><br><span style="color:var(--text-muted)">请运行: node publish</span>';
     btn.textContent = '🚀 一键发布';
     btn.disabled = false;
   }
 }
 
-// 初始化
 console.log('CMS loaded, products:', data.products?.length);
 </script>
 </body>
