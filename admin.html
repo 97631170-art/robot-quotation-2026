@@ -499,8 +499,10 @@ function editProduct(idx) {
   showModal('编辑产品', `
     <div>
       <label>产品图片</label>
-      ${p.img ? '<img src="'+p.img+'" class="img-preview">' : ''}
-      <input type="text" id="edit-img" value="${p.img||''}" placeholder="图片路径，如 /images/xxx.jpg">
+      <input type="file" id="edit-img-file" accept="image/*" style="display:none" onchange="handleImgUpload(this, 'edit-img', ${idx}, 'product')">
+      ${p.img ? '<img src="'+p.img+'" class="img-preview" id="edit-img-preview">' : '<div class="img-upload" id="edit-img-preview">📷 点击选择图片</div>'}
+      <button class="btn" style="margin-top:8px" onclick="document.getElementById('edit-img-file').click()">${p.img ? '更换图片' : '上传图片'}</button>
+      <input type="hidden" id="edit-img" value="${p.img||''}">
     </div>
     <div>
       <label>产品名称</label>
@@ -533,6 +535,29 @@ function editProduct(idx) {
   `);
 }
 
+// 图片上传处理
+function handleImgUpload(input, previewId, idx, type) {
+  const file = input.files[0];
+  if (!file) return;
+  
+  uploadImageToGitHub(file, function(imagePath) {
+    document.getElementById(previewId).value = imagePath;
+    // 更新预览
+    const preview = document.getElementById(previewId + '-preview');
+    if (preview) {
+      preview.src = imagePath;
+      preview.style.display = 'block';
+    } else {
+      // 创建预览
+      const img = document.createElement('img');
+      img.src = imagePath;
+      img.className = 'img-preview';
+      img.id = previewId + '-preview';
+      input.parentNode.insertBefore(img, input.nextSibling);
+    }
+  });
+}
+
 // 添加产品
 function addProduct() {
   data.products.push({
@@ -555,6 +580,13 @@ function editFeature(idx) {
   currentEdit = {type: 'feature', idx};
   showModal('编辑特性', `
     <div>
+      <label>图片（可选）</label>
+      <input type="file" id="edit-img-file" accept="image/*" style="display:none" onchange="handleImgUploadSimple(this, 'edit-img')">
+      ${f.iconImg ? '<img src="'+f.iconImg+'" class="img-preview" id="edit-img-preview">' : '<div class="img-upload" id="edit-img-preview">📷 点击选择图片（可选）</div>'}
+      <button class="btn btn-sm" style="margin-top:8px" onclick="document.getElementById('edit-img-file').click()">${f.iconImg ? '更换图片' : '上传图片'}</button>
+      <input type="hidden" id="edit-img" value="${f.iconImg||''}">
+    </div>
+    <div>
       <label>图标（emoji）</label>
       <input type="text" id="edit-icon" value="${f.icon}">
     </div>
@@ -566,7 +598,21 @@ function editFeature(idx) {
       <label>描述</label>
       <textarea id="edit-desc">${f.desc}</textarea>
     </div>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+      <button class="btn btn-del" onclick="deleteCurrent()" style="width:100%">🗑️ 删除此特性</button>
+    </div>
   `);
+}
+
+// 简单图片上传（不保存索引）
+function handleImgUploadSimple(input, hiddenId) {
+  const file = input.files[0];
+  if (!file) return;
+  uploadImageToGitHub(file, function(imagePath) {
+    document.getElementById(hiddenId).value = imagePath;
+    const preview = document.getElementById(hiddenId + '-preview');
+    if (preview) preview.src = imagePath;
+  });
 }
 
 function addFeature() {
@@ -580,6 +626,13 @@ function editClass(idx) {
   const c = data.competition.classes[idx];
   currentEdit = {type: 'class', idx};
   showModal('编辑赛事级别', `
+    <div>
+      <label>封面图片（可选）</label>
+      <input type="file" id="edit-img-file" accept="image/*" style="display:none" onchange="handleImgUploadSimple(this, 'edit-img')">
+      ${c.img ? '<img src="'+c.img+'" class="img-preview" id="edit-img-preview">' : '<div class="img-upload" id="edit-img-preview">📷 点击选择图片（可选）</div>'}
+      <button class="btn btn-sm" style="margin-top:8px" onclick="document.getElementById('edit-img-file').click()">${c.img ? '更换图片' : '上传图片'}</button>
+      <input type="hidden" id="edit-img" value="${c.img||''}">
+    </div>
     <div>
       <label>图标</label>
       <input type="text" id="edit-icon" value="${c.icon}">
@@ -600,6 +653,9 @@ function editClass(idx) {
       <label>描述</label>
       <textarea id="edit-desc">${c.desc}</textarea>
     </div>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+      <button class="btn btn-del" onclick="deleteCurrent()" style="width:100%">🗑️ 删除此级别</button>
+    </div>
   `);
 }
 
@@ -615,6 +671,13 @@ function editAccessory(idx) {
   currentEdit = {type: 'accessory', idx};
   showModal('编辑配件', `
     <div>
+      <label>封面图片（可选）</label>
+      <input type="file" id="edit-img-file" accept="image/*" style="display:none" onchange="handleImgUploadSimple(this, 'edit-img')">
+      ${a.img ? '<img src="'+a.img+'" class="img-preview" id="edit-img-preview">' : '<div class="img-upload" id="edit-img-preview">📷 点击选择图片（可选）</div>'}
+      <button class="btn btn-sm" style="margin-top:8px" onclick="document.getElementById('edit-img-file').click()">${a.img ? '更换图片' : '上传图片'}</button>
+      <input type="hidden" id="edit-img" value="${a.img||''}">
+    </div>
+    <div>
       <label>图标（emoji）</label>
       <input type="text" id="edit-icon" value="${a.icon}">
     </div>
@@ -629,6 +692,9 @@ function editAccessory(idx) {
     <div>
       <label>价格</label>
       <input type="text" id="edit-price" value="${a.price}">
+    </div>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+      <button class="btn btn-del" onclick="deleteCurrent()" style="width:100%">🗑️ 删除此配件</button>
     </div>
   `);
 }
@@ -671,11 +737,13 @@ function saveEdit() {
       data.products[idx].specs = document.getElementById('edit-specs').value.split('\n').filter(s=>s.trim());
       break;
     case 'feature':
+      data.features[idx].iconImg = document.getElementById('edit-img').value;
       data.features[idx].icon = document.getElementById('edit-icon').value;
       data.features[idx].title = document.getElementById('edit-title').value;
       data.features[idx].desc = document.getElementById('edit-desc').value;
       break;
     case 'class':
+      data.competition.classes[idx].img = document.getElementById('edit-img').value;
       data.competition.classes[idx].icon = document.getElementById('edit-icon').value;
       data.competition.classes[idx].name = document.getElementById('edit-name').value;
       data.competition.classes[idx].weight = document.getElementById('edit-weight').value;
@@ -683,6 +751,7 @@ function saveEdit() {
       data.competition.classes[idx].desc = document.getElementById('edit-desc').value;
       break;
     case 'accessory':
+      data.accessories.items[idx].img = document.getElementById('edit-img').value;
       data.accessories.items[idx].icon = document.getElementById('edit-icon').value;
       data.accessories.items[idx].name = document.getElementById('edit-name').value;
       data.accessories.items[idx].desc = document.getElementById('edit-desc').value;
@@ -723,6 +792,94 @@ function refreshPage() {
   // 简单刷新页面以显示新数据
   // 实际项目中可以动态更新 DOM
   location.reload();
+}
+
+// ============ 图片上传到 GitHub ============
+const GITHUB_USER = '97631170-art';
+const GITHUB_REPO = 'robot-quotation-2026';
+
+// 获取 token（从 localStorage 或弹窗输入）
+function getGitHubToken() {
+  let token = localStorage.getItem('gh_token');
+  if (!token) {
+    token = prompt('请输入 GitHub Personal Access Token（用于上传图片）:
+
+获取方式: GitHub Settings → Developer settings → Personal access tokens → Generate new token
+需要勾选: repo (Full control of private repositories)');
+    if (token) localStorage.setItem('gh_token', token);
+  }
+  return token;
+}
+
+async function uploadImageToGitHub(file, callback) {
+  const token = getGitHubToken();
+  if (!token) {
+    showToast('❌ 需要 GitHub Token 才能上传图片');
+    return;
+  }
+  
+  showToast('⏳ 上传图片中...');
+  
+  // 读取文件为 base64
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    const base64 = e.target.result.split(',')[1];
+    const fileName = 'img_' + Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+    const path = 'images/' + fileName;
+    
+    try {
+      // 获取当前 SHA
+      let sha = null;
+      const apiUrl = 'https://api.github.com/repos/' + GITHUB_USER + '/' + GITHUB_REPO + '/contents/' + path;
+      try {
+        const getRes = await fetch(apiUrl, {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (getRes.ok) {
+          const data = await getRes.json();
+          sha = data.sha;
+        }
+      } catch(e) {}
+      
+      // 上传文件
+      const payload = {
+        message: 'Upload image: ' + fileName,
+        content: base64
+      };
+      if (sha) payload.sha = sha;
+      
+      const resp = await fetch(apiUrl, {
+        method: 'PUT',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+      
+      if (resp.ok) {
+        const imagePath = '/' + path;
+        callback(imagePath);
+        showToast('✅ 图片上传成功！');
+      } else {
+        const err = await resp.json();
+        if (resp.status === 401) {
+          localStorage.removeItem('gh_token');
+          showToast('❌ Token 无效，请重新输入');
+        } else {
+          throw new Error(err.message || 'Upload failed');
+        }
+      }
+    } catch(e) {
+      showToast('❌ 上传失败: ' + e.message);
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+// 触发图片上传
+function triggerImageUpload(inputId) {
+  document.getElementById(inputId).click();
 }
 
 // 发布
