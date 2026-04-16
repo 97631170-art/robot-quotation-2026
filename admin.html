@@ -1103,14 +1103,18 @@
         try {
           const resp = await fetch('https://api.imgbb.com/1/upload?key=18699f8065186fe6a1e3241af4a10e9', {method: 'POST', body: formData});
           const data = await resp.json();
+          console.log('上传结果:', data);
           if (data.success) {
             siteData.products[idx].img = data.data.url;
             autoSave();
             renderProducts();
             showToast('✅ 上传成功');
+          } else {
+            showToast('❌ 上传失败: ' + (data.error?.message || '未知错误'));
           }
         } catch(e) {
-          showToast('❌ 上传失败');
+          console.error('上传错误:', e);
+          showToast('❌ 上传失败: ' + e.message);
         }
       };
       input.click();
