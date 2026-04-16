@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>造悟社 CMS 后台 v3</title>
+  <title>造悟社 CMS 后台 v4</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -19,7 +19,6 @@
       --border: #2d2d44;
       --success: #10b981;
       --danger: #ef4444;
-      --warning: #f59e0b;
       --radius: 12px;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -29,24 +28,27 @@
       color: var(--text);
       min-height: 100vh;
     }
-    .layout { display: flex; min-height: 100vh; }
     
-    /* 侧边栏 */
+    /* 布局 */
+    .layout { display: flex; }
+    
+    /* 侧边栏 - 修复版 */
     .sidebar {
       width: 260px;
       background: var(--card);
       border-right: 1px solid var(--border);
-      padding: 24px 16px;
-      position: fixed;
       height: 100vh;
-      overflow-y: auto;
-      z-index: 100;
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
     }
     .logo {
       display: flex; align-items: center; gap: 12px;
-      padding: 0 12px 24px;
+      padding: 24px 20px;
       border-bottom: 1px solid var(--border);
-      margin-bottom: 20px;
     }
     .logo-icon {
       width: 40px; height: 40px;
@@ -58,21 +60,35 @@
     .logo-text { font-size: 18px; font-weight: 700; }
     .logo-text span { color: var(--primary); }
     
+    .nav-menu {
+      flex: 1;
+      padding: 16px 12px;
+      overflow-y: auto;
+    }
     .nav-item {
       display: flex; align-items: center; gap: 12px;
-      padding: 12px 16px;
+      padding: 14px 16px;
       margin: 4px 0;
       border-radius: 10px;
       cursor: pointer;
       transition: all 0.2s;
       color: var(--text-muted);
+      user-select: none;
     }
     .nav-item:hover { background: var(--card-hover); color: var(--text); }
-    .nav-item.active { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
-    .nav-icon { font-size: 18px; }
+    .nav-item.active { 
+      background: linear-gradient(135deg, var(--primary), var(--secondary)); 
+      color: white; 
+    }
+    .nav-icon { font-size: 18px; width: 24px; text-align: center; }
     
     /* 主内容 */
-    .main { flex: 1; margin-left: 260px; padding: 24px 32px; }
+    .main { 
+      flex: 1; 
+      margin-left: 260px; 
+      padding: 24px 32px;
+      min-height: 100vh;
+    }
     .header {
       display: flex; justify-content: space-between; align-items: center;
       margin-bottom: 32px;
@@ -80,7 +96,6 @@
       border-bottom: 1px solid var(--border);
     }
     .header h1 { font-size: 28px; font-weight: 700; }
-    .header-actions { display: flex; gap: 12px; }
     
     .btn {
       display: inline-flex; align-items: center; gap: 8px;
@@ -96,11 +111,7 @@
       background: linear-gradient(135deg, var(--primary), var(--secondary));
       color: white;
     }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(99,102,241,0.3); }
-    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
-    .btn-outline:hover { background: var(--card-hover); }
     .btn-danger { background: var(--danger); color: white; }
-    .btn-success { background: var(--success); color: white; }
     .btn-sm { padding: 8px 16px; font-size: 13px; }
     
     /* 内容区域 */
@@ -121,7 +132,7 @@
     }
     .card-title { font-size: 18px; font-weight: 600; }
     
-    /* 直接编辑样式 */
+    /* 编辑样式 */
     .edit-field {
       background: var(--bg);
       border: 1px solid var(--border);
@@ -135,7 +146,6 @@
     .edit-field:focus {
       outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
     }
     textarea.edit-field { resize: vertical; min-height: 80px; }
     
@@ -147,26 +157,36 @@
       letter-spacing: 0.5px;
     }
     
-    .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px; }
+    .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
     .form-group { margin-bottom: 16px; }
     
-    /* 产品卡片直接编辑 */
-    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+    /* 图片上传 */
+    .img-upload {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .img-upload:hover { border-color: var(--primary); }
+    .img-upload.has-img { padding: 0; border-style: solid; }
+    .img-upload img { max-width: 100%; max-height: 300px; border-radius: 8px; }
+    
+    /* 产品卡片 */
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
     .product-card {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       overflow: hidden;
-      transition: all 0.2s;
     }
-    .product-card:hover { border-color: var(--primary); }
     .product-img-area {
-      height: 180px;
+      height: 160px;
       background: var(--bg);
       display: flex; align-items: center; justify-content: center;
       cursor: pointer;
       position: relative;
-      overflow: hidden;
     }
     .product-img-area img { width: 100%; height: 100%; object-fit: cover; }
     .product-img-area .upload-hint {
@@ -176,9 +196,8 @@
       opacity: 0; transition: opacity 0.2s;
     }
     .product-img-area:hover .upload-hint { opacity: 1; }
-    .product-img-area .upload-hint span { font-size: 32px; margin-bottom: 8px; }
-    .product-content { padding: 20px; }
-    .product-field { margin-bottom: 12px; }
+    .product-content { padding: 16px; }
+    .product-field { margin-bottom: 10px; }
     .product-field input, .product-field textarea {
       background: var(--bg);
       border: 1px solid transparent;
@@ -186,160 +205,46 @@
       padding: 8px 12px;
       color: var(--text);
       width: 100%;
-      font-size: 14px;
+      font-size: 13px;
     }
     .product-field input:focus, .product-field textarea:focus {
       outline: none;
       border-color: var(--primary);
-      background: var(--card-hover);
     }
-    .product-field input.name { font-size: 16px; font-weight: 600; }
-    .product-field input.tag {
-      display: inline-block; width: auto;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white; font-size: 11px; padding: 4px 10px; border-radius: 20px;
-    }
-    .product-field input.price { color: var(--accent); font-weight: 700; font-size: 18px; }
-    .product-actions { display: flex; gap: 8px; margin-top: 16px; }
     
-    /* 特性列表直接编辑 */
-    .feature-list { display: grid; gap: 16px; }
-    .feature-item {
+    /* 列表项 */
+    .list-item {
       display: flex; align-items: center; gap: 16px;
       background: var(--bg);
       padding: 16px;
       border-radius: 10px;
       border: 1px solid var(--border);
-    }
-    .feature-icon {
-      width: 48px; height: 48px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px;
-      flex-shrink: 0;
-    }
-    .feature-icon-input {
-      width: 48px; height: 48px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-    .feature-content { flex: 1; }
-    .feature-content input { margin-bottom: 8px; }
-    
-    /* 赛事级别 */
-    .level-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-    .level-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 20px;
-    }
-    .level-card input.name { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
-    .level-card input.weight {
-      display: inline-block; width: auto;
-      background: var(--card);
-      color: var(--accent);
-      font-size: 12px; padding: 4px 10px; border-radius: 20px;
       margin-bottom: 12px;
     }
-    
-    /* 配件列表 */
-    .accessory-list { display: grid; gap: 12px; }
-    .accessory-item {
-      display: flex; align-items: center; gap: 16px;
-      background: var(--bg);
-      padding: 16px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-    }
-    .accessory-icon {
-      width: 40px; height: 40px;
-      background: var(--card);
-      border-radius: 10px;
+    .list-content { flex: 1; }
+    .delete-btn {
+      width: 32px; height: 32px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
-    }
-    .accessory-content { flex: 1; }
-    .accessory-price { color: var(--accent); font-weight: 600; }
-    
-    /* 时间线 */
-    .timeline-list { display: flex; flex-direction: column; gap: 12px; }
-    .timeline-item {
-      display: flex; align-items: center; gap: 16px;
-      background: var(--bg);
-      padding: 16px;
-      border-radius: 10px;
+      background: var(--card);
       border: 1px solid var(--border);
-    }
-    .timeline-month { width: 80px; color: var(--primary); font-weight: 600; flex-shrink: 0; }
-    .timeline-content { flex: 1; }
-    
-    /* 首页预览 */
-    .hero-preview {
-      background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);
-      border-radius: var(--radius);
-      padding: 60px 40px;
-      text-align: center;
-      margin-bottom: 24px;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-content { position: relative; z-index: 1; }
-    .hero-eyebrow {
-      display: inline-block;
-      background: rgba(99,102,241,0.2);
-      color: var(--primary);
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      margin-bottom: 20px;
-    }
-    .hero-title { font-size: 56px; font-weight: 800; margin-bottom: 8px; }
-    .hero-title span { color: var(--primary); }
-    .hero-desc { font-size: 18px; color: var(--text-muted); max-width: 600px; margin: 0 auto 32px; }
-    .hero-btns { display: flex; justify-content: center; gap: 16px; margin-top: 32px; }
-    .hero-btn {
-      padding: 14px 32px;
-      border-radius: 10px;
-      font-weight: 600;
+      border-radius: 8px;
+      color: var(--danger);
       cursor: pointer;
-      transition: all 0.2s;
     }
-    .hero-btn-primary {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
-      border: none;
-    }
-    .hero-btn-outline {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-    .hero-kpi { display: flex; justify-content: center; gap: 48px; margin-top: 40px; }
-    .kpi-item { text-align: center; }
-    .kpi-value { font-size: 36px; font-weight: 800; color: var(--primary); }
-    .kpi-label { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+    .delete-btn:hover { background: var(--danger); color: white; }
     
-    /* 图片上传区域 */
-    .img-upload {
+    /* 添加按钮 */
+    .add-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 20px;
       border: 2px dashed var(--border);
-      border-radius: 10px;
-      padding: 40px;
-      text-align: center;
+      border-radius: var(--radius);
+      color: var(--text-muted);
       cursor: pointer;
       transition: all 0.2s;
+      margin-top: 16px;
     }
-    .img-upload:hover { border-color: var(--primary); background: var(--card-hover); }
-    .img-upload.has-img { padding: 0; border-style: solid; }
-    .img-upload img { max-width: 100%; max-height: 200px; border-radius: 8px; }
+    .add-btn:hover { border-color: var(--primary); color: var(--primary); }
     
     /* Toast */
     .toast {
@@ -354,42 +259,6 @@
       z-index: 1000;
     }
     .toast.show { transform: translateY(0); opacity: 1; }
-    .toast.success { border-color: var(--success); }
-    .toast.error { border-color: var(--danger); }
-    
-    /* 添加按钮 */
-    .add-btn {
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      padding: 20px;
-      border: 2px dashed var(--border);
-      border-radius: var(--radius);
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all 0.2s;
-      margin-top: 16px;
-    }
-    .add-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--card-hover); }
-    
-    /* 删除按钮 */
-    .delete-btn {
-      width: 32px; height: 32px;
-      display: flex; align-items: center; justify-content: center;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--danger);
-      cursor: pointer;
-      transition: all 0.2s;
-      flex-shrink: 0;
-    }
-    .delete-btn:hover { background: var(--danger); color: white; }
-    
-    /* 响应式 */
-    @media (max-width: 768px) {
-      .sidebar { width: 100%; position: relative; height: auto; }
-      .main { margin-left: 0; }
-      .layout { flex-direction: column; }
-    }
   </style>
 </head>
 <body>
@@ -400,7 +269,7 @@
         <div class="logo-icon">🤖</div>
         <div class="logo-text">造悟社 <span>CMS</span></div>
       </div>
-      <nav>
+      <div class="nav-menu">
         <div class="nav-item active" data-section="home">
           <span class="nav-icon">🏠</span>
           <span>首页设置</span>
@@ -429,7 +298,7 @@
           <span class="nav-icon">📄</span>
           <span>页脚设置</span>
         </div>
-      </nav>
+      </div>
     </aside>
 
     <!-- 主内容 -->
@@ -438,8 +307,16 @@
       <section id="home" class="content-section active">
         <div class="header">
           <h1>🏠 首页设置</h1>
-          <div class="header-actions">
-            <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
+          <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
+        </div>
+        
+        <!-- Hero 图片 - 移到最上面 -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🖼️ Hero 图片</span>
+          </div>
+          <div class="img-upload has-img" id="heroImgUpload" onclick="uploadHeroImg()">
+            <img src="/images/5f2929ee-5969-4077-b525-68ce90ff207e.JPG">
           </div>
         </div>
         
@@ -460,33 +337,48 @@
           </div>
         </div>
         
-        <!-- Hero 预览 -->
-        <div class="hero-preview">
-          <div class="hero-content">
-            <input type="text" class="edit-field hero-eyebrow" id="heroEyebrow" value="格斗机器人 · 2026 竞技系列">
-            <div class="hero-title">
-              <input type="text" class="edit-field" id="heroLine1" value="极速突破" style="font-size:48px;font-weight:800;text-align:center;background:transparent;border:none;display:inline;width:auto;">
-              <input type="text" class="edit-field" id="heroLine2" value="铸造冠军" style="font-size:48px;font-weight:800;text-align:center;background:transparent;border:none;display:inline;width:auto;">
+        <!-- Hero 内容 -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🎯 Hero 内容</span>
+          </div>
+          <div class="form-group">
+            <div class="field-label">Eyebrow 文字</div>
+            <input type="text" class="edit-field" id="heroEyebrow" value="格斗机器人 · 2026 竞技系列">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <div class="field-label">主标题第一行</div>
+              <input type="text" class="edit-field" id="heroLine1" value="极速突破">
             </div>
-            <textarea class="edit-field hero-desc" id="heroDesc">专为竞技格斗设计的高性能机器人系列，采用高强度ABS+ 3D 打印结构，搭载精准电控系统。多款型号——推铲型、垂直旋转型、双头型，满足不同战术风格，一键入场，决战巅峰。</textarea>
-            <div class="hero-btns">
-              <input type="text" class="edit-field hero-btn hero-btn-primary" id="heroBtn1" value="赛事规则">
-              <input type="text" class="edit-field hero-btn hero-btn-outline" id="heroBtn2" value="设备器材">
+            <div class="form-group">
+              <div class="field-label">主标题第二行</div>
+              <input type="text" class="edit-field" id="heroLine2" value="铸造冠军">
             </div>
-            <div class="hero-kpi" id="kpiList"></div>
-            <button class="add-btn" onclick="addKpi()">➕ 添加 KPI</button>
+          </div>
+          <div class="form-group">
+            <div class="field-label">描述</div>
+            <textarea class="edit-field" id="heroDesc">专为竞技格斗设计的高性能机器人系列，采用高强度ABS+ 3D 打印结构，搭载精准电控系统。多款型号——推铲型、垂直旋转型、双头型，满足不同战术风格，一键入场，决战巅峰。</textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <div class="field-label">按钮1文字</div>
+              <input type="text" class="edit-field" id="heroBtn1" value="赛事规则">
+            </div>
+            <div class="form-group">
+              <div class="field-label">按钮2文字</div>
+              <input type="text" class="edit-field" id="heroBtn2" value="设备器材">
+            </div>
           </div>
         </div>
         
-        <!-- Hero 图片 -->
+        <!-- KPI -->
         <div class="card">
           <div class="card-header">
-            <span class="card-title">🖼️ Hero 图片</span>
+            <span class="card-title">📊 KPI 数据</span>
           </div>
-          <div class="img-upload has-img" onclick="document.getElementById('heroBgFile').click()">
-            <input type="file" id="heroBgFile" accept="image/*" style="display:none" onchange="uploadHeroBg(this)">
-            <img src="/images/5f2929ee-5969-4077-b525-68ce90ff207e.JPG">
-          </div>
+          <div id="kpiList"></div>
+          <div class="add-btn" onclick="addKpi()">➕ 添加 KPI</div>
         </div>
       </section>
 
@@ -494,9 +386,7 @@
       <section id="products" class="content-section">
         <div class="header">
           <h1>📦 产品管理</h1>
-          <div class="header-actions">
-            <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
-          </div>
+          <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
         </div>
         <div class="product-grid" id="productGrid"></div>
         <div class="add-btn" onclick="addProduct()">➕ 添加新产品</div>
@@ -506,9 +396,7 @@
       <section id="features" class="content-section">
         <div class="header">
           <h1>✨ 核心特性</h1>
-          <div class="header-actions">
-            <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
-          </div>
+          <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
         </div>
         
         <div class="card">
@@ -518,34 +406,19 @@
           </div>
         </div>
         
-        <div class="feature-list" id="featureList"></div>
+        <div id="featureList"></div>
         <div class="add-btn" onclick="addFeature()">➕ 添加特性</div>
-        
-        <div class="card" style="margin-top:24px;">
-          <div class="card-header">
-            <span class="card-title">🖼️ 特性区块图片</span>
-          </div>
-          <div class="img-upload has-img" onclick="document.getElementById('featImgFile').click()">
-            <input type="file" id="featImgFile" accept="image/*" style="display:none" onchange="uploadFeatImg(this)">
-            <img src="/images/01ed2520-0525-4a8e-b578-fadb72265cb2.JPG">
-          </div>
-        </div>
       </section>
 
       <!-- 赛事规则 -->
       <section id="competition" class="content-section">
         <div class="header">
           <h1>🏆 赛事规则</h1>
-          <div class="header-actions">
-            <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
-          </div>
+          <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
         </div>
         
-        <!-- BoxBot 赛事信息 -->
         <div class="card">
-          <div class="card-header">
-            <span class="card-title">📋 BoxBot 赛事信息</span>
-          </div>
+          <div class="card-header"><span class="card-title">📋 BoxBot 赛事信息</span></div>
           <div class="form-group">
             <div class="field-label">赛事标题</div>
             <input type="text" class="edit-field" id="compTitle" value="BoxBot 格斗机器人大赛">
@@ -556,29 +429,19 @@
           </div>
           <div class="form-group">
             <div class="field-label">赛事描述</div>
-            <textarea class="edit-field" id="compDesc" rows="4">BoxBot 是国内最具影响力的青少年格斗机器人竞技赛事，涵盖小学、初中、高中三个组别，旨在培养青少年的工程思维、动手能力与竞技精神。</textarea>
-          </div>
-          <div class="form-group">
-            <div class="field-label">联系方式</div>
-            <input type="text" class="edit-field" id="compContact" value="15970070712">
+            <textarea class="edit-field" id="compDesc">BoxBot 是国内最具影响力的青少年格斗机器人竞技赛事，涵盖小学、初中、高中三个组别，旨在培养青少年的工程思维、动手能力与竞技精神。</textarea>
           </div>
         </div>
         
-        <!-- 赛事时间线 -->
         <div class="card">
-          <div class="card-header">
-            <span class="card-title">📅 赛事时间线</span>
-          </div>
-          <div class="timeline-list" id="timelineList"></div>
+          <div class="card-header"><span class="card-title">📅 赛事时间线</span></div>
+          <div id="timelineList"></div>
           <div class="add-btn" onclick="addTimeline()">➕ 添加时间节点</div>
         </div>
         
-        <!-- 赛事级别 -->
         <div class="card">
-          <div class="card-header">
-            <span class="card-title">⚔️ 赛事级别</span>
-          </div>
-          <div class="level-grid" id="levelGrid"></div>
+          <div class="card-header"><span class="card-title">⚔️ 赛事级别</span></div>
+          <div id="levelGrid"></div>
           <div class="add-btn" onclick="addLevel()">➕ 添加赛事级别</div>
         </div>
       </section>
@@ -587,9 +450,7 @@
       <section id="accessories" class="content-section">
         <div class="header">
           <h1>🔧 器材配件</h1>
-          <div class="header-actions">
-            <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
-          </div>
+          <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
         </div>
         
         <div class="card">
@@ -603,7 +464,7 @@
           </div>
         </div>
         
-        <div class="accessory-list" id="accessoryList"></div>
+        <div id="accessoryList"></div>
         <div class="add-btn" onclick="addAccessory()">➕ 添加配件</div>
       </section>
 
@@ -611,19 +472,19 @@
       <section id="contact" class="content-section">
         <div class="header">
           <h1>📞 联系信息</h1>
-          <div class="header-actions">
-            <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
-          </div>
+          <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
         </div>
         
         <div class="card">
-          <div class="form-group">
-            <div class="field-label">区块标题</div>
-            <input type="text" class="edit-field" id="contactTitle" value="联系我们">
-          </div>
-          <div class="form-group">
-            <div class="field-label">副标题</div>
-            <input type="text" class="edit-field" id="contactSubtitle" value="造悟社 · 专注格斗机器人教育与竞技">
+          <div class="form-row">
+            <div class="form-group">
+              <div class="field-label">标题</div>
+              <input type="text" class="edit-field" id="contactTitle" value="联系我们">
+            </div>
+            <div class="form-group">
+              <div class="field-label">副标题</div>
+              <input type="text" class="edit-field" id="contactSubtitle" value="造悟社 · 专注格斗机器人教育与竞技">
+            </div>
           </div>
           <div class="form-row">
             <div class="form-group">
@@ -641,7 +502,7 @@
           </div>
           <div class="form-group">
             <div class="field-label">公司地址</div>
-            <textarea class="edit-field" id="contactAddress" rows="3">中国 · 造悟社机器人工作室</textarea>
+            <textarea class="edit-field" id="contactAddress">中国 · 造悟社机器人工作室</textarea>
           </div>
         </div>
       </section>
@@ -650,9 +511,7 @@
       <section id="footer" class="content-section">
         <div class="header">
           <h1>📄 页脚设置</h1>
-          <div class="header-actions">
-            <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
-          </div>
+          <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
         </div>
         
         <div class="card">
@@ -662,7 +521,7 @@
           </div>
           <div class="form-group">
             <div class="field-label">页脚信息</div>
-            <textarea class="edit-field" id="footerInfo" rows="3">咨询热线：15970070712 · 邮箱：97631170@qq.com · © 2026 造悟社 版权所有</textarea>
+            <textarea class="edit-field" id="footerInfo">咨询热线：15970070712 · 邮箱：97631170@qq.com · © 2026 造悟社 版权所有</textarea>
           </div>
         </div>
       </section>
@@ -671,7 +530,7 @@
 
   <!-- Toast -->
   <div class="toast" id="toast">
-    <span id="toastIcon">✅</span>
+    <span>✅</span>
     <span id="toastMsg">保存成功</span>
   </div>
 
@@ -956,24 +815,11 @@
   ]
 };
     
-    // 切换页面
-    function showSection(id) {
-      document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-      document.querySelectorAll('.nav-item').forEach(n => {
-        if (n.getAttribute('data-section') === id) {
-          n.classList.add('active');
-        }
-      });
-    }
-    
     // Toast
-    function showToast(msg, type='success') {
+    function showToast(msg) {
       const toast = document.getElementById('toast');
       document.getElementById('toastMsg').textContent = msg;
-      document.getElementById('toastIcon').textContent = type === 'success' ? '✅' : '❌';
-      toast.className = 'toast show ' + type;
+      toast.classList.add('show');
       setTimeout(() => toast.classList.remove('show'), 3000);
     }
     
@@ -982,18 +828,33 @@
       localStorage.setItem('siteData', JSON.stringify(siteData));
     }
     
+    // 切换页面
+    function showSection(id) {
+      document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.querySelector('.nav-item[data-section="' + id + '"]').classList.add('active');
+    }
+    
+    // 绑定导航点击
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', function() {
+        const section = this.getAttribute('data-section');
+        showSection(section);
+      });
+    });
+    
     // ========== 首页设置 ==========
-    function updateHero() {
-      siteData.brand = document.getElementById('brandName').value;
-      siteData.navBadge = document.getElementById('navBadge').value;
-      siteData.heroEyebrow = document.getElementById('heroEyebrow').value;
-      siteData.heroLine1 = document.getElementById('heroLine1').value;
-      siteData.heroLine2 = document.getElementById('heroLine2').value;
-      siteData.heroDesc = document.getElementById('heroDesc').value;
-      siteData.heroBtn1 = document.getElementById('heroBtn1').value;
-      siteData.heroBtn2 = document.getElementById('heroBtn2').value;
-      autoSave();
-      showToast('首页内容已保存');
+    function renderKpi() {
+      document.getElementById('kpiList').innerHTML = siteData.kpi.map((k, i) => 
+        '<div class="list-item">' +
+          '<div class="list-content">' +
+            '<input type="text" class="edit-field" value="' + k.num + '" placeholder="数字" onchange="updateKpi(' + i + ', \'num\', this.value)">' +
+            '<input type="text" class="edit-field" value="' + k.label + '" placeholder="标签" onchange="updateKpi(' + i + ', \'label\', this.value)">' +
+          '</div>' +
+          '<button class="delete-btn" onclick="deleteKpi(' + i + ')">🗑️</button>' +
+        '</div>'
+      ).join('');
     }
     
     function updateKpi(idx, field, value) {
@@ -1013,70 +874,57 @@
       renderKpi();
     }
     
-    function renderKpi() {
-      document.getElementById('kpiList').innerHTML = siteData.kpi.map((k, i) => 
-        '<div class="kpi-item">' +
-          '<input type="text" class="edit-field kpi-value" value="' + k.num + '" onchange="updateKpi(' + i + ', 'num', this.value)">' +
-          '<input type="text" class="edit-field kpi-label" value="' + k.label + '" onchange="updateKpi(' + i + ', 'label', this.value)">' +
-          '<button class="delete-btn" onclick="deleteKpi(' + i + ')">🗑️</button>' +
+    // ========== 产品管理 ==========
+    function renderProducts() {
+      document.getElementById('productGrid').innerHTML = siteData.products.map((p, i) => 
+        '<div class="product-card">' +
+          '<div class="product-img-area" onclick="uploadProductImg(' + i + ')">' +
+            (p.img ? '<img src="' + p.img + '">' : '<span style="font-size:48px;">📷</span>') +
+            '<div class="upload-hint"><span>📷</span><div>点击更换</div></div>' +
+          '</div>' +
+          '<div class="product-content">' +
+            '<div class="product-field"><input type="text" value="' + p.name + '" placeholder="产品名称" onchange="updateProduct(' + i + ', \'name\', this.value)"></div>' +
+            '<div class="product-field"><input type="text" value="' + p.tag + '" placeholder="标签" onchange="updateProduct(' + i + ', \'tag\', this.value)"></div>' +
+            '<div class="product-field"><input type="text" value="' + p.series + '" placeholder="系列" onchange="updateProduct(' + i + ', \'series\', this.value)"></div>' +
+            '<div class="product-field"><textarea placeholder="描述" onchange="updateProduct(' + i + ', \'desc\', this.value)">' + p.desc + '</textarea></div>' +
+            '<div class="product-field"><input type="text" value="' + p.price + '" placeholder="价格" onchange="updateProduct(' + i + ', \'price\', this.value)"></div>' +
+            '<button class="btn btn-sm btn-danger" onclick="deleteProduct(' + i + ')">🗑️ 删除</button>' +
+          '</div>' +
         '</div>'
       ).join('');
     }
     
-    // ========== 产品管理 ==========
     function updateProduct(idx, field, value) {
       siteData.products[idx][field] = value;
       autoSave();
-      showToast('产品已更新');
+      showToast('已保存');
     }
     
     function deleteProduct(idx) {
-      if (!confirm('确定删除此产品？')) return;
+      if (!confirm('确定删除？')) return;
       siteData.products.splice(idx, 1);
       autoSave();
       renderProducts();
     }
     
     function addProduct() {
-      siteData.products.push({
-        tag: '新品',
-        series: 'SERIES-NEW',
-        name: '新产品',
-        desc: '请编辑产品描述...',
-        specs: ['规格1', '规格2'],
-        price: '¥0',
-        priceNote: '整机含遥控器',
-        hot: false,
-        img: ''
-      });
+      siteData.products.push({tag: '新品', series: 'SERIES-NEW', name: '新产品', desc: '描述...', specs: [], price: '¥0', priceNote: '', hot: false, img: ''});
       autoSave();
       renderProducts();
     }
     
-    function renderProducts() {
-      document.getElementById('productGrid').innerHTML = siteData.products.map((p, i) => 
-        '<div class="product-card" data-idx="' + i + '">' +
-          '<div class="product-img-area" onclick="document.getElementById(\'prodImg' + i + '\').click()">' +
-            '<input type="file" id="prodImg' + i + '" accept="image/*" style="display:none" onchange="uploadProductImg(' + i + ', this)">' +
-            (p.img ? '<img src="' + p.img + '">' : '<span style="font-size:48px;">📷</span>') +
-            '<div class="upload-hint"><span>📷</span><div>点击更换图片</div></div>' +
+    // ========== 核心特性 ==========
+    function renderFeatures() {
+      document.getElementById('featureList').innerHTML = siteData.features.map((f, i) => 
+        '<div class="list-item">' +
+          '<div class="list-content">' +
+            '<input type="text" class="edit-field" value="' + f.icon + '" placeholder="图标" onchange="updateFeature(' + i + ', \'icon\', this.value)">' +
+            '<input type="text" class="edit-field" value="' + f.title + '" placeholder="标题" onchange="updateFeature(' + i + ', \'title\', this.value)">' +
+            '<textarea class="edit-field" placeholder="描述" onchange="updateFeature(' + i + ', \'desc\', this.value)">' + f.desc + '</textarea>' +
           '</div>' +
-          '<div class="product-content">' +
-            '<div class="product-field"><input type="text" class="name" value="' + p.name + '" placeholder="产品名称" onchange="updateProduct(' + i + ', \'name\', this.value)"></div>' +
-            '<div class="product-field"><input type="text" class="tag" value="' + p.tag + '" placeholder="标签" onchange="updateProduct(' + i + ', \'tag\', this.value)"></div>' +
-            '<div class="product-field"><input type="text" value="' + p.series + '" placeholder="系列" onchange="updateProduct(' + i + ', \'series\', this.value)"></div>' +
-            '<div class="product-field"><textarea placeholder="产品描述" rows="3" onchange="updateProduct(' + i + ', \'desc\', this.value)">' + p.desc + '</textarea></div>' +
-            '<div class="product-field"><input type="text" class="price" value="' + p.price + '" placeholder="价格" onchange="updateProduct(' + i + ', \'price\', this.value)"></div>' +
-            '<div class="product-actions"><button class="btn btn-sm btn-danger" onclick="deleteProduct(' + i + ')">🗑️ 删除</button></div>' +
-          '</div>' +
+          '<button class="delete-btn" onclick="deleteFeature(' + i + ')">🗑️</button>' +
         '</div>'
       ).join('');
-    }
-    
-    // ========== 核心特性 ==========
-    function updateFeatTitle() {
-      siteData.featTitle = document.getElementById('featTitle').value;
-      autoSave();
     }
     
     function updateFeature(idx, field, value) {
@@ -1085,48 +933,29 @@
     }
     
     function deleteFeature(idx) {
-      if (!confirm('确定删除此特性？')) return;
+      if (!confirm('确定删除？')) return;
       siteData.features.splice(idx, 1);
       autoSave();
       renderFeatures();
     }
     
     function addFeature() {
-      siteData.features.push({icon: '✨', title: '新特性', desc: '特性描述...'});
+      siteData.features.push({icon: '✨', title: '新特性', desc: '描述...'});
       autoSave();
       renderFeatures();
-    }
-    
-    function changeFeatureIcon(idx) {
-      const icons = ['✨', '🚀', '🛡️', '⚡', '🔧', '🎯', '🏆', '💡', '🔒', '🌟'];
-      const current = siteData.features[idx].icon;
-      const nextIdx = (icons.indexOf(current) + 1) % icons.length;
-      siteData.features[idx].icon = icons[nextIdx];
-      autoSave();
-      renderFeatures();
-    }
-    
-    function renderFeatures() {
-      document.getElementById('featureList').innerHTML = siteData.features.map((f, i) => 
-        '<div class="feature-item">' +
-          '<div class="feature-icon-input" onclick="changeFeatureIcon(' + i + ')">' + f.icon + '</div>' +
-          '<div class="feature-content">' +
-            '<input type="text" class="edit-field" value="' + f.title + '" placeholder="特性标题" onchange="updateFeature(' + i + ', \'title\', this.value)">' +
-            '<textarea class="edit-field" placeholder="特性描述" onchange="updateFeature(' + i + ', \'desc\', this.value)">' + f.desc + '</textarea>' +
-          '</div>' +
-          '<button class="delete-btn" onclick="deleteFeature(' + i + ')">🗑️</button>' +
-        '</div>'
-      ).join('');
     }
     
     // ========== 赛事规则 ==========
-    function updateCompetition() {
-      siteData.competition.title = document.getElementById('compTitle').value;
-      siteData.competition.subtitle = document.getElementById('compSubtitle').value;
-      siteData.competition.desc = document.getElementById('compDesc').value;
-      siteData.competition.contact = document.getElementById('compContact').value;
-      autoSave();
-      showToast('赛事信息已保存');
+    function renderTimeline() {
+      document.getElementById('timelineList').innerHTML = siteData.competition.timeline.map((t, i) => 
+        '<div class="list-item">' +
+          '<div class="list-content">' +
+            '<input type="text" class="edit-field" value="' + t.month + '" placeholder="月份" onchange="updateTimeline(' + i + ', \'month\', this.value)">' +
+            '<input type="text" class="edit-field" value="' + t.event + '" placeholder="事件" onchange="updateTimeline(' + i + ', \'event\', this.value)">' +
+          '</div>' +
+          '<button class="delete-btn" onclick="deleteTimeline(' + i + ')">🗑️</button>' +
+        '</div>'
+      ).join('');
     }
     
     function updateTimeline(idx, field, value) {
@@ -1146,12 +975,16 @@
       renderTimeline();
     }
     
-    function renderTimeline() {
-      document.getElementById('timelineList').innerHTML = siteData.competition.timeline.map((t, i) => 
-        '<div class="timeline-item">' +
-          '<input type="text" class="edit-field timeline-month" value="' + t.month + '" placeholder="月份" onchange="updateTimeline(' + i + ', \'month\', this.value)">' +
-          '<input type="text" class="edit-field timeline-content" value="' + t.event + '" placeholder="事件描述" onchange="updateTimeline(' + i + ', \'event\', this.value)">' +
-          '<button class="delete-btn" onclick="deleteTimeline(' + i + ')">🗑️</button>' +
+    function renderLevels() {
+      document.getElementById('levelGrid').innerHTML = siteData.competition.classes.map((l, i) => 
+        '<div class="list-item">' +
+          '<div class="list-content">' +
+            '<input type="text" class="edit-field" value="' + l.name + '" placeholder="级别名称" onchange="updateLevel(' + i + ', \'name\', this.value)">' +
+            '<input type="text" class="edit-field" value="' + l.weight + '" placeholder="重量" onchange="updateLevel(' + i + ', \'weight\', this.value)">' +
+            '<input type="text" class="edit-field" value="' + l.group + '" placeholder="组别" onchange="updateLevel(' + i + ', \'group\', this.value)">' +
+            '<textarea class="edit-field" placeholder="规则" onchange="updateLevel(' + i + ', \'desc\', this.value)">' + l.desc + '</textarea>' +
+          '</div>' +
+          '<button class="delete-btn" onclick="deleteLevel(' + i + ')">🗑️</button>' +
         '</div>'
       ).join('');
     }
@@ -1162,178 +995,134 @@
     }
     
     function addLevel() {
-      siteData.competition.classes.push({name: '新级别', weight: '0g', group: '组别', desc: '规则描述...', icon: '⚔️'});
+      siteData.competition.classes.push({name: '新级别', weight: '0g', group: '组别', desc: '规则...', icon: '⚔️'});
       autoSave();
       renderLevels();
     }
     
     function deleteLevel(idx) {
-      if (!confirm('确定删除此级别？')) return;
+      if (!confirm('确定删除？')) return;
       siteData.competition.classes.splice(idx, 1);
       autoSave();
       renderLevels();
     }
     
-    function renderLevels() {
-      document.getElementById('levelGrid').innerHTML = siteData.competition.classes.map((l, i) => 
-        '<div class="level-card">' +
-          '<input type="text" class="edit-field name" value="' + l.name + '" placeholder="级别名称" onchange="updateLevel(' + i + ', \'name\', this.value)">' +
-          '<input type="text" class="edit-field weight" value="' + l.weight + '" placeholder="重量限制" onchange="updateLevel(' + i + ', \'weight\', this.value)">' +
-          '<input type="text" class="edit-field" value="' + l.group + '" placeholder="参赛组别" onchange="updateLevel(' + i + ', \'group\', this.value)">' +
-          '<textarea class="edit-field" placeholder="规则描述" onchange="updateLevel(' + i + ', \'desc\', this.value)">' + l.desc + '</textarea>' +
-          '<div style="margin-top:12px;"><button class="btn btn-sm btn-danger" onclick="deleteLevel(' + i + ')">🗑️ 删除</button></div>' +
+    // ========== 器材配件 ==========
+    function renderAccessories() {
+      document.getElementById('accessoryList').innerHTML = siteData.accessories.items.map((a, i) => 
+        '<div class="list-item">' +
+          '<div class="list-content">' +
+            '<input type="text" class="edit-field" value="' + a.icon + '" placeholder="图标" onchange="updateAccessory(' + i + ', \'icon\', this.value)">' +
+            '<input type="text" class="edit-field" value="' + a.name + '" placeholder="名称" onchange="updateAccessory(' + i + ', \'name\', this.value)">' +
+            '<textarea class="edit-field" placeholder="描述" onchange="updateAccessory(' + i + ', \'desc\', this.value)">' + a.desc + '</textarea>' +
+            '<input type="text" class="edit-field" value="' + a.price + '" placeholder="价格" onchange="updateAccessory(' + i + ', \'price\', this.value)">' +
+          '</div>' +
+          '<button class="delete-btn" onclick="deleteAccessory(' + i + ')">🗑️</button>' +
         '</div>'
       ).join('');
-    }
-    
-    // ========== 器材配件 ==========
-    function updateAccessoriesTitle() {
-      siteData.accessories.title = document.getElementById('accTitle').value;
-      siteData.accessories.subtitle = document.getElementById('accSubtitle').value;
-      autoSave();
     }
     
     function updateAccessory(idx, field, value) {
       siteData.accessories.items[idx][field] = value;
       autoSave();
-      showToast('配件已更新');
     }
     
     function deleteAccessory(idx) {
-      if (!confirm('确定删除此配件？')) return;
+      if (!confirm('确定删除？')) return;
       siteData.accessories.items.splice(idx, 1);
       autoSave();
       renderAccessories();
     }
     
     function addAccessory() {
-      siteData.accessories.items.push({icon: '⚙️', name: '新配件', desc: '配件描述...', price: '¥0'});
+      siteData.accessories.items.push({icon: '⚙️', name: '新配件', desc: '描述...', price: '¥0'});
       autoSave();
       renderAccessories();
     }
     
-    function changeAccessoryIcon(idx) {
-      const icons = ['⚙️', '🔩', '🔧', '⚡', '📡', '🔋', '🔌', '🎮', '🚗', '🛡️'];
-      const current = siteData.accessories.items[idx].icon;
-      const nextIdx = (icons.indexOf(current) + 1) % icons.length;
-      siteData.accessories.items[idx].icon = icons[nextIdx];
-      autoSave();
-      renderAccessories();
+    // ========== 图片上传 ==========
+    async function uploadHeroImg() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = async function() {
+        const file = this.files[0];
+        if (!file) return;
+        showToast('上传中...');
+        const formData = new FormData();
+        formData.append('image', file);
+        try {
+          const resp = await fetch('https://api.imgbb.com/1/upload?key=18699f8065186fe6a1e3241af4a10e9', {method: 'POST', body: formData});
+          const data = await resp.json();
+          if (data.success) {
+            siteData.heroImg = data.data.url;
+            autoSave();
+            document.getElementById('heroImgUpload').innerHTML = '<img src="' + data.data.url + '">';
+            document.getElementById('heroImgUpload').classList.add('has-img');
+            showToast('✅ 上传成功');
+          }
+        } catch(e) {
+          showToast('❌ 上传失败');
+        }
+      };
+      input.click();
     }
     
-    function renderAccessories() {
-      document.getElementById('accessoryList').innerHTML = siteData.accessories.items.map((a, i) => 
-        '<div class="accessory-item">' +
-          '<div class="accessory-icon" onclick="changeAccessoryIcon(' + i + ')" style="cursor:pointer;">' + a.icon + '</div>' +
-          '<div class="accessory-content">' +
-            '<input type="text" class="edit-field" value="' + a.name + '" placeholder="配件名称" onchange="updateAccessory(' + i + ', \'name\', this.value)">' +
-            '<textarea class="edit-field" placeholder="配件描述" onchange="updateAccessory(' + i + ', \'desc\', this.value)">' + a.desc + '</textarea>' +
-          '</div>' +
-          '<input type="text" class="edit-field accessory-price" value="' + a.price + '" placeholder="价格" onchange="updateAccessory(' + i + ', \'price\', this.value)">' +
-          '<button class="delete-btn" onclick="deleteAccessory(' + i + ')">🗑️</button>' +
-        '</div>'
-      ).join('');
+    async function uploadProductImg(idx) {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = async function() {
+        const file = this.files[0];
+        if (!file) return;
+        showToast('上传中...');
+        const formData = new FormData();
+        formData.append('image', file);
+        try {
+          const resp = await fetch('https://api.imgbb.com/1/upload?key=18699f8065186fe6a1e3241af4a10e9', {method: 'POST', body: formData});
+          const data = await resp.json();
+          if (data.success) {
+            siteData.products[idx].img = data.data.url;
+            autoSave();
+            renderProducts();
+            showToast('✅ 上传成功');
+          }
+        } catch(e) {
+          showToast('❌ 上传失败');
+        }
+      };
+      input.click();
     }
     
-    // ========== 联系信息 ==========
-    function updateContact() {
+    // ========== 发布网站 ==========
+    async function publishSite() {
+      // 收集首页数据
+      siteData.brand = document.getElementById('brandName').value;
+      siteData.navBadge = document.getElementById('navBadge').value;
+      siteData.heroEyebrow = document.getElementById('heroEyebrow').value;
+      siteData.heroLine1 = document.getElementById('heroLine1').value;
+      siteData.heroLine2 = document.getElementById('heroLine2').value;
+      siteData.heroDesc = document.getElementById('heroDesc').value;
+      siteData.heroBtn1 = document.getElementById('heroBtn1').value;
+      siteData.heroBtn2 = document.getElementById('heroBtn2').value;
+      siteData.featTitle = document.getElementById('featTitle').value;
+      siteData.competition.title = document.getElementById('compTitle').value;
+      siteData.competition.subtitle = document.getElementById('compSubtitle').value;
+      siteData.competition.desc = document.getElementById('compDesc').value;
+      siteData.accessories.title = document.getElementById('accTitle').value;
+      siteData.accessories.subtitle = document.getElementById('accSubtitle').value;
       siteData.contact.title = document.getElementById('contactTitle').value;
       siteData.contact.subtitle = document.getElementById('contactSubtitle').value;
       siteData.contact.phone = document.getElementById('contactPhone').value;
       siteData.contact.email = document.getElementById('contactEmail').value;
       siteData.contact.hours = document.getElementById('contactHours').value;
       siteData.contact.address = document.getElementById('contactAddress').value;
-      autoSave();
-      showToast('联系信息已保存');
-    }
-    
-    // ========== 页脚设置 ==========
-    function updateFooter() {
       siteData.footerBrand = document.getElementById('footerBrand').value;
       siteData.footerInfo = document.getElementById('footerInfo').value;
+      
       autoSave();
-      showToast('页脚已保存');
-    }
-    
-    // ========== 图片上传 (使用 imgbb) ==========
-    async function uploadImg(fileInput, target) {
-      const file = fileInput.files[0];
-      if (!file) return;
-      
-      showToast('正在上传图片...');
-      
-      const formData = new FormData();
-      formData.append('image', file);
-      
-      try {
-        const resp = await fetch('https://api.imgbb.com/1/upload?key=18699f8065186fe6a1e3241af4a10e9', {
-          method: 'POST',
-          body: formData
-        });
-        const data = await resp.json();
-        if (data.success) {
-          siteData[target] = data.data.url;
-          autoSave();
-          // 更新图片显示
-          const uploadArea = document.querySelector('.img-upload');
-          if (uploadArea) {
-            uploadArea.classList.add('has-img');
-            uploadArea.innerHTML = '<img src="' + data.data.url + '" onerror="this.style.display=\'none\'; this.parentElement.classList.remove(\'has-img\'); this.parentElement.innerHTML=\'<div style=\\'font-size:48px;margin-bottom:12px;\\'>📷</div><div>图片加载失败，请重试</div>\';">';
-          }
-          showToast('✅ 图片上传成功');
-        } else {
-          throw new Error('Upload failed');
-        }
-      } catch(e) {
-        showToast('❌ 上传失败，请重试', 'error');
-      }
-    }
-    
-    async function uploadHeroBg(input) {
-      uploadImg(input, 'heroImg');
-    }
-    
-    async function uploadFeatImg(input) {
-      uploadImg(input, 'featImg');
-    }
-    
-    async function uploadProductImg(idx, input) {
-      const file = input.files[0];
-      if (!file) return;
-      
-      showToast('正在上传图片...');
-      
-      const formData = new FormData();
-      formData.append('image', file);
-      
-      try {
-        const resp = await fetch('https://api.imgbb.com/1/upload?key=18699f8065186fe6a1e3241af4a10e9', {
-          method: 'POST',
-          body: formData
-        });
-        const data = await resp.json();
-        if (data.success) {
-          siteData.products[idx].img = data.data.url;
-          autoSave();
-          renderProducts();
-          showToast('✅ 图片上传成功');
-        }
-      } catch(e) {
-        showToast('❌ 上传失败，请重试', 'error');
-      }
-    }
-    
-    // ========== 发布网站 ==========
-    async function publishSite() {
-      // 先保存所有修改
-      updateHero();
-      updateCompetition();
-      updateAccessoriesTitle();
-      updateContact();
-      updateFooter();
-      updateFeatTitle();
-      
       showToast('正在发布...');
+      
       try {
         const resp = await fetch('http://localhost:7788/api/publish', {
           method: 'POST',
@@ -1346,47 +1135,22 @@
           throw new Error();
         }
       } catch(e) {
-        showToast('⚠️ 请确保服务器已运行 (node server)', 'error');
+        showToast('⚠️ 请确保服务器已运行 (node server)');
       }
     }
     
-    // 添加实时保存事件
-    document.querySelectorAll('.edit-field').forEach(field => {
-      field.addEventListener('change', () => {
-        updateHero();
-        updateCompetition();
-        updateAccessoriesTitle();
-        updateContact();
-        updateFooter();
-        updateFeatTitle();
-      });
-    });
-    
-    // 初始化渲染
+    // 初始化
     function init() {
       const cached = localStorage.getItem('siteData');
       if (cached) {
-        try {
-          siteData = JSON.parse(cached);
-        } catch(e) {}
+        try { siteData = JSON.parse(cached); } catch(e) {}
       }
-      
       renderKpi();
       renderProducts();
       renderFeatures();
       renderTimeline();
       renderLevels();
       renderAccessories();
-      
-      // 导航栏点击事件
-      document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', function() {
-          const section = this.getAttribute('data-section');
-          if (section) {
-            showSection(section);
-          }
-        });
-      });
     }
     
     init();
