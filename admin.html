@@ -400,31 +400,31 @@
         <div class="logo-text">造悟社 <span>CMS</span></div>
       </div>
       <nav>
-        <div class="nav-item active" onclick="showSection('home')">
+        <div class="nav-item active" data-section="home">
           <span class="nav-icon">🏠</span>
           <span>首页设置</span>
         </div>
-        <div class="nav-item" onclick="showSection('products')">
+        <div class="nav-item" data-section="products">
           <span class="nav-icon">📦</span>
           <span>产品管理</span>
         </div>
-        <div class="nav-item" onclick="showSection('features')">
+        <div class="nav-item" data-section="features">
           <span class="nav-icon">✨</span>
           <span>核心特性</span>
         </div>
-        <div class="nav-item" onclick="showSection('competition')">
+        <div class="nav-item" data-section="competition">
           <span class="nav-icon">🏆</span>
           <span>赛事规则</span>
         </div>
-        <div class="nav-item" onclick="showSection('accessories')">
+        <div class="nav-item" data-section="accessories">
           <span class="nav-icon">🔧</span>
           <span>器材配件</span>
         </div>
-        <div class="nav-item" onclick="showSection('contact')">
+        <div class="nav-item" data-section="contact">
           <span class="nav-icon">📞</span>
           <span>联系信息</span>
         </div>
-        <div class="nav-item" onclick="showSection('footer')">
+        <div class="nav-item" data-section="footer">
           <span class="nav-icon">📄</span>
           <span>页脚设置</span>
         </div>
@@ -960,9 +960,8 @@
       document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
       document.getElementById(id).classList.add('active');
-      // 找到对应的nav-item并激活
       document.querySelectorAll('.nav-item').forEach(n => {
-        if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'" + id + "'")) {
+        if (n.getAttribute('data-section') === id) {
           n.classList.add('active');
         }
       });
@@ -1377,6 +1376,16 @@
       renderTimeline();
       renderLevels();
       renderAccessories();
+      
+      // 导航栏点击事件
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', function() {
+          const section = this.getAttribute('data-section');
+          if (section) {
+            showSection(section);
+          }
+        });
+      });
     }
     
     init();
