@@ -615,8 +615,26 @@ function saveEdit() {
   }
   
   closeModal();
-  showToast('✅ 保存成功');
-  location.reload();
+  showToast('✅ 保存成功，正在发布...');
+  
+  // 自动发布
+  setTimeout(async () => {
+    try {
+      const resp = await fetch('http://localhost:7788/api/publish', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(siteData)
+      });
+      if (resp.ok) {
+        showToast('✅ 发布成功！约 1-5 分钟生效');
+        setTimeout(() => location.reload(), 1000);
+      } else {
+        throw new Error();
+      }
+    } catch(e) {
+      showToast('⚠️ 保存成功，请手动点击发布');
+    }
+  }, 500);
 }
 
 // 图片上传到 GitHub
