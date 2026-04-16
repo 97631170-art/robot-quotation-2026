@@ -315,7 +315,7 @@
           <div class="card-header">
             <span class="card-title">🖼️ Hero 图片</span>
           </div>
-          <div class="img-upload has-img" id="heroImgUpload" onclick="uploadHeroImg()">
+          <div class="img-upload has-img" id="heroImgUpload" onclick="editHeroImg()">
             <img src="https://97631170-art.github.io/robot-quotation-2026/images/5f2929ee-5969-4077-b525-68ce90ff207e.JPG" onerror="handleImgError(this)">
           </div>
         </div>
@@ -900,7 +900,7 @@
     function renderProducts() {
       document.getElementById('productGrid').innerHTML = siteData.products.map((p, i) => 
         '<div class="product-card">' +
-          '<div class="product-img-area" onclick="uploadProductImg(' + i + ')">' +
+          '<div class="product-img-area" onclick="editProductImg(' + i + ')">' +
             (p.img ? '<img src="' + buildFixImgUrl(p.img) + '" onerror="handleImgError(this)">' : '<span style="font-size:48px;">📷</span>') +
             '<div class="upload-hint"><span>📷</span><div>点击更换</div></div>' +
           '</div>' +
@@ -1063,80 +1063,34 @@
     }
     
     // ========== 图片上传 ==========
-    // 图片上传到 GitHub
-    async function uploadImage(file) {
-      return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        const formData = new FormData();
-        formData.append('file', file);
-        
-        xhr.onload = function() {
-          if (xhr.status === 200) {
-            try {
-              const data = JSON.parse(xhr.responseText);
-              if (data.success) {
-                resolve(data.url);
-              } else {
-                reject(new Error(data.error || '上传失败'));
-              }
-            } catch(e) {
-              reject(new Error('解析响应失败'));
-            }
-          } else {
-            reject(new Error('服务器错误: ' + xhr.status));
-          }
-        };
-        
-        xhr.onerror = function() {
-          reject(new Error('网络错误，请确保服务器已启动 (node server)'));
-        };
-        
-        xhr.open('POST', 'http://localhost:7788/api/upload-image');
-        xhr.send(formData);
-      });
+    // 编辑图片链接
+    function editHeroImg() {
+      const currentUrl = siteData.heroImg || '';
+      const newUrl = prompt('请输入图片链接：', currentUrl);
+      if (newUrl !== null) {
+        siteData.heroImg = newUrl;
+        autoSave();
+        const uploadArea = document.getElementById('heroImgUpload');
+        if (newUrl) {
+          uploadArea.innerHTML = '<img src="' + newUrl + '" onerror="handleImgError(this)">';
+          uploadArea.classList.add('has-img');
+        } else {
+          uploadArea.innerHTML = '<div style="font-size:48px;margin-bottom:12px;">📷</div><div>点击添加图片</div>';
+          uploadArea.classList.remove('has-img');
+        }
+        showToast('✅ 已保存');
+      }
     }
     
-    async function uploadHeroImg() {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = 'image/*';
-      input.onchange = async function() {
-        const file = this.files[0];
-        if (!file) return;
-        showToast('上传中...');
-        try {
-          const url = await uploadImage(file);
-          siteData.heroImg = url;
-          autoSave();
-          document.getElementById('heroImgUpload').innerHTML = '<img src="' + url + '" onerror="handleImgError(this)">';
-          document.getElementById('heroImgUpload').classList.add('has-img');
-          showToast('✅ 上传成功');
-        } catch(e) {
-          showToast('❌ ' + e.message);
-        }
-      };
-      input.click();
-    }
-    
-    async function uploadProductImg(idx) {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = 'image/*';
-      input.onchange = async function() {
-        const file = this.files[0];
-        if (!file) return;
-        showToast('上传中...');
-        try {
-          const url = await uploadImage(file);
-          siteData.products[idx].img = url;
-          autoSave();
-          renderProducts();
-          showToast('✅ 上传成功');
-        } catch(e) {
-          showToast('❌ ' + e.message);
-        }
-      };
-      input.click();
+    function editProductImg(idx) {
+      const currentUrl = siteData.products[idx].img || '';
+      const newUrl = prompt('请输入图片链接：', currentUrl);
+      if (newUrl !== null) {
+        siteData.products[idx].img = newUrl;
+        autoSave();
+        renderProducts();
+        showToast('✅ 已保存');
+      }
     }
     
     // ========== 发布网站 ==========
