@@ -1,6 +1,6 @@
 {
   "brand": "⚡中国格斗机甲联盟-造悟社",
-  "navBadge": "测试hero3.2",
+  "navBadge": "测试hero3.3",
   "heroEyebrow": "格斗机器人 · 2026 竞技系列",
   "heroLine1": "极速突破",
   "heroLine2": "铸造冠军",
@@ -106,15 +106,15 @@
       "img": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776417155956_bn2z25.jpg"
     },
     {
-      "tag": "新品",
+      "tag": "320克弹射格斗机甲",
       "series": "SERIES-NEW",
-      "name": "新产品",
-      "desc": "描述...",
+      "name": "弹射类格斗机器人",
+      "desc": "描述...四驱行驶 转向更精准 \n定制高速高压电机 增加弹射复位速度  \n预留快速充电口 免拆机充电",
       "specs": [],
-      "price": "¥0",
+      "price": "适配BOXBOT官方轻量级电控组件",
       "priceNote": "",
       "hot": false,
-      "img": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776417158323_5kvugo.JPG"
+      "img": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776420837973_5rzqx5.jpg"
     }
   ],
   "featTitle": "为竞技而生",
