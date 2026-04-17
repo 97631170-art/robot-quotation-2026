@@ -239,6 +239,29 @@
       border-color: var(--primary);
     }
     
+    .accessory-img-wrap {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-right: 12px;
+    }
+    .accessory-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .accessory-img-placeholder {
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+    }
+    .accessory-img-wrap:hover .accessory-img-placeholder { border-color: var(--primary); }
+    
     /* 列表项 */
     .list-item {
       display: flex; align-items: center; gap: 16px;
@@ -610,19 +633,19 @@
   "heroBtn2": "设备器材",
   "kpi": [
     {
-      "num": "7",
-      "label": ""
+      "num": "3D 打印",
+      "label": "增彩制造"
     },
     {
-      "num": "320g",
-      "label": "竞技重量级"
+      "num": "结构设计",
+      "label": "基础结构"
     },
     {
-      "num": "8V",
-      "label": "额定电压"
+      "num": "团队协作",
+      "label": "2V2模式"
     },
     {
-      "num": "5ms",
+      "num": "战术技巧",
       "label": "控制响应"
     }
   ],
@@ -876,7 +899,8 @@
     "accessories",
     "features",
     "competition"
-  ]
+  ],
+  "productsTitle": ""
 };
     
     // GitHub Pages 基础路径
@@ -1100,6 +1124,9 @@
     function renderAccessories() {
       document.getElementById('accessoryList').innerHTML = siteData.accessories.items.map((a, i) => 
         '<div class="list-item">' +
+          '<div class="accessory-img-wrap" onclick="selectImage(\'accessory\', ' + i + ')">' +
+            (a.img ? '<img src="' + a.img + '" alt="配件图片">' : '<div class="accessory-img-placeholder">📷 点击上传图片</div>') +
+          '</div>' +
           '<div class="list-content">' +
             '<input type="text" class="edit-field" value="' + a.icon + '" placeholder="图标" onchange="updateAccessory(' + i + ', \'icon\', this.value)">' +
             '<input type="text" class="edit-field" value="' + a.name + '" placeholder="名称" onchange="updateAccessory(' + i + ', \'name\', this.value)">' +
@@ -1130,43 +1157,17 @@
     }
     
     // ========== 图片上传 ==========
-    let pendingUpload = { hero: null, products: {} }; // 待上传的文件队列
-    
-    // 判断是否本地版本
-    const isLocalVersion = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    let pendingUpload = { hero: null, products: {}, accessories: {} }; // 待上传的文件队列
     
     // 选择图片
     function selectImage(type, idx) {
-      if (isLocalVersion) {
-        // 本地版本：选择文件后上传
-        pendingUpload.currentType = type;
-        pendingUpload.currentIdx = idx;
-        document.getElementById('fileInput').click();
-      } else {
-        // GitHub Pages 版本：直接让用户粘贴链接
-        const promptTitle = type === 'hero' ? 'Hero 图片' : '产品图片 ' + (idx + 1);
-        const url = prompt('📷 粘贴 ' + promptTitle + ' 的 GitHub 图片链接：\n格式：https://97631170-art.github.io/robot-quotation-2026/images/xxx.png\n提示：请先在 GitHub 上传图片，然后粘贴图片的 CDN 链接');
-        
-        if (url && url.trim()) {
-          const imgUrl = url.trim();
-          if (type === 'hero') {
-            siteData.heroImg = imgUrl;
-            document.getElementById('heroImgUpload').innerHTML = '<img src="' + imgUrl + '" onerror="handleImgError(this)">';
-            document.getElementById('heroImgUpload').classList.add('has-img');
-          } else {
-            siteData.products[idx].img = imgUrl;
-            renderProducts();
-          }
-          autoSave();
-          showToast('✅ 图片已更新');
-        }
-      }
+      pendingUpload.currentType = type;
+      pendingUpload.currentIdx = idx;
+      document.getElementById('fileInput').click();
     }
     
-    // 处理文件选择 - 仅本地版本使用
+    // 处理文件选择 - 本地预览
     function handleFileSelect(input) {
-      if (!isLocalVersion) return;
-      
       const file = input.files[0];
       if (!file) return;
       
@@ -1177,15 +1178,19 @@
         const idx = pendingUpload.currentIdx;
         
         if (type === 'hero') {
-          siteData.heroImg = previewUrl; // 先预览本地图片
-          pendingUpload.hero = file; // 标记待上传
+          siteData.heroImg = previewUrl;
+          pendingUpload.hero = file;
           const uploadArea = document.getElementById('heroImgUpload');
           uploadArea.innerHTML = '<img src="' + previewUrl + '">';
           uploadArea.classList.add('has-img');
         } else if (type === 'product') {
-          siteData.products[idx].img = previewUrl; // 先预览本地图片
-          pendingUpload.products[idx] = file; // 标记待上传
+          siteData.products[idx].img = previewUrl;
+          pendingUpload.products[idx] = file;
           renderProducts();
+        } else if (type === 'accessory') {
+          siteData.accessories.items[idx].img = previewUrl;
+          pendingUpload.accessories[idx] = file;
+          renderAccessories();
         }
         autoSave();
         showToast('✅ 已选择图片，发布时将上传');
@@ -1316,6 +1321,14 @@
           siteData.products[idx].img = url;
         }
         pendingUpload.products = {};
+        
+        // 上传器材配件图片
+        for (const idx in pendingUpload.accessories) {
+          showToast('上传配件图片 ' + (parseInt(idx) + 1) + '...');
+          const url = await uploadImageToGitHub(pendingUpload.accessories[idx]);
+          siteData.accessories.items[idx].img = url;
+        }
+        pendingUpload.accessories = {};
         
       } catch(e) {
         showToast('⚠️ 图片上传失败: ' + e.message);
