@@ -130,6 +130,14 @@
       background: linear-gradient(135deg, var(--primary), var(--secondary));
       color: white;
     }
+    .btn-secondary {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      margin-right: 8px;
+    }
+    .btn-secondary:hover { background: var(--card-hover); }
+    .header-actions { display: flex; align-items: center; }
     .btn-danger { background: var(--danger); color: white; }
     .btn-sm { padding: 8px 16px; font-size: 13px; }
     
@@ -330,7 +338,10 @@
       <section id="home" class="content-section active">
         <div class="header">
           <h1>🏠 首页设置</h1>
-          <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
+          <div class="header-actions">
+            <button class="btn btn-secondary" onclick="saveData()">💾 保存</button>
+            <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
+          </div>
         </div>
         
         <!-- 隐藏的文件选择器 -->
@@ -342,7 +353,7 @@
             <span class="card-title">🖼️ Hero 图片</span>
           </div>
           <div class="img-upload has-img" id="heroImgUpload" onclick="selectImage('hero')">
-            <img src="https://97631170-art.github.io/robot-quotation-2026/images/img_1776393703820_bp56x2.JPG" onerror="handleImgError(this)">
+            <img src="https://97631170-art.github.io/robot-quotation-2026/images/img_1776394536110_gtxiv7.JPG" onerror="handleImgError(this)">
           </div>
         </div>
         
@@ -358,7 +369,7 @@
             </div>
             <div class="form-group">
               <div class="field-label">导航徽章</div>
-              <input type="text" class="edit-field" id="navBadge" value="测试hero">
+              <input type="text" class="edit-field" id="navBadge" value="测试hero1.1">
             </div>
           </div>
         </div>
@@ -412,7 +423,10 @@
       <section id="products" class="content-section">
         <div class="header">
           <h1>📦 产品管理</h1>
-          <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
+          <div class="header-actions">
+            <button class="btn btn-secondary" onclick="saveData()">💾 保存</button>
+            <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
+          </div>
         </div>
         <div class="product-grid" id="productGrid"></div>
         <div class="add-btn" onclick="addProduct()">➕ 添加新产品</div>
@@ -422,7 +436,10 @@
       <section id="features" class="content-section">
         <div class="header">
           <h1>✨ 核心特性</h1>
-          <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
+          <div class="header-actions">
+            <button class="btn btn-secondary" onclick="saveData()">💾 保存</button>
+            <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
+          </div>
         </div>
         
         <div class="card">
@@ -440,7 +457,10 @@
       <section id="competition" class="content-section">
         <div class="header">
           <h1>🏆 赛事规则</h1>
-          <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
+          <div class="header-actions">
+            <button class="btn btn-secondary" onclick="saveData()">💾 保存</button>
+            <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
+          </div>
         </div>
         
         <div class="card">
@@ -476,7 +496,10 @@
       <section id="accessories" class="content-section">
         <div class="header">
           <h1>🔧 器材配件</h1>
-          <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
+          <div class="header-actions">
+            <button class="btn btn-secondary" onclick="saveData()">💾 保存</button>
+            <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
+          </div>
         </div>
         
         <div class="card">
@@ -498,7 +521,10 @@
       <section id="contact" class="content-section">
         <div class="header">
           <h1>📞 联系信息</h1>
-          <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
+          <div class="header-actions">
+            <button class="btn btn-secondary" onclick="saveData()">💾 保存</button>
+            <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
+          </div>
         </div>
         
         <div class="card">
@@ -537,7 +563,10 @@
       <section id="footer" class="content-section">
         <div class="header">
           <h1>📄 页脚设置</h1>
-          <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
+          <div class="header-actions">
+            <button class="btn btn-secondary" onclick="saveData()">💾 保存</button>
+            <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
+          </div>
         </div>
         
         <div class="card">
@@ -564,7 +593,7 @@
     // 数据
     let siteData = {
   "brand": "⚡中国格斗机甲联盟-造悟社",
-  "navBadge": "测试hero",
+  "navBadge": "测试hero1.1",
   "heroEyebrow": "格斗机器人 · 2026 竞技系列",
   "heroLine1": "极速突破",
   "heroLine2": "铸造冠军",
@@ -693,7 +722,7 @@
       "desc": "满足 500g 量级主流竞技规则，适配国内外各大机器人格斗联赛标准场地与评分体系。"
     }
   ],
-  "heroImg": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776393703820_bp56x2.JPG",
+  "heroImg": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776394536110_gtxiv7.JPG",
   "featImg": "/images/01ed2520-0525-4a8e-b578-fadb72265cb2.JPG",
   "competition": {
     "show": true,
@@ -1204,6 +1233,38 @@
         return resp.ok;
       } catch(e) {
         return false;
+      }
+    }
+    
+    // 保存数据到 GitHub
+    async function saveData() {
+      // 先本地保存
+      localStorage.setItem('siteData', JSON.stringify(siteData));
+      
+      // 检测服务器
+      const serverOk = await checkServer();
+      if (!serverOk) {
+        showToast('⚠️ 服务器未启动，无法同步到 GitHub', 3000);
+        return;
+      }
+      
+      showToast('正在保存到 GitHub...');
+      
+      // 发送到服务器保存到 GitHub
+      try {
+        const resp = await fetch('http://localhost:7788/api/save-data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(siteData)
+        });
+        
+        if (resp.ok) {
+          showToast('✅ 保存成功！');
+        } else {
+          showToast('⚠️ 保存失败', 3000);
+        }
+      } catch(e) {
+        showToast('⚠️ 网络错误，仅本地保存', 3000);
       }
     }
     
