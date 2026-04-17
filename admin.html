@@ -932,6 +932,17 @@
       document.querySelector('.nav-item[data-section="' + id + '"]').classList.add('active');
     }
     
+    // 页面加载后绑定导航点击
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('.nav-item').forEach(function(item) {
+        item.style.cursor = 'pointer';
+        item.onclick = function() {
+          var section = this.getAttribute('data-section');
+          showSection(section);
+        };
+      });
+    });
+    
     // ========== 首页设置 ==========
     function renderKpi() {
       document.getElementById('kpiList').innerHTML = siteData.kpi.map((k, i) => 
