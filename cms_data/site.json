@@ -279,8 +279,8 @@
   ],
   "moduleOrder": [
     "products",
-    "features",
     "accessories",
+    "features",
     "competition"
   ]
 }
