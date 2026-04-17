@@ -187,6 +187,40 @@
     .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
     .form-group { margin-bottom: 16px; }
     
+    /* 发布进度条 */
+    .publish-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--bg2);
+      z-index: 10000;
+      display: none;
+    }
+    .publish-progress.active { display: block; }
+    .publish-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), #ff6b6b);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    .publish-progress-text {
+      position: fixed;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--surface);
+      color: var(--text);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      z-index: 10001;
+      display: none;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .publish-progress-text.active { display: block; }
+    
     /* 图片上传 */
     .img-upload {
       border: 2px dashed var(--border);
@@ -312,6 +346,10 @@
   </style>
 </head>
 <body>
+  <!-- 发布进度条 -->
+  <div class="publish-progress" id="publishProgress"><div class="publish-progress-bar" id="publishProgressBar"></div></div>
+  <div class="publish-progress-text" id="publishProgressText">准备中...</div>
+  
   <div class="layout">
     <!-- 侧边栏 -->
     <aside class="sidebar">
@@ -376,7 +414,7 @@
             <span class="card-title">🖼️ Hero 图片</span>
           </div>
           <div class="img-upload has-img" id="heroImgUpload" onclick="selectImage('hero')">
-            <img src="https://97631170-art.github.io/robot-quotation-2026/images/img_1776405368182_2gu7yp.JPG" onerror="handleImgError(this)">
+            <img src="https://97631170-art.github.io/robot-quotation-2026/images/img_1776416360913_tncj98.jpg" onerror="handleImgError(this)">
           </div>
         </div>
         
@@ -392,7 +430,7 @@
             </div>
             <div class="form-group">
               <div class="field-label">导航徽章</div>
-              <input type="text" class="edit-field" id="navBadge" value="测试hero2.2">
+              <input type="text" class="edit-field" id="navBadge" value="测试hero3.2">
             </div>
           </div>
         </div>
@@ -624,7 +662,7 @@
     // 数据
     let siteData = {
   "brand": "⚡中国格斗机甲联盟-造悟社",
-  "navBadge": "测试hero2.2",
+  "navBadge": "测试hero3.2",
   "heroEyebrow": "格斗机器人 · 2026 竞技系列",
   "heroLine1": "极速突破",
   "heroLine2": "铸造冠军",
@@ -764,7 +802,7 @@
       "desc": "满足各个级别小学组迷你级 小学组轻量级 初中组轻量级 初中组视觉"
     }
   ],
-  "heroImg": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776405368182_2gu7yp.JPG",
+  "heroImg": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776416360913_tncj98.jpg",
   "featImg": "/images/01ed2520-0525-4a8e-b578-fadb72265cb2.JPG",
   "competition": {
     "show": true,
@@ -813,20 +851,21 @@
         "name": "高速武器电机",
         "desc": "8V定制电机 符合赛事规则尺寸",
         "price": "¥15",
-        "img": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776395980464_lvwozd.JPG"
+        "img": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776409959135_1de53s.jpg"
       },
       {
         "icon": "🚗",
         "name": "轻量级行驶电机",
         "desc": "减速行驶电机",
         "price": "¥30",
-        "img": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776395985783_l3zxjb.JPG"
+        "img": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776409977270_qtke7v.jpg"
       },
       {
         "icon": "📡",
         "name": "轻量级高速高压舵机",
         "desc": "高速金属舵机",
-        "price": "¥60"
+        "price": "¥60",
+        "img": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776409981174_wo8675.jpg"
       },
       {
         "icon": "🔋",
@@ -1292,50 +1331,67 @@
     }
     
     async function publishSite() {
-      // 先检测服务器
-      showToast('检测服务器...');
+      // 进度条函数
+      const progress = { current: 0, text: '准备中...' };
+      const progEl = document.getElementById('publishProgress');
+      const barEl = document.getElementById('publishProgressBar');
+      const textEl = document.getElementById('publishProgressText');
+      
+      function setProgress(p, text) {
+        progress.current = p;
+        progress.text = text;
+        barEl.style.width = p + '%';
+        textEl.textContent = text;
+        if (p > 0) { progEl.classList.add('active'); textEl.classList.add('active'); }
+        if (p >= 100) {
+          setTimeout(() => { progEl.classList.remove('active'); textEl.classList.remove('active'); }, 1500);
+        }
+      }
+      
+      setProgress(5, '检测服务器...');
       const serverOk = await checkServer();
       if (!serverOk) {
+        setProgress(0, '');
         showToast('⚠️ 服务器未启动！请先双击"启动服务器.bat"', 5000);
-        // 打开启动脚本
         window.open('启动服务器.bat', '_blank');
         return;
       }
       
-      showToast('正在处理图片...');
+      setProgress(15, '处理图片...');
       
-      // 先上传所有待上传的图片
       try {
-        // 上传 Hero 图片
+        const total = (pendingUpload.hero ? 1 : 0) + Object.keys(pendingUpload.products).length + Object.keys(pendingUpload.accessories).length;
+        let done = 0;
+        
         if (pendingUpload.hero) {
-          showToast('上传 Hero 图片...');
+          setProgress(15 + Math.floor((done/total)*40), '上传 Hero 图片...');
           const url = await uploadImageToGitHub(pendingUpload.hero);
           siteData.heroImg = url;
           pendingUpload.hero = null;
+          done++;
         }
         
-        // 上传产品图片
         for (const idx in pendingUpload.products) {
-          showToast('上传产品图片 ' + (parseInt(idx) + 1) + '...');
+          setProgress(15 + Math.floor((done/total)*40), '上传产品图片 ' + (parseInt(idx)+1) + '...');
           const url = await uploadImageToGitHub(pendingUpload.products[idx]);
           siteData.products[idx].img = url;
+          done++;
         }
         pendingUpload.products = {};
         
-        // 上传器材配件图片
         for (const idx in pendingUpload.accessories) {
-          showToast('上传配件图片 ' + (parseInt(idx) + 1) + '...');
+          setProgress(15 + Math.floor((done/total)*40), '上传配件图片 ' + (parseInt(idx)+1) + '...');
           const url = await uploadImageToGitHub(pendingUpload.accessories[idx]);
           siteData.accessories.items[idx].img = url;
+          done++;
         }
         pendingUpload.accessories = {};
         
       } catch(e) {
         showToast('⚠️ 图片上传失败: ' + e.message);
-        // 继续发布，不中断
       }
       
-      // 收集首页数据
+      // 收集数据
       siteData.brand = document.getElementById('brandName').value;
       siteData.navBadge = document.getElementById('navBadge').value;
       siteData.heroEyebrow = document.getElementById('heroEyebrow').value;
@@ -1361,7 +1417,7 @@
       siteData.footerInfo = document.getElementById('footerInfo').value;
       
       autoSave();
-      showToast('正在发布...');
+      setProgress(60, '生成网页...');
       
       try {
         const resp = await fetch('http://localhost:7788/api/publish', {
@@ -1370,11 +1426,13 @@
           body: JSON.stringify(siteData)
         });
         if (resp.ok) {
+          setProgress(100, '✅ 发布成功！');
           showToast('✅ 发布成功！约 1-5 分钟生效');
         } else {
           throw new Error();
         }
       } catch(e) {
+        setProgress(0, '');
         showToast('⚠️ 请确保服务器已运行 (node server)');
       }
     }
