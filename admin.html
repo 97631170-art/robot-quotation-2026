@@ -310,12 +310,15 @@
           <button class="btn btn-primary" onclick="publishSite()">🚀 发布网站</button>
         </div>
         
+        <!-- 隐藏的文件选择器 -->
+        <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileSelect(this)">
+        
         <!-- Hero 图片 - 移到最上面 -->
         <div class="card">
           <div class="card-header">
             <span class="card-title">🖼️ Hero 图片</span>
           </div>
-          <div class="img-upload has-img" id="heroImgUpload" onclick="editHeroImg()">
+          <div class="img-upload has-img" id="heroImgUpload" onclick="selectImage('hero')">
             <img src="https://97631170-art.github.io/robot-quotation-2026/images/5f2929ee-5969-4077-b525-68ce90ff207e.JPG" onerror="handleImgError(this)">
           </div>
         </div>
@@ -332,7 +335,7 @@
             </div>
             <div class="form-group">
               <div class="field-label">导航徽章</div>
-              <input type="text" class="edit-field" id="navBadge" value="2026 新品">
+              <input type="text" class="edit-field" id="navBadge" value="测试">
             </div>
           </div>
         </div>
@@ -538,7 +541,7 @@
     // 数据
     let siteData = {
   "brand": "⚡中国格斗机甲联盟-造悟社",
-  "navBadge": "2026 新品",
+  "navBadge": "测试",
   "heroEyebrow": "格斗机器人 · 2026 竞技系列",
   "heroLine1": "极速突破",
   "heroLine2": "铸造冠军",
@@ -578,7 +581,7 @@
       "price": "",
       "priceNote": "整机含遥控器",
       "hot": false,
-      "img": "https://kkimgs.yisou.com/ims?kt=url&at=ori&key=aHR0cHM6Ly9vc3MuanV6aW1pbWEuY29tL2QvZmlsZS8yMDIxMDkyNi9lNTZhYzQ5OWYyYjM4NjA0ZWZmOWU0MjE5MGY2OTlkNS5qcGc=&sign=yx:ovMOoGDseFu_OoyVWDefNbs6ORA=&tv=0_0"
+      "img": "/images/1775790699904.jpg"
     },
     {
       "tag": "320克横转类格斗机器人",
@@ -642,72 +645,6 @@
       "priceNote": "整机含遥控器",
       "hot": false,
       "img": "/images/微信图片_20260116120809_11_81.jpg"
-    },
-    {
-      "tag": "新品",
-      "series": "SERIES-NEW",
-      "name": "新产品",
-      "desc": "描述...",
-      "specs": [],
-      "price": "¥0",
-      "priceNote": "",
-      "hot": false,
-      "img": ""
-    },
-    {
-      "tag": "新品",
-      "series": "SERIES-NEW",
-      "name": "新产品",
-      "desc": "描述...",
-      "specs": [],
-      "price": "¥0",
-      "priceNote": "",
-      "hot": false,
-      "img": ""
-    },
-    {
-      "tag": "新品",
-      "series": "SERIES-NEW",
-      "name": "新产品",
-      "desc": "描述...",
-      "specs": [],
-      "price": "¥0",
-      "priceNote": "",
-      "hot": false,
-      "img": ""
-    },
-    {
-      "tag": "新品",
-      "series": "SERIES-NEW",
-      "name": "新产品",
-      "desc": "描述...",
-      "specs": [],
-      "price": "¥0",
-      "priceNote": "",
-      "hot": false,
-      "img": ""
-    },
-    {
-      "tag": "新品",
-      "series": "SERIES-NEW",
-      "name": "新产品",
-      "desc": "描述...",
-      "specs": [],
-      "price": "¥0",
-      "priceNote": "",
-      "hot": false,
-      "img": ""
-    },
-    {
-      "tag": "新品",
-      "series": "SERIES-NEW",
-      "name": "新产品",
-      "desc": "描述...",
-      "specs": [],
-      "price": "¥0",
-      "priceNote": "",
-      "hot": false,
-      "img": ""
     }
   ],
   "featTitle": "为竞技而生",
@@ -966,7 +903,7 @@
     function renderProducts() {
       document.getElementById('productGrid').innerHTML = siteData.products.map((p, i) => 
         '<div class="product-card">' +
-          '<div class="product-img-area" onclick="editProductImg(' + i + ')">' +
+          '<div class="product-img-area" onclick="selectImage('product', ' + i + ')">' +
             (p.img ? '<img src="' + buildFixImgUrl(p.img) + '" onerror="handleImgError(this)">' : '<span style="font-size:48px;">📷</span>') +
             '<div class="upload-hint"><span>📷</span><div>点击更换</div></div>' +
           '</div>' +
@@ -1129,38 +1066,106 @@
     }
     
     // ========== 图片上传 ==========
-    // 编辑图片链接
-    function editHeroImg() {
-      const currentUrl = siteData.heroImg || '';
-      const newUrl = prompt('请输入图片链接：', currentUrl);
-      if (newUrl !== null) {
-        siteData.heroImg = newUrl;
-        autoSave();
-        const uploadArea = document.getElementById('heroImgUpload');
-        if (newUrl) {
-          uploadArea.innerHTML = '<img src="' + newUrl + '" onerror="handleImgError(this)">';
-          uploadArea.classList.add('has-img');
-        } else {
-          uploadArea.innerHTML = '<div style="font-size:48px;margin-bottom:12px;">📷</div><div>点击添加图片</div>';
-          uploadArea.classList.remove('has-img');
-        }
-        showToast('✅ 已保存');
-      }
+    let pendingUpload = { hero: null, products: {} }; // 待上传的文件队列
+    
+    // 选择图片
+    function selectImage(type, idx) {
+      pendingUpload.currentType = type;
+      pendingUpload.currentIdx = idx;
+      document.getElementById('fileInput').click();
     }
     
-    function editProductImg(idx) {
-      const currentUrl = siteData.products[idx].img || '';
-      const newUrl = prompt('请输入图片链接：', currentUrl);
-      if (newUrl !== null) {
-        siteData.products[idx].img = newUrl;
+    // 处理文件选择 - 本地预览
+    function handleFileSelect(input) {
+      const file = input.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const previewUrl = e.target.result;
+        const type = pendingUpload.currentType;
+        const idx = pendingUpload.currentIdx;
+        
+        if (type === 'hero') {
+          siteData.heroImg = previewUrl; // 先预览本地图片
+          pendingUpload.hero = file; // 标记待上传
+          const uploadArea = document.getElementById('heroImgUpload');
+          uploadArea.innerHTML = '<img src="' + previewUrl + '">';
+          uploadArea.classList.add('has-img');
+        } else if (type === 'product') {
+          siteData.products[idx].img = previewUrl; // 先预览本地图片
+          pendingUpload.products[idx] = file; // 标记待上传
+          renderProducts();
+        }
         autoSave();
-        renderProducts();
-        showToast('✅ 已保存');
-      }
+        showToast('✅ 已选择图片，发布时将上传');
+      };
+      reader.readAsDataURL(file);
+      
+      // 清空input，允许重复选择同一文件
+      input.value = '';
+    }
+    
+    // 上传图片到 GitHub
+    async function uploadImageToGitHub(file) {
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            try {
+              const data = JSON.parse(xhr.responseText);
+              if (data.success) {
+                resolve(data.url);
+              } else {
+                reject(new Error(data.error || '上传失败'));
+              }
+            } catch(e) {
+              reject(new Error('解析响应失败'));
+            }
+          } else {
+            reject(new Error('服务器错误: ' + xhr.status));
+          }
+        };
+        
+        xhr.onerror = function() {
+          reject(new Error('网络错误，请确保服务器已启动 (node server)'));
+        };
+        
+        xhr.open('POST', 'http://localhost:7788/api/upload-image');
+        xhr.send(formData);
+      });
     }
     
     // ========== 发布网站 ==========
     async function publishSite() {
+      showToast('正在处理图片...');
+      
+      // 先上传所有待上传的图片
+      try {
+        // 上传 Hero 图片
+        if (pendingUpload.hero) {
+          showToast('上传 Hero 图片...');
+          const url = await uploadImageToGitHub(pendingUpload.hero);
+          siteData.heroImg = url;
+          pendingUpload.hero = null;
+        }
+        
+        // 上传产品图片
+        for (const idx in pendingUpload.products) {
+          showToast('上传产品图片 ' + (parseInt(idx) + 1) + '...');
+          const url = await uploadImageToGitHub(pendingUpload.products[idx]);
+          siteData.products[idx].img = url;
+        }
+        pendingUpload.products = {};
+        
+      } catch(e) {
+        showToast('⚠️ 图片上传失败: ' + e.message);
+        // 继续发布，不中断
+      }
+      
       // 收集首页数据
       siteData.brand = document.getElementById('brandName').value;
       siteData.navBadge = document.getElementById('navBadge').value;
