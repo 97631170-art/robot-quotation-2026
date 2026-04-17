@@ -926,7 +926,7 @@
     function renderProducts() {
       document.getElementById('productGrid').innerHTML = siteData.products.map((p, i) => 
         '<div class="product-card">' +
-          '<div class="product-img-area" onclick="selectImage('product', ' + i + ')">' +
+          '<div class="product-img-area" onclick="selectImage(\'product\', ' + i + ')">' +
             (p.img ? '<img src="' + buildFixImgUrl(p.img) + '" onerror="handleImgError(this)">' : '<span style="font-size:48px;">📷</span>') +
             '<div class="upload-hint"><span>📷</span><div>点击更换</div></div>' +
           '</div>' +
