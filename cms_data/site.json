@@ -129,7 +129,7 @@
       "desc": "满足 500g 量级主流竞技规则，适配国内外各大机器人格斗联赛标准场地与评分体系。"
     }
   ],
-  "heroImg": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776395720480_u6co1w.JPG",
+  "heroImg": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776395976502_6e75ar.JPG",
   "featImg": "/images/01ed2520-0525-4a8e-b578-fadb72265cb2.JPG",
   "competition": {
     "show": true,
@@ -189,13 +189,15 @@
         "icon": "⚙️",
         "name": "武器模块",
         "desc": "推铲/转鼓/弹射等多种武器模块，支持10分钟快拆更换",
-        "price": "¥280起"
+        "price": "¥280起",
+        "img": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776395980464_lvwozd.JPG"
       },
       {
         "icon": "🚗",
         "name": "驱动底盘",
         "desc": "四轮独立悬挂底盘，高强度ABS材质，损坏可单独更换",
-        "price": "¥380"
+        "price": "¥380",
+        "img": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776395985783_l3zxjb.JPG"
       },
       {
         "icon": "📡",
