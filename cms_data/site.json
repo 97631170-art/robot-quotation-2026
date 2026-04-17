@@ -1,6 +1,6 @@
 {
   "brand": "⚡中国格斗机甲联盟-造悟社",
-  "navBadge": "1.0",
+  "navBadge": "测试",
   "heroEyebrow": "格斗机器人 · 2026 竞技系列",
   "heroLine1": "极速突破",
   "heroLine2": "铸造冠军",
@@ -129,7 +129,7 @@
       "desc": "满足 500g 量级主流竞技规则，适配国内外各大机器人格斗联赛标准场地与评分体系。"
     }
   ],
-  "heroImg": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776393587219_4ut0le.JPG",
+  "heroImg": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776393628562_woyjfs.JPG",
   "featImg": "/images/01ed2520-0525-4a8e-b578-fadb72265cb2.JPG",
   "competition": {
     "show": true,
