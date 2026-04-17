@@ -1,694 +1,150 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<meta name="description" content="造悟社格斗机器人 · 2026竞技系列 · BoxBot赛事官方器材供应商"/>
-<title>⚡中国格斗机甲联盟-造悟社 · 格斗机器人产品展示</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚡中国格斗机甲联盟-造悟社</title>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --red:#e8242a;--red-dark:#b01a1f;--red-glow:rgba(232,36,42,.35);
-  --bg:#080810;--bg2:#0d0d1a;--surface:rgba(255,255,255,.04);
-  --border:rgba(255,255,255,.08);--muted:rgba(255,255,255,.5);
-  --gold:#f5a623;--green:#22c55e;--blue:#3b82f6;
-}
-html{scroll-behavior:smooth}
-body{font-family:'PingFang SC','Microsoft YaHei','Helvetica Neue',sans-serif;background:var(--bg);color:#fff;overflow-x:hidden}
-
-/* ===== 滚动动画 ===== */
-.reveal{opacity:0;transform:translateY(40px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
-.reveal.visible{opacity:1;transform:translateY(0)}
-.reveal-delay-1{transition-delay:.1s}
-.reveal-delay-2{transition-delay:.2s}
-.reveal-delay-3{transition-delay:.3s}
-.reveal-delay-4{transition-delay:.4s}
-.reveal-delay-5{transition-delay:.5s}
-
-/* ===== 导航 ===== */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 60px;height:64px;background:rgba(8,8,16,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:background .3s}
-nav.scrolled{background:rgba(8,8,16,.98);box-shadow:0 4px 30px rgba(0,0,0,.4)}
-.nav-logo{font-size:17px;font-weight:900;letter-spacing:3px;cursor:pointer}.nav-logo em{color:var(--red);font-style:normal}
-.nav-badge{display:inline-block;background:rgba(232,36,42,.15);border:1px solid rgba(232,36,42,.3);color:var(--red);font-size:9px;font-weight:700;letter-spacing:2px;padding:2px 8px;border-radius:10px;margin-left:10px;text-transform:uppercase;vertical-align:middle}
-.nav-menu{display:flex;gap:28px;list-style:none;align-items:center}
-.nav-menu a{color:var(--muted);text-decoration:none;font-size:13px;letter-spacing:1px;transition:color .2s;position:relative}
-.nav-menu a:hover{color:#fff}
-.nav-menu a.active{color:#fff}
-.nav-menu a::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:var(--red);transform:scaleX(0);transition:transform .25s cubic-bezier(.16,1,.3,1)}
-.nav-menu a:hover::after,.nav-menu a.active::after{transform:scaleX(1)}
-.nav-cta{background:linear-gradient(135deg,var(--red),var(--red-dark))!important;color:#fff!important;padding:8px 22px!important;border-radius:5px!important;font-weight:700!important;box-shadow:0 4px 16px rgba(232,36,42,.3);transition:all .2s!important}
-.nav-cta:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(232,36,42,.45)!important}
-.nav-cta::after{display:none!important}
-.nav-mobile{display:none}
-@media(max-width:768px){
-  nav{padding:0 20px}
-  .nav-menu{display:none}
-  .nav-mobile{display:flex;gap:8px;align-items:center}
-  .mobile-menu-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#fff;padding:8px 14px;border-radius:5px;font-size:12px;cursor:pointer}
-}
-
-/* ===== 英雄区 ===== */
-.hero{position:relative;min-height:100vh;display:flex;align-items:center;padding:100px 60px 60px;overflow:hidden}
-.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 70% 60%,rgba(232,36,42,.1) 0%,transparent 70%),radial-gradient(ellipse 40% 40% at 20% 80%,rgba(59,130,246,.05) 0%,transparent 60%),linear-gradient(135deg,#0d0d1a 0%,#080810 100%)}
-.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%)}
-.hero-vline{position:absolute;left:56px;top:20%;bottom:20%;width:2px;background:linear-gradient(180deg,transparent,var(--red) 40%,var(--red) 60%,transparent)}
-.hero-content{position:relative;z-index:2;max-width:640px}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:10px;margin-bottom:28px}
-.eyebrow-dot{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 12px var(--red);animation:pulse 2s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.8)}}
-.eyebrow-text{font-size:11px;letter-spacing:4px;color:var(--red);text-transform:uppercase;font-weight:600}
-.hero-h1{font-size:clamp(44px,6vw,82px);font-weight:900;line-height:1.05;letter-spacing:-1px;margin-bottom:24px}
-.hero-h1 .line2{color:var(--red);display:block;text-shadow:0 0 60px rgba(232,36,42,.4)}
-.hero-desc{font-size:15px;color:var(--muted);line-height:1.9;margin-bottom:44px;max-width:500px}
-.hero-actions{display:flex;gap:14px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 32px;border-radius:5px;font-size:14px;font-weight:700;letter-spacing:2px;cursor:pointer;border:none;transition:all .22s;text-decoration:none}
-.btn-red{background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff;box-shadow:0 6px 28px var(--red-glow)}
-.btn-red:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(232,36,42,.5)}
-.btn-outline{background:transparent;color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.2)}
-.btn-outline:hover{border-color:rgba(255,255,255,.5);color:#fff;transform:translateY(-2px)}
-.hero-visual{position:absolute;right:0;top:64px;bottom:0;width:52%;overflow:hidden;border-radius:0 0 0 24px}
-.hero-visual::before{content:'';position:absolute;left:0;top:0;bottom:0;width:50%;background:linear-gradient(90deg,var(--bg),transparent);z-index:1;pointer-events:none}
-.hero-visual::after{content:'';position:absolute;left:0;right:0;bottom:0;height:40%;background:linear-gradient(0deg,var(--bg),transparent);z-index:1;pointer-events:none}
-.hero-visual-inner{width:100%;height:100%}
-.hero-kpis{position:absolute;bottom:60px;left:60px;z-index:3;display:flex;gap:0}
-.kpi{padding:0 36px 0 0;margin-right:36px;border-right:1px solid rgba(255,255,255,.1)}.kpi:last-child{border-right:none;margin-right:0}
-.kpi-num{font-size:36px;font-weight:900;color:var(--red);line-height:1}.kpi-label{font-size:11px;color:var(--muted);letter-spacing:2px;margin-top:4px}
-
-/* ===== 通用区块 ===== */
-.section{padding:100px 60px}
-.section-dark{background:rgba(255,255,255,.015);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.section-red{background:linear-gradient(135deg,rgba(232,36,42,.08),rgba(8,8,16,1))}
-.section-head{text-align:center;margin-bottom:64px}
-.section-kicker{display:inline-flex;align-items:center;gap:12px;margin-bottom:16px}
-.kicker-line{width:32px;height:2px;background:var(--red)}.kicker-text{font-size:11px;letter-spacing:4px;color:var(--red);text-transform:uppercase;font-weight:600}
-.section-h2{font-size:clamp(26px,3vw,42px);font-weight:800;letter-spacing:1px;margin-bottom:14px}
-.section-sub{margin-top:0;color:var(--muted);font-size:14px;line-height:1.8}
-
-/* ===== 产品卡片 ===== */
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-@media(max-width:1000px){.cards{grid-template-columns:1fr;max-width:500px;margin:0 auto}}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s,border-color .35s}
-.card:hover{transform:translateY(-10px);box-shadow:0 32px 72px rgba(0,0,0,.5),0 0 0 1px rgba(232,36,42,.25);border-color:rgba(232,36,42,.35)}
-.card.hot{border-color:rgba(232,36,42,.3);background:linear-gradient(160deg,rgba(232,36,42,.07) 0%,rgba(232,36,42,.02) 100%)}
-.card-ribbon{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;min-height:40px}
-.ribbon-tag{background:rgba(232,36,42,.18);border:1px solid rgba(232,36,42,.35);color:#ff6b6b;font-size:10px;font-weight:700;letter-spacing:2.5px;padding:4px 12px;border-radius:20px;text-transform:uppercase}
-.ribbon-tag.hot-tag{background:linear-gradient(90deg,rgba(232,36,42,.3),rgba(232,36,42,.15));border-color:var(--red);color:#fff}
-.card-img-wrap{width:100%;height:240px;background:#0a0a14;overflow:hidden;display:flex;align-items:center;justify-content:center}
-.card-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.16,1,.3,1)}
-.card:hover .card-img-wrap img{transform:scale(1.08)}
-.card-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;font-size:64px}
-.p1{background:linear-gradient(135deg,#0e1525,#1a243a)}.p2{background:linear-gradient(135deg,#100a0a,#1e1010)}.p3{background:linear-gradient(135deg,#0a0e0a,#0e1a0e)}
-.card-body{padding:22px 22px 26px}
-.card-series{font-size:10px;letter-spacing:3.5px;color:var(--red);text-transform:uppercase;margin-bottom:6px}
-.card-title{font-size:22px;font-weight:800;letter-spacing:1px;margin-bottom:12px}
-.card-desc{font-size:13px;color:var(--muted);line-height:1.85;margin-bottom:18px}
-.card-tags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:22px}
-.tag{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);font-size:11px;padding:4px 11px;border-radius:3px}
-.card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:18px;border-top:1px solid rgba(255,255,255,.06)}
-.price-val{font-size:28px;font-weight:900;color:var(--red)}.price-note{font-size:12px;color:var(--muted);margin-top:2px}
-.card-btn{background:var(--surface);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);padding:9px 20px;border-radius:5px;font-size:12px;font-weight:600;letter-spacing:1.5px;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block}
-.card-btn:hover{border-color:var(--red);color:var(--red);background:rgba(232,36,42,.06)}
-
-/* ===== 赛事介绍 ===== */
-.comp-header{text-align:center;margin-bottom:60px}
-.comp-classes{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:60px}
-@media(max-width:900px){.comp-classes{grid-template-columns:1fr;max-width:400px;margin:0 auto}}
-.comp-class-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px 28px;text-align:center;transition:transform .3s,border-color .3s,box-shadow .3s}
-.comp-class-card:hover{transform:translateY(-6px);border-color:rgba(232,36,42,.3);box-shadow:0 20px 50px rgba(0,0,0,.4)}
-.comp-icon{font-size:48px;margin-bottom:16px}
-.comp-weight{font-size:40px;font-weight:900;color:var(--red);line-height:1;margin-bottom:6px}
-.comp-name{font-size:18px;font-weight:700;letter-spacing:1px;margin-bottom:4px}
-.comp-group{font-size:12px;color:var(--gold);letter-spacing:2px;margin-bottom:14px;text-transform:uppercase}
-.comp-desc{font-size:13px;color:var(--muted);line-height:1.75}
-.comp-cta{display:flex;align-items:center;justify-content:center;gap:40px;padding:36px;background:linear-gradient(135deg,rgba(232,36,42,.06),rgba(232,36,42,.02));border:1px solid rgba(232,36,42,.2);border-radius:16px;text-align:center;flex-wrap:wrap}
-.comp-cta-text{font-size:18px;font-weight:700;letter-spacing:1px}
-.comp-cta-text em{color:var(--red);font-style:normal}
-.comp-cta-phone{font-size:24px;font-weight:900;color:var(--red);letter-spacing:2px}
-
-/* 时间线 */
-.timeline{display:flex;align-items:center;justify-content:center;gap:0;margin-top:60px;position:relative;flex-wrap:wrap}
-.timeline::before{content:'';position:absolute;top:16px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,rgba(232,36,42,.4),rgba(232,36,42,.4),transparent)}
-.timeline-item{text-align:center;position:relative;z-index:1;flex:1;min-width:120px}
-.timeline-dot{width:12px;height:12px;border-radius:50%;background:var(--red);margin:10px auto 16px;box-shadow:0 0 12px var(--red)}
-.timeline-month{font-size:14px;font-weight:700;color:var(--red);margin-bottom:4px}
-.timeline-event{font-size:12px;color:var(--muted);letter-spacing:1px}
-
-/* ===== 器材配件 ===== */
-.acc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-@media(max-width:900px){.acc-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:600px){.acc-grid{grid-template-columns:1fr}}
-.acc-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px 24px;transition:transform .3s,border-color .3s,box-shadow .3s;cursor:default}
-.acc-card:hover{transform:translateY(-6px);border-color:rgba(232,36,42,.25);box-shadow:0 16px 40px rgba(0,0,0,.35)}
-.acc-visual{height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;overflow:hidden;border-radius:8px;}
-.acc-visual img{width:100%;height:100%;object-fit:cover;}
-.acc-icon{font-size:48px;}
-.acc-name{font-size:16px;font-weight:700;letter-spacing:.5px;margin-bottom:8px}
-.acc-desc{font-size:12px;color:var(--muted);line-height:1.75;margin-bottom:16px}
-.acc-price{font-size:20px;font-weight:900;color:var(--red)}
-
-/* ===== 特性区 ===== */
-.features-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
-@media(max-width:900px){.features-inner{grid-template-columns:1fr;gap:40px}}
-.features-visual{position:relative;border-radius:18px;overflow:hidden}
-.features-visual img{width:100%;display:block;border-radius:18px}
-.features-visual::after{content:'';position:absolute;inset:0;border-radius:18px;border:1px solid rgba(232,36,42,.2);pointer-events:none}
-.features-visual::before{content:'';position:absolute;top:-1px;left:-1px;width:50px;height:50px;border-top:2px solid var(--red);border-left:2px solid var(--red);pointer-events:none;z-index:2}
-.feat-ph{width:100%;height:360px;background:linear-gradient(135deg,#0d0d1a,#1a0808);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;border-radius:18px;font-size:60px}
-.feat-list{list-style:none}
-.feat-item{display:flex;gap:18px;align-items:flex-start;padding:22px 0;border-bottom:1px solid rgba(255,255,255,.05);transition:padding-left .3s}
-.feat-item:first-child{padding-top:0}.feat-item:last-child{border-bottom:none;padding-bottom:0}
-.feat-item:hover{padding-left:8px}
-.feat-icon{flex-shrink:0;width:44px;height:44px;border-radius:10px;background:rgba(232,36,42,.1);border:1px solid rgba(232,36,42,.2);display:flex;align-items:center;justify-content:center;font-size:20px}
-.feat-info h4{font-size:15px;font-weight:700;margin-bottom:6px}.feat-info p{font-size:13px;color:var(--muted);line-height:1.75}
-
-/* ===== 联系区 ===== */
-.contact-inner{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
-@media(max-width:900px){.contact-inner{grid-template-columns:1fr;gap:40px}}
-.contact-info-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:40px}
-.contact-item{display:flex;gap:16px;align-items:flex-start;padding:20px 0;border-bottom:1px solid rgba(255,255,255,.05)}
-.contact-item:first-child{padding-top:0}
-.contact-item:last-child{border-bottom:none}
-.contact-icon{font-size:24px;flex-shrink:0;width:48px;height:48px;border-radius:12px;background:rgba(232,36,42,.1);border:1px solid rgba(232,36,42,.2);display:flex;align-items:center;justify-content:center}
-.contact-label{font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
-.contact-value{font-size:16px;font-weight:700}
-.contact-value a{color:#fff;text-decoration:none;transition:color .2s}
-.contact-value a:hover{color:var(--red)}
-.qr-area{text-align:center;margin-top:28px;padding:24px;background:rgba(255,255,255,.03);border-radius:12px;border:1px solid rgba(255,255,255,.06)}
-.qr-placeholder{width:120px;height:120px;background:linear-gradient(135deg,#1a1a2e,#1e1e3a);border-radius:12px;margin:0 auto 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:40px;gap:6px}
-.qr-hint{font-size:12px;color:var(--muted);letter-spacing:1px}
-.form-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:40px}
-.form-title{font-size:18px;font-weight:800;letter-spacing:1px;margin-bottom:24px}
-.form-group{margin-bottom:18px}
-.form-group label{display:block;font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.form-group input,.form-group textarea{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#fff;padding:12px 16px;border-radius:8px;font-size:14px;font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
-.form-group input::placeholder,.form-group textarea::placeholder{color:rgba(255,255,255,.25)}
-.form-group input:focus,.form-group textarea:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(232,36,42,.1)}
-.form-group textarea{resize:vertical;min-height:80px}
-.form-submit{width:100%;padding:14px;background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(232,36,42,.3)}
-.form-submit:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(232,36,42,.45)}
-
-/* ===== 页脚 ===== */
-footer{padding:48px 60px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
-.footer-brand{font-size:14px;font-weight:700;letter-spacing:2px}.footer-brand em{color:var(--red);font-style:normal}
-.footer-info{font-size:12px;color:var(--muted)}
-.footer-links{display:flex;gap:24px}
-.footer-links a{color:var(--muted);text-decoration:none;font-size:12px;letter-spacing:1px;transition:color .2s}
-.footer-links a:hover{color:#fff}
-
-/* ===== 响应式 ===== */
-@media(max-width:768px){
-  .hero{padding:80px 20px 40px;min-height:auto}
-  .hero-visual{display:none}
-  .hero-kpis{left:20px;bottom:30px;gap:0;flex-wrap:wrap}
-  .kpi{padding:0 20px 0 0;margin-right:20px}
-  .section{padding:60px 20px}
-  nav{padding:0 20px}
-  .hero-actions{flex-direction:column;align-items:flex-start}
-  footer{padding:30px 20px;flex-direction:column;text-align:center}
-  .footer-links{justify-content:center}
-  .contact-inner{grid-template-columns:1fr}
-  .contact-info-card,.form-card{padding:24px}
-  .timeline{flex-direction:column;gap:24px}
-  .timeline::before{display:none}
-}
-
-/* ===== 导航滚动进度条 ===== */
-.nav-progress{position:fixed;top:64px;left:0;height:2px;background:linear-gradient(90deg,var(--red),var(--gold));z-index:199;transition:width .1s}
-
-/* ===== 浮动联系按钮 ===== */
-.float-cta{position:fixed;bottom:32px;right:32px;z-index:180;display:flex;flex-direction:column;gap:10px;align-items:flex-end}
-.float-cta a{background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff;padding:12px 20px;border-radius:50px;font-size:13px;font-weight:700;letter-spacing:1px;text-decoration:none;box-shadow:0 6px 24px rgba(232,36,42,.4);transition:all .25s;display:flex;align-items:center;gap:8px}
-.float-cta a:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(232,36,42,.55)}
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--red:#e8242a;--red-dark:#b01a1f;--bg:#080810;--bg2:#0d0d1a;--text:#fff;--text-muted:rgba(255,255,255,0.5);--border:rgba(255,255,255,0.08);--surface:rgba(255,255,255,0.04)}
+body{font-family:'PingFang SC','Microsoft YaHei','Helvetica Neue',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.nav{display:flex;justify-content:space-between;padding:16px 5%;position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,8,16,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-brand{font-size:1.2rem;font-weight:700;color:var(--text)}
+.nav-brand em{color:var(--red);font-style:normal}
+.nav-badge{background:rgba(232,36,42,0.15);border:1px solid rgba(232,36,42,0.3);color:var(--red);padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:700;letter-spacing:2px;margin-left:10px;text-transform:uppercase}
+.nav-links{display:flex;gap:24px;list-style:none;align-items:center}
+.nav-links a{color:var(--text-muted);text-decoration:none;font-size:0.9rem;letter-spacing:1px;transition:color 0.2s}
+.nav-links a:hover{color:#fff}
+.nav-links .cta{background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff!important;padding:8px 20px;border-radius:5px;font-weight:700;box-shadow:0 4px 16px rgba(232,36,42,0.3)}
+.hero{min-height:100vh;display:flex;align-items:center;padding:100px 5% 80px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 70% 60%,rgba(232,36,42,0.1) 0%,transparent 70%),linear-gradient(135deg,#0d0d1a 0%,#080810 100%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:60px 60px}
+.hero>*{position:relative;z-index:1}
+.hero-eyebrow{color:var(--red);font-size:0.8rem;margin-bottom:20px;letter-spacing:4px;text-transform:uppercase;font-weight:600}
+.hero-title{font-size:clamp(2.5rem,7vw,5rem);font-weight:900;line-height:1.1;margin-bottom:24px}
+.hero-title .red{color:var(--red);display:block;text-shadow:0 0 60px rgba(232,36,42,0.4)}
+.hero-desc{color:var(--text-muted);font-size:1rem;max-width:500px;margin-bottom:36px;line-height:1.9}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn{background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff;padding:14px 28px;border:none;border-radius:5px;font-size:0.95rem;font-weight:700;letter-spacing:2px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;box-shadow:0 6px 28px rgba(232,36,42,0.35)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(232,36,42,0.5)}
+.btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.2);box-shadow:none}
+.btn-outline:hover{border-color:rgba(255,255,255,0.5);transform:translateY(-2px)}
+.kpi{display:flex;gap:40px;margin-top:50px}
+.kpi-item{text-align:left;padding-right:40px;border-right:1px solid rgba(255,255,255,0.1)}
+.kpi-item:last-child{border-right:none}
+.kpi-num{font-size:2.2rem;font-weight:900;color:var(--red);line-height:1}
+.kpi-label{color:var(--text-muted);font-size:0.8rem;letter-spacing:2px;margin-top:4px;text-transform:uppercase}
+.products,.features,.competition,.accessories,.contact{padding:80px 5%}
+.products,.competition,.contact{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.section-title{text-align:center;margin-bottom:50px}
+.section-title h2{font-size:2rem;font-weight:800;margin-bottom:12px}
+.section-title p{color:var(--text-muted)}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px}
+.product-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:transform 0.35s,box-shadow 0.35s,border-color 0.35s}
+.product-card:hover{transform:translateY(-10px);box-shadow:0 32px 72px rgba(0,0,0,0.5);border-color:rgba(232,36,42,0.35)}
+.product-card img{width:100%;height:220px;object-fit:cover;background:#0a0a14}
+.product-card .content{padding:20px 22px 24px}
+.product-tag{background:rgba(232,36,42,0.18);border:1px solid rgba(232,36,42,0.35);color:#ff6b6b;padding:4px 12px;border-radius:20px;font-size:0.7rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;display:inline-block;margin-bottom:10px}
+.product-name{font-size:1.2rem;font-weight:800;margin-bottom:10px}
+.product-desc{color:var(--text-muted);font-size:0.9rem;margin-bottom:14px;line-height:1.8}
+.product-specs{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
+.product-specs span{background:rgba(255,255,255,0.05);padding:5px 10px;border-radius:5px;font-size:0.8rem;color:var(--text-muted)}
+.product-price{font-size:1.4rem;font-weight:700;color:var(--red)}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
+.feature-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:30px;transition:border-color 0.3s}
+.feature-card:hover{border-color:rgba(232,36,42,0.3)}
+.feature-icon{font-size:2.5rem;margin-bottom:16px}
+.feature-title{font-size:1.1rem;font-weight:700;margin-bottom:10px}
+.feature-desc{color:var(--text-muted);font-size:0.9rem}
+.classes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-bottom:50px}
+.class-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:30px;text-align:center;transition:border-color 0.3s}
+.class-card:hover{border-color:rgba(232,36,42,0.3)}
+.class-icon{font-size:2.5rem;margin-bottom:12px}
+.class-name{font-size:1.2rem;font-weight:700;margin-bottom:6px}
+.class-weight{color:var(--red);font-weight:600;font-size:0.9rem;margin-bottom:4px}
+.class-group{color:var(--text-muted);font-size:0.85rem;margin-bottom:10px}
+.class-desc{color:var(--text-muted);font-size:0.85rem}
+.timeline{display:flex;justify-content:center;gap:40px;flex-wrap:wrap}
+.timeline-item{text-align:center}
+.timeline-month{background:linear-gradient(135deg,var(--red),var(--red-dark));padding:8px 20px;border-radius:20px;font-weight:600;margin-bottom:8px;box-shadow:0 4px 16px rgba(232,36,42,0.3)}
+.timeline-event{color:var(--text-muted);font-size:0.85rem}
+.accessories-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px}
+.accessory-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;text-align:center;transition:all 0.3s}
+.accessory-card:hover{border-color:rgba(232,36,42,0.3);transform:translateY(-4px)}
+.accessory-icon{font-size:2rem;margin-bottom:12px}
+.accessory-name{font-size:1rem;font-weight:600;margin-bottom:8px}
+.accessory-desc{color:var(--text-muted);font-size:0.85rem;margin-bottom:10px}
+.accessory-price{color:var(--red);font-weight:700;font-size:1.1rem}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;max-width:1000px;margin:0 auto}
+.contact-info h2,.contact-form h2{font-size:1.8rem;font-weight:700;margin-bottom:16px}
+.contact-info p{color:var(--text-muted);margin-bottom:12px;font-size:0.95rem}
+.contact-info p:first-of-type{margin-top:20px}
+.form-group{margin-bottom:16px}
+.form-group input,.form-group textarea{width:100%;padding:14px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:#fff;font-size:0.95rem}
+.form-group input:focus,.form-group textarea:focus{outline:none;border-color:var(--red)}
+.form-group textarea{min-height:120px;resize:vertical}
+.footer{background:var(--bg);padding:30px 5%;text-align:center;border-top:1px solid var(--border)}
+.footer-brand{font-size:1rem;font-weight:700;margin-bottom:8px}
+.footer-info{color:var(--text-muted);font-size:0.85rem}
+@media(max-width:768px){.nav-links{display:none}.contact-grid{grid-template-columns:1fr}.hero{text-align:center}.hero-btns{justify-content:center}.kpi{justify-content:center;flex-wrap:wrap}}
 </style>
 </head>
 <body>
-
-<!-- 导航进度条 -->
-<div class="nav-progress" id="navProgress"></div>
-
-<!-- 导航 -->
-<nav id="navbar">
-  <div class="nav-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">⚡ BATTLE<em>BOT</em></div>
-  <ul class="nav-menu">
-    <li><a href="#products">产品系列</a></li><li><a href="#competition">赛事规则</a></li><li><a href="#accessories">设备器材</a></li><li><a href="#features">技术规格</a></li><li><a href="#contact" class="nav-cta">联系采购</a></li>
-  </ul>
-  <div class="nav-mobile">
-    <button class="mobile-menu-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">⚡</button>
-    <a href="#contact" class="btn btn-red" style="padding:8px 16px;font-size:12px;">联系采购</a>
+<nav class="nav">
+  <div style="display:flex;align-items:center">
+    <span class="nav-brand"><em>⚡中国格斗机甲联盟-造悟社</em><span class="nav-badge">测试hero2.1</span></span>
+  </div>
+  <div class="nav-links">
+    <a href="#products">产品</a>
+    <a href="#features">特性</a>
+    <a href="#competition">赛事</a>
+    <a href="#accessories">配件</a>
+    <a href="#contact" class="cta">立即咨询</a>
   </div>
 </nav>
 
-<!-- 英雄区 -->
-<section class="hero" id="hero">
-  <div class="hero-bg"></div>
+<section class="hero">
   <div class="hero-grid"></div>
-  <div class="hero-vline"></div>
-  <div class="hero-content">
-    <div class="hero-eyebrow">
-      <div class="eyebrow-dot"></div>
-      <div class="eyebrow-text">格斗机器人 · 2026 竞技系列</div>
-    </div>
-    <h1 class="hero-h1">
-      <span>极速突破</span>
-      <span class="line2">铸造冠军</span>
-    </h1>
+  <div>
+    <div class="hero-eyebrow">格斗机器人 · 2026 竞技系列</div>
+    <h1 class="hero-title">极速突破<br><span class="red">铸造冠军</span></h1>
     <p class="hero-desc">专为竞技格斗设计的高性能机器人系列，采用高强度ABS+ 3D 打印结构，搭载精准电控系统。多款型号——推铲型、垂直旋转型、双头型，满足不同战术风格，一键入场，决战巅峰。</p>
-    <div class="hero-actions">
-      <a href="#competition" class="btn btn-red">赛事规则 →</a>
-      <a href="#accessories" class="btn btn-outline">设备器材 →</a>
+    <div class="hero-btns">
+      <a href="#competition" class="btn">赛事规则</a>
+      <a href="#accessories" class="btn btn-outline">设备器材</a>
+    </div>
+    <div class="kpi">
+      <div class="kpi-item"><div class="kpi-num">7</div><div class="kpi-label"></div></div><div class="kpi-item"><div class="kpi-num">320g</div><div class="kpi-label">竞技重量级</div></div><div class="kpi-item"><div class="kpi-num">8V</div><div class="kpi-label">额定电压</div></div><div class="kpi-item"><div class="kpi-num">5ms</div><div class="kpi-label">控制响应</div></div>
     </div>
   </div>
-  <div class="hero-visual">
-    <div class="hero-visual-inner">
-      <img src="https://97631170-art.github.io/robot-quotation-2026/images/img_1776405368182_2gu7yp.JPG" style="width:100%;height:100%;object-fit:cover;object-position:center 60%;filter:brightness(.65) saturate(1.1);" alt="格斗机器人"/>
-    </div>
-  </div>
-  <div class="hero-kpis">
-    <div class="kpi"><div class="kpi-num">7</div><div class="kpi-label"></div></div>
-    <div class="kpi"><div class="kpi-num">320g</div><div class="kpi-label">竞技重量级</div></div>
-    <div class="kpi"><div class="kpi-num">8V</div><div class="kpi-label">额定电压</div></div>
-    <div class="kpi"><div class="kpi-num">5ms</div><div class="kpi-label">控制响应</div></div></div>
 </section>
 
-
-<!-- 产品系列 -->
-<section class="section" id="products">
-  <div class="section-head reveal">
-    <div class="section-kicker"><div class="kicker-line"></div><div class="kicker-text">Product Series</div><div class="kicker-line"></div></div>
-    <h2 class="section-h2">三款竞技型号</h2>
-    <p class="section-sub">模块化设计，快速拆装，适配多种竞技场景</p>
-  </div>
-  <div class="cards">
-    <div class="card" id="product-0">
-      <div class="card-ribbon">
-        <span class="ribbon-tag">320克竖转类格斗机甲</span>
-        
-      </div>
-      <div class="card-img-wrap">
-        <img src="https://97631170-art.github.io/robot-quotation-2026/images/img_1776405470648_ex9zxq.jpg" alt="竖转格斗机器人" style="width:100%;height:100%;object-fit:cover;" loading="lazy"/>
-      </div>
-      <div class="card-body">
-        <div class="card-series">SERIES-A</div>
-        <div class="card-title">竖转格斗机器人</div>
-        <p class="card-desc">四驱行驶 转向更精准 
+<section class="products" id="products">
+  <div class="section-title"><h2>产品系列</h2><p>专业竞技格斗机器人</p></div>
+  <div class="products-grid">
+    <div class="product-card"><img src="https://97631170-art.github.io/robot-quotation-2026/images/img_1776405470648_ex9zxq.jpg" alt="竖转格斗机器人" onerror="this.style.display='none'"><div class="content"><span class="product-tag">320克竖转类格斗机甲</span><h3 class="product-name">竖转格斗机器人</h3><p class="product-desc">四驱行驶 转向更精准 
 楔形独立前铲 增加前铲贴地 
 快拆武器模块 2个螺丝解决更换武器问题 
 预留快速充电口 免拆机充电
-</p>
-        <div class="card-tags"><span class="tag">重量: 320g</span><span class="tag">材质: ABS+</span><span class="tag">驱动: 四轮</span><span class="tag">武器: 推铲</span></div>
-        <div class="card-footer">
-          <div>
-            <div class="price-val">适配BOXBOT官方电控组件</div>
-            <div class="price-note">整机含遥控器</div>
-          </div>
-          <a href="#contact" class="card-btn">立即咨询</a>
-        </div>
-      </div>
-    </div>
-    <div class="card" id="product-1">
-      <div class="card-ribbon">
-        <span class="ribbon-tag">320克横转类格斗机甲</span>
-        
-      </div>
-      <div class="card-img-wrap">
-        <img src="https://97631170-art.github.io/robot-quotation-2026/images/img_1776405474291_5x64v5.jpg" alt="横传格斗机器人" style="width:100%;height:100%;object-fit:cover;" loading="lazy"/>
-      </div>
-      <div class="card-body">
-        <div class="card-series">SERIES-D</div>
-        <div class="card-title">横传格斗机器人</div>
-        <p class="card-desc">水平高速转鼓武器，侧面攻击角度独特 可从侧翼攻击对手装甲 低重心宽体设计 稳定性极佳 适合技巧型选手 </p>
-        <div class="card-tags"><span class="tag">重量: 320g</span><span class="tag">武器: 水平横转</span><span class="tag">材质: ABS+</span><span class="tag">高速电机</span><span class="tag">新规格</span></div>
-        <div class="card-footer">
-          <div>
-            <div class="price-val">适配BOXBOT官方电控组件</div>
-            <div class="price-note">整机含遥控器</div>
-          </div>
-          <a href="#contact" class="card-btn">立即咨询</a>
-        </div>
-      </div>
-    </div>
-    <div class="card" id="product-2">
-      <div class="card-ribbon">
-        <span class="ribbon-tag">320克弹射格斗机甲</span>
-        
-      </div>
-      <div class="card-img-wrap">
-        <img src="https://97631170-art.github.io/robot-quotation-2026/images/img_1776405372543_35wnm4.jpg" alt="弹射类格斗机器人" style="width:100%;height:100%;object-fit:cover;" loading="lazy"/>
-      </div>
-      <div class="card-body">
-        <div class="card-series">SERIES-F</div>
-        <div class="card-title">弹射类格斗机器人</div>
-        <p class="card-desc">四驱行驶 转向更精准 
+</p><div class="product-specs"><span>重量: 320g</span><span>材质: ABS+</span><span>驱动: 四轮</span><span>武器: 推铲</span></div><div class="product-price">适配BOXBOT官方轻量级电控组件</div></div></div><div class="product-card"><img src="https://97631170-art.github.io/robot-quotation-2026/images/img_1776405474291_5x64v5.jpg" alt="横传格斗机器人" onerror="this.style.display='none'"><div class="content"><span class="product-tag">320克横转类格斗机甲</span><h3 class="product-name">横传格斗机器人</h3><p class="product-desc">水平高速转鼓武器，侧面攻击角度独特 可从侧翼攻击对手装甲 低重心宽体设计 稳定性极佳 适合技巧型选手 </p><div class="product-specs"><span>重量: 320g</span><span>武器: 水平横转</span><span>材质: ABS+</span><span>高速电机</span><span>新规格</span></div><div class="product-price">适配BOXBOT官方轻量级电控组件</div></div></div><div class="product-card"><img src="https://97631170-art.github.io/robot-quotation-2026/images/img_1776405372543_35wnm4.jpg" alt="弹射类格斗机器人" onerror="this.style.display='none'"><div class="content"><span class="product-tag">320克弹射格斗机甲</span><h3 class="product-name">弹射类格斗机器人</h3><p class="product-desc">四驱行驶 转向更精准 
 定制高速高压电机 增加弹射复位速度  
-预留快速充电口 免拆机充电</p>
-        <div class="card-tags"><span class="tag">重量: 320g</span><span class="tag">武器: 抓举臂</span><span class="tag">材质: ABS+</span><span class="tag">高速舵机</span></div>
-        <div class="card-footer">
-          <div>
-            <div class="price-val">适配BOXBOT官方电控组件</div>
-            <div class="price-note">整机含遥控器</div>
-          </div>
-          <a href="#contact" class="card-btn">立即咨询</a>
-        </div>
-      </div>
-    </div>
-    <div class="card" id="product-3">
-      <div class="card-ribbon">
-        <span class="ribbon-tag">320克弹射类格斗机器人</span>
-        
-      </div>
-      <div class="card-img-wrap">
-        <img src="images/aabb4b3a-9dd0-472d-9976-f3f546b2224d.jpg" alt="弹射格斗机器人" style="width:100%;height:100%;object-fit:cover;" loading="lazy"/>
-      </div>
-      <div class="card-body">
-        <div class="card-series">SERIES-G</div>
-        <div class="card-title">弹射格斗机器人</div>
-        <p class="card-desc">高速舵机</p>
-        <div class="card-tags"><span class="tag">重量: 320g</span><span class="tag">武器: 高速锤</span><span class="tag">材质: ABS+</span><span class="tag">强力舵机</span></div>
-        <div class="card-footer">
-          <div>
-            <div class="price-val">适配BOXBOT官方电控组件</div>
-            <div class="price-note">整机含遥控器</div>
-          </div>
-          <a href="#contact" class="card-btn">立即咨询</a>
-        </div>
-      </div>
-    </div>
-    <div class="card" id="product-4">
-      <div class="card-ribbon">
-        <span class="ribbon-tag">新品</span>
-        
-      </div>
-      <div class="card-img-wrap">
-        <div class="card-placeholder p5">undefined</div>
-      </div>
-      <div class="card-body">
-        <div class="card-series">SERIES-X</div>
-        <div class="card-title">新机器人</div>
-        <p class="card-desc">请编辑产品描述...</p>
-        <div class="card-tags"><span class="tag">重量: 320g</span><span class="tag">材质: ABS+</span></div>
-        <div class="card-footer">
-          <div>
-            <div class="price-val">适配BOXBOT官方电控组件</div>
-            <div class="price-note">整机含遥控器</div>
-          </div>
-          <a href="#contact" class="card-btn">立即咨询</a>
-        </div>
-      </div>
-    </div>
-    <div class="card" id="product-5">
-      <div class="card-ribbon">
-        <span class="ribbon-tag">新品</span>
-        
-      </div>
-      <div class="card-img-wrap">
-        <img src="https://97631170-art.github.io/robot-quotation-2026/images/img_1776397049802_nrmzu8.JPG" alt="新产品" style="width:100%;height:100%;object-fit:cover;" loading="lazy"/>
-      </div>
-      <div class="card-body">
-        <div class="card-series">SERIES-NEW</div>
-        <div class="card-title">新产品</div>
-        <p class="card-desc">描述...</p>
-        <div class="card-tags"></div>
-        <div class="card-footer">
-          <div>
-            <div class="price-val">¥0</div>
-            <div class="price-note"></div>
-          </div>
-          <a href="#contact" class="card-btn">立即咨询</a>
-        </div>
-      </div>
-    </div></div>
-</section>
-<!-- 器材配件 -->
-<section class="section" id="accessories">
-  <div class="section-head reveal">
-    <div class="section-kicker"><div class="kicker-line"></div><div class="kicker-text">Equipment</div><div class="kicker-line"></div></div>
-    <h2 class="section-h2">配件器材</h2>
-    <p class="section-sub">模块化设计 · 快速更换 · 赛场无忧</p>
-  </div>
-  <div class="acc-grid">
-    <div class="acc-card">
-      <div class="acc-visual">
-        <img src="https://97631170-art.github.io/robot-quotation-2026/images/img_1776395980464_lvwozd.JPG" alt="武器模块"/>
-      </div>
-      <div class="acc-name">武器模块</div>
-      <div class="acc-desc">推铲/转鼓/弹射等多种武器模块，支持10分钟快拆更换</div>
-      <div class="acc-price">¥280起</div>
-    </div>
-    <div class="acc-card">
-      <div class="acc-visual">
-        <img src="https://97631170-art.github.io/robot-quotation-2026/images/img_1776395985783_l3zxjb.JPG" alt="驱动底盘"/>
-      </div>
-      <div class="acc-name">驱动底盘</div>
-      <div class="acc-desc">四轮独立悬挂底盘，高强度ABS材质，损坏可单独更换</div>
-      <div class="acc-price">¥380</div>
-    </div>
-    <div class="acc-card">
-      <div class="acc-visual">
-        <div class="acc-icon">📡</div>
-      </div>
-      <div class="acc-name">遥控器</div>
-      <div class="acc-desc">2.4GHz抗干扰遥控，响应延迟&lt;5ms，支持多机同场竞技</div>
-      <div class="acc-price">¥220</div>
-    </div>
-    <div class="acc-card">
-      <div class="acc-visual">
-        <div class="acc-icon">🔋</div>
-      </div>
-      <div class="acc-name">锂电池组</div>
-      <div class="acc-desc">7.4V 1000mAh 动力锂电池，高倍率放电，支持快速充电</div>
-      <div class="acc-price">¥120</div>
-    </div>
-    <div class="acc-card">
-      <div class="acc-visual">
-        <div class="acc-icon">🔩</div>
-      </div>
-      <div class="acc-name">易损配件包</div>
-      <div class="acc-desc">轮毂/轴承/螺丝等常用易损件套餐，赛场必备备件</div>
-      <div class="acc-price">¥68</div>
-    </div>
-    <div class="acc-card">
-      <div class="acc-visual">
-        <div class="acc-icon">🛡️</div>
-      </div>
-      <div class="acc-name">装甲护板</div>
-      <div class="acc-desc">高强度尼龙护板，有效抵御旋转武器冲击，可重复安装</div>
-      <div class="acc-price">¥88</div>
-    </div></div>
-</section>
-<!-- 核心特性 -->
-<section class="section section-dark" id="features">
-  <div class="features-inner">
-    <div class="features-visual reveal">
-      <img src="images/01ed2520-0525-4a8e-b578-fadb72265cb2.JPG" alt="产品细节"/>
-    </div>
-    <div class="reveal reveal-delay-2">
-      <div class="section-kicker" style="margin-bottom:20px;"><div class="kicker-line"></div><div class="kicker-text">Core Features</div></div>
-      <h2 class="section-h2" style="margin-bottom:36px;">为竞技而生</h2>
-      <ul class="feat-list">
-    <li class="feat-item">
-      <div class="feat-icon">🏗️</div>
-      <div class="feat-info"><h4>高强度 3D 打印结构</h4><p>全机身ABS+ 材料，层厚 0.2mm 精细打印，强度媲美注塑件，抗冲击性卓越，损坏后可快速补件更换。</p></div>
-    </li>
-    <li class="feat-item">
-      <div class="feat-icon">⚡</div>
-      <div class="feat-info"><h4>精准电控系统</h4><p>竞技级电调，响应延迟低至 5ms，支持 2.4GHz 抗干扰遥控，在高密度干扰环境中稳定运行。</p></div>
-    </li>
-    <li class="feat-item">
-      <div class="feat-icon">🔧</div>
-      <div class="feat-info"><h4>模块化快拆设计</h4><p>武器模块、驱动模块可 10 分钟内完成更换，赛间快速维修不误场，零部件独立出售方便备件储备。</p></div>
-    </li>
-    <li class="feat-item">
-      <div class="feat-icon">🏆</div>
-      <div class="feat-info"><h4>符合主流赛事规格</h4><p>满足 500g 量级主流竞技规则，适配国内外各大机器人格斗联赛标准场地与评分体系。</p></div>
-    </li></ul>
-    </div>
-  </div>
-</section>
-<!-- 赛事介绍 -->
-<section class="section section-dark" id="competition">
-  <div class="section-head reveal">
-    <div class="section-kicker"><div class="kicker-line"></div><div class="kicker-text">BoxBot Tournament</div><div class="kicker-line"></div></div>
-    <h2 class="section-h2">BoxBot 格斗机器人大赛</h2>
-    <p class="section-sub">2026 全国青少年格斗机器人联赛</p>
-    <p class="section-sub" style="margin-top:12px;max-width:680px;margin-left:auto;margin-right:auto">BoxBot 是国内最具影响力的青少年格斗机器人竞技赛事，涵盖小学、初中、高中三个组别，旨在培养青少年的工程思维、动手能力与竞技精神。</p>
-  </div>
-  <div class="comp-classes reveal reveal-delay-1">
-    <div class="comp-class-card">
-      <div class="comp-icon">🎯</div>
-      <div class="comp-weight">150g</div>
-      <div class="comp-name">迷你级</div>
-      <div class="comp-group">小学组</div>
-      <p class="comp-desc">入门级赛事，使用小型格斗机器人，适合初次接触竞技机器人领域的学生。</p>
-    </div>
-    <div class="comp-class-card">
-      <div class="comp-icon">⚔️</div>
-      <div class="comp-weight">320g</div>
-      <div class="comp-name">轻量级</div>
-      <div class="comp-group">中小学组</div>
-      <p class="comp-desc">主流竞技级别，考验选手的操控技巧与战术策略，竞争最为激烈。</p>
-    </div>
-    <div class="comp-class-card">
-      <div class="comp-icon">💥</div>
-      <div class="comp-weight">1.5kg</div>
-      <div class="comp-name">重量级</div>
-      <div class="comp-group">初高中组</div>
-      <p class="comp-desc">高端竞技赛事，装备更强武器系统，观赏性与技术含量最高。</p>
-    </div></div>
-  <div class="comp-cta reveal reveal-delay-2">
-    <div>
-      <div class="comp-cta-text">想报名参赛？咨询赛事规则</div>
-    </div>
-    <div>
-      <div class="comp-cta-phone">📞 15970070712</div>
-    </div>
-    <a href="#contact" class="btn btn-red">立即咨询</a>
-  </div>
-  <div class="timeline reveal reveal-delay-3">
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-month">3月</div>
-      <div class="timeline-event">报名开启</div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-month">5月</div>
-      <div class="timeline-event">城市海选赛</div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-month">7月</div>
-      <div class="timeline-event">区域晋级赛</div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-month">8月</div>
-      <div class="timeline-event">全国总决赛</div>
-    </div></div>
-</section>
-
-<!-- 联系咨询 -->
-<section class="section section-red" id="contact">
-  <div class="section-head reveal">
-    <div class="section-kicker"><div class="kicker-line"></div><div class="kicker-text">Contact Us</div><div class="kicker-line"></div></div>
-    <h2 class="section-h2">联系我们</h2>
-    <p class="section-sub">造悟社 · 专注格斗机器人教育与竞技</p>
-  </div>
-  <div class="contact-inner">
-    <div class="contact-info-card reveal">
-      <div class="contact-item">
-        <div class="contact-icon">📞</div>
-        <div>
-          <div class="contact-label">咨询热线</div>
-          <div class="contact-value"><a href="tel:15970070712">15970070712</a></div>
-        </div>
-      </div>
-      <div class="contact-item">
-        <div class="contact-icon">✉️</div>
-        <div>
-          <div class="contact-label">电子邮箱</div>
-          <div class="contact-value"><a href="mailto:97631170@qq.com">97631170@qq.com</a></div>
-        </div>
-      </div>
-      <div class="contact-item">
-        <div class="contact-icon">🕘</div>
-        <div>
-          <div class="contact-label">营业时间</div>
-          <div class="contact-value">周一至周六 9:00 - 18:00</div>
-        </div>
-      </div>
-      <div class="contact-item">
-        <div class="contact-icon">📍</div>
-        <div>
-          <div class="contact-label">工作室地址</div>
-          <div class="contact-value">中国 · 造悟社机器人工作室</div>
-        </div>
-      </div>
-      <div class="qr-area reveal reveal-delay-3">
-        <div class="qr-placeholder">📱</div>
-        <div class="qr-hint">扫码咨询 · 添加客服微信</div>
-      </div>
-    </div>
-    
-    <div class="form-card reveal reveal-delay-2">
-      <div class="form-title">在线询价</div>
-      <form onsubmit="event.preventDefault();alert('咨询已收到，我们将尽快联系您！');">
-        
-    <div class="form-group">
-      <label>您的姓名</label>
-      <input type="text" placeholder="请输入姓名"/>
-    </div>
-    <div class="form-group">
-      <label>联系电话</label>
-      <input type="text" placeholder="请输入手机号"/>
-    </div>
-    <div class="form-group">
-      <label>咨询内容</label>
-      <textarea rows="3" placeholder="我想咨询产品报价 / 赛事报名 / 器材采购..."></textarea>
-    </div>
-        <button type="submit" class="form-submit">发送咨询消息</button>
-      </form>
-    </div>
+预留快速充电口 免拆机充电</p><div class="product-specs"><span>重量: 320g</span><span>武器: 抓举臂</span><span>材质: ABS+</span><span>高速舵机</span></div><div class="product-price">适配BOXBOT官方轻量级电控组件</div></div></div><div class="product-card"><img src="https://97631170-art.github.io/robot-quotation-2026/images/img_1776406212042_o67ost.jpg" alt="迷你级格斗机器人" onerror="this.style.display='none'"><div class="content"><span class="product-tag">200克弹射格斗机甲</span><h3 class="product-name">迷你级格斗机器人</h3><p class="product-desc">高速舵机 四轮驱动 转向更精准 双版本 </p><div class="product-specs"><span>重量: 320g</span><span>武器: 高速锤</span><span>材质: ABS+</span><span>强力舵机</span></div><div class="product-price">适配BOXBOT官方迷你级电控组件</div></div></div><div class="product-card"><img src="/images/微信图片_20260116120809_11_81.jpg" alt="新机器人" onerror="this.style.display='none'"><div class="content"><span class="product-tag">新品</span><h3 class="product-name">新机器人</h3><p class="product-desc">请编辑产品描述...</p><div class="product-specs"><span>重量: 320g</span><span>材质: ABS+</span></div><div class="product-price">适配BOXBOT官方电控组件</div></div></div><div class="product-card"><img src="https://97631170-art.github.io/robot-quotation-2026/images/img_1776397049802_nrmzu8.JPG" alt="新产品" onerror="this.style.display='none'"><div class="content"><span class="product-tag">新品</span><h3 class="product-name">新产品</h3><p class="product-desc">描述...</p><div class="product-specs"></div><div class="product-price">¥0</div></div></div>
   </div>
 </section>
 
-<footer>
-  <div class="footer-brand">⚡ BATTLE<em>BOT</em> · 造悟社 · 格斗机器人</div>
-  <div class="footer-info">咨询热线：15970070712 · 邮箱：97631170@qq.com · © 2026 造悟社 版权所有</div>
-  <div class="footer-links">
-    <a href="#products">产品系列</a>
-    <a href="#competition">赛事介绍</a>
-    <a href="#contact">联系采购</a>
+<section class="features" id="features">
+  <div class="section-title"><h2>为竞技而生</h2></div>
+  <div class="features-grid">
+    <div class="feature-card"><div class="feature-icon">🏗️</div><h3 class="feature-title">高强度 3D 打印结构</h3><p class="feature-desc">全机身ABS+ 材料，层厚 0.2mm 精细打印，强度媲美注塑件，抗冲击性卓越，损坏后可快速补件更换。</p></div><div class="feature-card"><div class="feature-icon">⚡</div><h3 class="feature-title">精准电控系统</h3><p class="feature-desc">官方竞技级电调，响应延迟低至 5ms，支持 2.4GHz 抗干扰遥控，在高密度干扰环境中稳定运行。</p></div><div class="feature-card"><div class="feature-icon">🔧</div><h3 class="feature-title">模块化快拆设计</h3><p class="feature-desc">武器模块、驱动模块可 3分钟内完成更换，赛间快速维修不误场，零部件独立出售方便备件储备。</p></div><div class="feature-card"><div class="feature-icon">🏆</div><h3 class="feature-title">符合主流赛事规格</h3><p class="feature-desc">满足各个级别小学组迷你级 小学组轻量级 初中组轻量级 初中组视觉</p></div>
   </div>
-</footer>
+</section>
 
-<div class="float-cta">
-  <a href="tel:15970070712"><span>📞 立即通话</span></a>
-  <a href="#contact" style="background:#fff;color:#000;"><span>✉️ 在线留言</span></a>
-</div>
+<section class="competition" id="competition"><div class="section-title"><h2>指向BoxBot 格斗机器人大赛</h2><p>BoxBot 是国内最具影响力的青少年格斗机器人竞技赛事，涵盖小学、初中、高中三个组别，旨在培养青少年的工程思维、动手能力与竞技精神。</p></div><div class="classes-grid"><div class="class-card"><div class="class-icon">🎯</div><h3 class="class-name">迷你级</h3><div class="class-weight">200g</div><div class="class-group">小学组</div><p class="class-desc">入门级赛事，使用小型弹射类格斗机器人，适合初次接触竞技机器人领域的学生。</p></div><div class="class-card"><div class="class-icon">⚔️</div><h3 class="class-name">轻量级</h3><div class="class-weight">320g</div><div class="class-group">中小学组</div><p class="class-desc">主流竞技级别，考验选手的操控技巧与战术策略，竞争最为激烈。</p></div><div class="class-card"><div class="class-icon">💥</div><h3 class="class-name">视觉</h3><div class="class-weight">360g</div><div class="class-group">中学组</div><p class="class-desc">高端竞技赛事，装备更强武器系统，观赏性与技术含量最高。</p></div></div><div class="timeline"><div class="timeline-item"><div class="timeline-month">5月31日选拔赛</div><div class="timeline-event">报名开启</div></div></div></section>
 
-<script>
-// 滚动显示动画
-const observerOptions = { threshold: 0.1 };
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-    }
-  });
-}, observerOptions);
+<section class="accessories" id="accessories"><div class="section-title"><h2>配件器材</h2><p>模块化设计 · 快速更换 · 赛场无忧</p></div><div class="accessories-grid"><div class="accessory-card"><div class="accessory-icon">⚙️</div><h3 class="accessory-name">高速武器电机</h3><p class="accessory-desc">8V定制电机 符合赛事规则尺寸</p><div class="accessory-price">¥15</div></div><div class="accessory-card"><div class="accessory-icon">🚗</div><h3 class="accessory-name">轻量级行驶电机</h3><p class="accessory-desc">减速行驶电机</p><div class="accessory-price">¥30</div></div><div class="accessory-card"><div class="accessory-icon">📡</div><h3 class="accessory-name">轻量级高速高压舵机</h3><p class="accessory-desc">高速金属舵机</p><div class="accessory-price">¥60</div></div><div class="accessory-card"><div class="accessory-icon">🔋</div><h3 class="accessory-name">迷你级基础舵机</h3><p class="accessory-desc">尼龙齿轮舵机</p><div class="accessory-price">¥15</div></div><div class="accessory-card"><div class="accessory-icon">🔩</div><h3 class="accessory-name">迷你级高速舵机</h3><p class="accessory-desc">金属齿轮 高速舵机</p><div class="accessory-price">¥45</div></div></div></section>
 
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+<section class="contact" id="contact"><div class="contact-grid"><div class="contact-info"><h2>联系我们</h2><p>造悟社 · 专注格斗机器人教育与竞技</p><p>📞 15970070712</p><p>✉️ 97631170@qq.com</p><p>⏰ 周一至周六 9:00 - 18:00</p><p>📍 中国 · 造悟社机器人工作室</p></div><div class="contact-form"><h2>在线询价</h2><form onsubmit="event.preventDefault();alert('感谢咨询！')"><div class="form-group"><input type="text" placeholder="您的姓名"></div><div class="form-group"><input type="tel" placeholder="联系电话"></div><div class="form-group"><input type="text" placeholder="咨询产品"></div><div class="form-group"><textarea placeholder="请输入咨询内容"></textarea></div><button type="submit" class="btn" style="width:100%">提交咨询</button></form></div></div></section>
 
-// 导航栏滚动效果
-window.addEventListener('scroll', () => {
-  const nav = document.getElementById('navbar');
-  const progress = document.getElementById('navProgress');
-  const scrolled = window.scrollY > 50;
-  
-  if (scrolled) nav.classList.add('scrolled');
-  else nav.classList.remove('scrolled');
-  
-  // 进度条
-  const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-  const scrolled_pct = (winScroll / height) * 100;
-  progress.style.width = scrolled_pct + "%";
-});
-
-// 简单的导航激活状态
-const navLinks = document.querySelectorAll('.nav-menu a');
-window.addEventListener('scroll', () => {
-  let fromTop = window.scrollY + 100;
-  navLinks.forEach(link => {
-    let section = document.querySelector(link.hash);
-    if (section && section.offsetTop <= fromTop && section.offsetTop + section.offsetHeight > fromTop) {
-      link.classList.add('active');
-    } else {
-      link.classList.remove('active');
-    }
-  });
-});
-</script>
-
+<footer class="footer"><div class="footer-brand">造悟社 · 格斗机器人</div><div class="footer-info">咨询热线：15970070712 · 邮箱：97631170@qq.com · © 2026 造悟社 版权所有</div></footer>
 </body>
 </html>
