@@ -1,6 +1,6 @@
 {
   "brand": "⚡中国格斗机甲联盟-造悟社",
-  "navBadge": "测试hero2.3",
+  "navBadge": "测试hero3.1",
   "heroEyebrow": "格斗机器人 · 2026 竞技系列",
   "heroLine1": "极速突破",
   "heroLine2": "铸造冠军",
@@ -73,7 +73,7 @@
       "price": "适配BOXBOT官方轻量级电控组件",
       "priceNote": "整机含遥控器",
       "hot": false,
-      "img": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776405372543_35wnm4.jpg"
+      "img": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776415941016_hqiudo.jpg"
     },
     {
       "tag": "200克弹射格斗机甲",
@@ -89,13 +89,13 @@
       "price": "适配BOXBOT官方迷你级电控组件",
       "priceNote": "整机含遥控器",
       "hot": false,
-      "img": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776406212042_o67ost.jpg"
+      "img": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776415944639_fcpm3z.jpg"
     },
     {
-      "tag": "新品",
+      "tag": "AI视觉格斗机甲",
       "series": "SERIES-X",
-      "name": "新机器人",
-      "desc": "请编辑产品描述...",
+      "name": "中学组视觉格斗机甲",
+      "desc": "四轮驱动 强悍推力",
       "specs": [
         "重量: 320g",
         "材质: ABS+"
@@ -103,7 +103,7 @@
       "price": "适配BOXBOT官方电控组件",
       "priceNote": "整机含遥控器",
       "hot": false,
-      "img": "/images/微信图片_20260116120809_11_81.jpg"
+      "img": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776415946520_u002mh.jpg"
     },
     {
       "tag": "新品",
