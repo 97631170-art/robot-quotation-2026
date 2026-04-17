@@ -342,7 +342,7 @@
             <span class="card-title">🖼️ Hero 图片</span>
           </div>
           <div class="img-upload has-img" id="heroImgUpload" onclick="selectImage('hero')">
-            <img src="https://97631170-art.github.io/robot-quotation-2026/images/5f2929ee-5969-4077-b525-68ce90ff207e.JPG" onerror="handleImgError(this)">
+            <img src="https://97631170-art.github.io/robot-quotation-2026/images/img_1776393703820_bp56x2.JPG" onerror="handleImgError(this)">
           </div>
         </div>
         
@@ -358,7 +358,7 @@
             </div>
             <div class="form-group">
               <div class="field-label">导航徽章</div>
-              <input type="text" class="edit-field" id="navBadge" value="测试">
+              <input type="text" class="edit-field" id="navBadge" value="测试hero">
             </div>
           </div>
         </div>
@@ -564,7 +564,7 @@
     // 数据
     let siteData = {
   "brand": "⚡中国格斗机甲联盟-造悟社",
-  "navBadge": "测试",
+  "navBadge": "测试hero",
   "heroEyebrow": "格斗机器人 · 2026 竞技系列",
   "heroLine1": "极速突破",
   "heroLine2": "铸造冠军",
@@ -604,7 +604,7 @@
       "price": "",
       "priceNote": "整机含遥控器",
       "hot": false,
-      "img": "/images/1775790699904.jpg"
+      "img": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776393464033_wma2bm.jpg"
     },
     {
       "tag": "320克横转类格斗机器人",
@@ -621,7 +621,7 @@
       "price": "0",
       "priceNote": "整机含遥控器",
       "hot": false,
-      "img": "/images/1775790736879.png"
+      "img": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776393467862_qrbl3a.jpg"
     },
     {
       "tag": "抓举",
@@ -637,7 +637,7 @@
       "price": "¥1,380",
       "priceNote": "整机含遥控器",
       "hot": false,
-      "img": "/images/1775790699904.jpg"
+      "img": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776393471508_znmefo.png"
     },
     {
       "tag": "320克弹射类格斗机器人",
@@ -693,7 +693,7 @@
       "desc": "满足 500g 量级主流竞技规则，适配国内外各大机器人格斗联赛标准场地与评分体系。"
     }
   ],
-  "heroImg": "/images/5f2929ee-5969-4077-b525-68ce90ff207e.JPG",
+  "heroImg": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776393703820_bp56x2.JPG",
   "featImg": "/images/01ed2520-0525-4a8e-b578-fadb72265cb2.JPG",
   "competition": {
     "show": true,
@@ -1091,15 +1091,45 @@
     // ========== 图片上传 ==========
     let pendingUpload = { hero: null, products: {} }; // 待上传的文件队列
     
+    // 判断是否本地版本
+    const isLocalVersion = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    
     // 选择图片
     function selectImage(type, idx) {
-      pendingUpload.currentType = type;
-      pendingUpload.currentIdx = idx;
-      document.getElementById('fileInput').click();
+      if (isLocalVersion) {
+        // 本地版本：选择文件后上传
+        pendingUpload.currentType = type;
+        pendingUpload.currentIdx = idx;
+        document.getElementById('fileInput').click();
+      } else {
+        // GitHub Pages 版本：直接让用户粘贴链接
+        const promptTitle = type === 'hero' ? 'Hero 图片' : '产品图片 ' + (idx + 1);
+        const url = prompt('📷 粘贴 ' + promptTitle + ' 的 GitHub 图片链接：
+
+格式：https://97631170-art.github.io/robot-quotation-2026/images/xxx.png
+
+提示：请先在 GitHub 上传图片，然后粘贴图片的 CDN 链接');
+        
+        if (url && url.trim()) {
+          const imgUrl = url.trim();
+          if (type === 'hero') {
+            siteData.heroImg = imgUrl;
+            document.getElementById('heroImgUpload').innerHTML = '<img src="' + imgUrl + '" onerror="handleImgError(this)">';
+            document.getElementById('heroImgUpload').classList.add('has-img');
+          } else {
+            siteData.products[idx].img = imgUrl;
+            renderProducts();
+          }
+          autoSave();
+          showToast('✅ 图片已更新');
+        }
+      }
     }
     
-    // 处理文件选择 - 本地预览
+    // 处理文件选择 - 仅本地版本使用
     function handleFileSelect(input) {
+      if (!isLocalVersion) return;
+      
       const file = input.files[0];
       if (!file) return;
       
