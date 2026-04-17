@@ -1155,11 +1155,7 @@
       } else {
         // GitHub Pages 版本：直接让用户粘贴链接
         const promptTitle = type === 'hero' ? 'Hero 图片' : '产品图片 ' + (idx + 1);
-        const url = prompt('📷 粘贴 ' + promptTitle + ' 的 GitHub 图片链接：
-
-格式：https://97631170-art.github.io/robot-quotation-2026/images/xxx.png
-
-提示：请先在 GitHub 上传图片，然后粘贴图片的 CDN 链接');
+        const url = prompt('📷 粘贴 ' + promptTitle + ' 的 GitHub 图片链接：\n格式：https://97631170-art.github.io/robot-quotation-2026/images/xxx.png\n提示：请先在 GitHub 上传图片，然后粘贴图片的 CDN 链接');
         
         if (url && url.trim()) {
           const imgUrl = url.trim();
