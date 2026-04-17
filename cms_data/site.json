@@ -1,6 +1,6 @@
 {
   "brand": "⚡中国格斗机甲联盟-造悟社",
-  "navBadge": "测试hero1.3",
+  "navBadge": "测试hero1.4",
   "heroEyebrow": "格斗机器人 · 2026 竞技系列",
   "heroLine1": "极速突破",
   "heroLine2": "铸造冠军",
@@ -274,5 +274,11 @@
       "href": "#contact",
       "cta": true
     }
+  ],
+  "moduleOrder": [
+    "products",
+    "features",
+    "accessories",
+    "competition"
   ]
 }
