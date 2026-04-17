@@ -60,6 +60,25 @@
     .logo-text { font-size: 18px; font-weight: 700; }
     .logo-text span { color: var(--primary); }
     
+    /* 服务器状态 */
+    .server-status {
+      margin: 12px 16px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--card-hover);
+    }
+    .server-status .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #ef4444;
+    }
+    .server-status.online .dot { background: #22c55e; }
+    .server-status .text { color: var(--text-muted); }
+    
     .nav-menu {
       flex: 1;
       padding: 16px 12px;
@@ -268,6 +287,10 @@
       <div class="logo">
         <div class="logo-icon">🤖</div>
         <div class="logo-text">造悟社 <span>CMS</span></div>
+      </div>
+      <div class="server-status" id="serverStatus">
+        <div class="dot"></div>
+        <span class="text">服务器检测中...</span>
       </div>
       <div class="nav-menu">
         <div class="nav-item active" data-section="home">
@@ -1140,7 +1163,31 @@
     }
     
     // ========== 发布网站 ==========
+    
+    // 检测服务器状态
+    async function checkServer() {
+      try {
+        const resp = await fetch('http://localhost:7788/api/status', {
+          method: 'GET',
+          cache: 'no-cache'
+        });
+        return resp.ok;
+      } catch(e) {
+        return false;
+      }
+    }
+    
     async function publishSite() {
+      // 先检测服务器
+      showToast('检测服务器...');
+      const serverOk = await checkServer();
+      if (!serverOk) {
+        showToast('⚠️ 服务器未启动！请先双击"启动服务器.bat"', 5000);
+        // 打开启动脚本
+        window.open('启动服务器.bat', '_blank');
+        return;
+      }
+      
       showToast('正在处理图片...');
       
       // 先上传所有待上传的图片
@@ -1209,6 +1256,21 @@
       }
     }
     
+    // 服务器状态检测
+    function updateServerStatus() {
+      const el = document.getElementById('serverStatus');
+      if (!el) return;
+      checkServer().then(ok => {
+        if (ok) {
+          el.className = 'server-status online';
+          el.querySelector('.text').textContent = '服务器已连接';
+        } else {
+          el.className = 'server-status';
+          el.querySelector('.text').textContent = '服务器未启动';
+        }
+      });
+    }
+    
     // 初始化
     function init() {
       // 优先使用本地缓存，否则用 JSON 文件数据
@@ -1245,6 +1307,10 @@
     }
     
     init();
+    
+    // 启动时检测一次，然后每 10 秒检测一次
+    updateServerStatus();
+    setInterval(updateServerStatus, 10000);
   </script>
 </body>
 </html>
