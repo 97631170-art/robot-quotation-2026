@@ -932,14 +932,6 @@
       document.querySelector('.nav-item[data-section="' + id + '"]').classList.add('active');
     }
     
-    // 绑定导航点击
-    document.querySelectorAll('.nav-item').forEach(item => {
-      item.addEventListener('click', function() {
-        const section = this.getAttribute('data-section');
-        showSection(section);
-      });
-    });
-    
     // ========== 首页设置 ==========
     function renderKpi() {
       document.getElementById('kpiList').innerHTML = siteData.kpi.map((k, i) => 
