@@ -1249,6 +1249,16 @@
     
     // 保存数据到 GitHub
     async function saveData() {
+      // 收集首页数据
+      siteData.brand = document.getElementById('brandName').value;
+      siteData.navBadge = document.getElementById('navBadge').value;
+      siteData.heroEyebrow = document.getElementById('heroEyebrow').value;
+      siteData.heroLine1 = document.getElementById('heroLine1').value;
+      siteData.heroLine2 = document.getElementById('heroLine2').value;
+      siteData.heroDesc = document.getElementById('heroDesc').value;
+      siteData.heroBtn1 = document.getElementById('heroBtn1').value;
+      siteData.heroBtn2 = document.getElementById('heroBtn2').value;
+      
       // 先本地保存
       localStorage.setItem('siteData', JSON.stringify(siteData));
       
