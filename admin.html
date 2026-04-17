@@ -414,7 +414,7 @@
             <span class="card-title">🖼️ Hero 图片</span>
           </div>
           <div class="img-upload has-img" id="heroImgUpload" onclick="selectImage('hero')">
-            <img src="https://97631170-art.github.io/robot-quotation-2026/images/img_1776416360913_tncj98.jpg" onerror="handleImgError(this)">
+            <img src="https://97631170-art.github.io/robot-quotation-2026/images/img_1776416725019_p2hye9.jpg" onerror="handleImgError(this)">
           </div>
         </div>
         
@@ -802,7 +802,7 @@
       "desc": "满足各个级别小学组迷你级 小学组轻量级 初中组轻量级 初中组视觉"
     }
   ],
-  "heroImg": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776416360913_tncj98.jpg",
+  "heroImg": "https://97631170-art.github.io/robot-quotation-2026/images/img_1776416725019_p2hye9.jpg",
   "featImg": "/images/01ed2520-0525-4a8e-b578-fadb72265cb2.JPG",
   "competition": {
     "show": true,
@@ -1453,16 +1453,45 @@
     }
     
     // 初始化
-    function init() {
-      // 优先使用本地缓存，否则用 JSON 文件数据
+    async function init() {
+      // 先尝试从GitHub获取最新数据
+      try {
+        const resp = await fetch('https://raw.githubusercontent.com/97631170-art/robot-quotation-2026/main/cms_data/site.json');
+        if (resp.ok) {
+          const remoteData = await resp.json();
+          siteData = {
+            ...siteData,
+            ...remoteData,
+            products: remoteData.products || siteData.products,
+            features: remoteData.features || siteData.features,
+            accessories: {
+              ...siteData.accessories,
+              ...remoteData.accessories,
+              items: remoteData.accessories?.items || siteData.accessories.items
+            },
+            competition: {
+              ...siteData.competition,
+              ...remoteData.competition,
+              timeline: remoteData.competition?.timeline || siteData.competition.timeline,
+              classes: remoteData.competition?.classes || siteData.competition.classes
+            }
+          };
+          localStorage.setItem('siteData', JSON.stringify(siteData));
+          console.log('✅ 已从GitHub加载最新数据');
+        }
+      } catch(e) {
+        console.log('⚠️ 无法从GitHub加载，使用本地缓存');
+      }
+      
+      // 合并本地缓存（如果有更新的未保存内容）
       const cached = localStorage.getItem('siteData');
       if (cached) {
         try {
           const parsed = JSON.parse(cached);
-          // 合并数据，确保所有字段都存在
+          // 使用缓存数据覆盖（因为缓存可能包含用户最近的修改）
           siteData = {
-            ...siteData,  // JSON 文件的完整结构
-            ...parsed,     // 用户修改的内容
+            ...siteData,
+            ...parsed,
             products: parsed.products || siteData.products,
             features: parsed.features || siteData.features,
             accessories: {
