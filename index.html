@@ -89,7 +89,7 @@ nav.scrolled{background:rgba(8,8,16,.98);box-shadow:0 4px 30px rgba(0,0,0,.4)}
 /* ===== 产品卡片 ===== */
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
 @media(max-width:1000px){.cards{grid-template-columns:1fr;max-width:500px;margin:0 auto}}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s,border-color .35s}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s,border-color .35s;text-decoration:none;color:inherit;display:block}
 .card:hover{transform:translateY(-10px);box-shadow:0 32px 72px rgba(0,0,0,.5),0 0 0 1px rgba(232,36,42,.25);border-color:rgba(232,36,42,.35)}
 .card.hot{border-color:rgba(232,36,42,.3);background:linear-gradient(160deg,rgba(232,36,42,.07) 0%,rgba(232,36,42,.02) 100%)}
 .card-ribbon{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;min-height:40px}
@@ -110,6 +110,8 @@ nav.scrolled{background:rgba(8,8,16,.98);box-shadow:0 4px 30px rgba(0,0,0,.4)}
 .price-val{font-size:28px;font-weight:900;color:var(--red)}.price-note{font-size:12px;color:var(--muted);margin-top:2px}
 .card-btn{background:var(--surface);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);padding:9px 20px;border-radius:5px;font-size:12px;font-weight:600;letter-spacing:1.5px;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block}
 .card-btn:hover{border-color:var(--red);color:var(--red);background:rgba(232,36,42,.06)}
+.card-detail-btn{background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff;border-color:var(--red);box-shadow:0 4px 16px rgba(232,36,42,.3)}
+.card-detail-btn:hover{background:linear-gradient(135deg,var(--red-dark),var(--red));color:#fff}
 
 /* ===== 赛事介绍 ===== */
 .comp-header{text-align:center;margin-bottom:60px}
@@ -286,7 +288,7 @@ footer{padding:48px 60px;border-top:1px solid var(--border);display:flex;align-i
     <p class="section-sub">模块化设计，快速拆装，适配多种竞技场景</p>
   </div>
   <div class="cards">
-    <div class="card" id="product-0">
+    <a class="card" id="product-0">
       <div class="card-ribbon">
         <span class="ribbon-tag">320克竖转类格斗机甲</span>
         
@@ -311,8 +313,8 @@ footer{padding:48px 60px;border-top:1px solid var(--border);display:flex;align-i
           <a href="#contact" class="card-btn">立即咨询</a>
         </div>
       </div>
-    </div>
-    <div class="card" id="product-1">
+    </a>
+    <a class="card" id="product-1">
       <div class="card-ribbon">
         <span class="ribbon-tag">320克横转类格斗机甲</span>
         
@@ -333,8 +335,8 @@ footer{padding:48px 60px;border-top:1px solid var(--border);display:flex;align-i
           <a href="#contact" class="card-btn">立即咨询</a>
         </div>
       </div>
-    </div>
-    <div class="card" id="product-2">
+    </a>
+    <a class="card" id="product-2">
       <div class="card-ribbon">
         <span class="ribbon-tag">320克弹射格斗机甲</span>
         
@@ -357,8 +359,8 @@ footer{padding:48px 60px;border-top:1px solid var(--border);display:flex;align-i
           <a href="#contact" class="card-btn">立即咨询</a>
         </div>
       </div>
-    </div>
-    <div class="card" id="product-3">
+    </a>
+    <a class="card" id="product-3">
       <div class="card-ribbon">
         <span class="ribbon-tag">200克弹射格斗机甲</span>
         
@@ -379,8 +381,8 @@ footer{padding:48px 60px;border-top:1px solid var(--border);display:flex;align-i
           <a href="#contact" class="card-btn">立即咨询</a>
         </div>
       </div>
-    </div>
-    <div class="card" id="product-4">
+    </a>
+    <a class="card" id="product-4">
       <div class="card-ribbon">
         <span class="ribbon-tag">中学组视觉机器人</span>
         
@@ -401,8 +403,8 @@ footer{padding:48px 60px;border-top:1px solid var(--border);display:flex;align-i
           <a href="#contact" class="card-btn">立即咨询</a>
         </div>
       </div>
-    </div>
-    <div class="card" id="product-5">
+    </a>
+    <a class="card" id="product-5">
       <div class="card-ribbon">
         <span class="ribbon-tag">320克弹射格斗机甲</span>
         
@@ -425,7 +427,7 @@ footer{padding:48px 60px;border-top:1px solid var(--border);display:flex;align-i
           <a href="#contact" class="card-btn">立即咨询</a>
         </div>
       </div>
-    </div></div>
+    </a></div>
 </section>
 <!-- 器材配件 -->
 <section class="section" id="accessories">
